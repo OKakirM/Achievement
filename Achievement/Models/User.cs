@@ -40,5 +40,21 @@ namespace Achievement.Models
         /// </summary>
         [Display(Name = "Foto de Perfil")]
         public string? Image { get; set; } = string.Empty;
+
+        // ============================================
+        // Chaves Estrangeiras | Relacionamentos
+        // ============================================
+
+        /// <summary>
+        /// Conexão de 1-N, um utilizador possuem várias review/análise
+        /// </summary>
+        [Display(Name = "Reviews")]
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        /// <summary>
+        /// Conexão de N-N, vários utilizador possui vários jogos
+        /// </summary>
+        [Display(Name = "Jogos")]
+        public ICollection<Game> Games { get; set; } = new List<Game>();
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Achievement.Models
 {
@@ -23,6 +25,30 @@ namespace Achievement.Models
         [Required]
         [Display(Name = "Avaliação")]
         public int Rating { get; set; }
+
+        // ============================================
+        // Chaves Estrangeiras | Relacionamentos
+        // ============================================
+
+        /// <summary>
+        /// Conexão de N-1, várias review/análise pertence á um jogo
+        /// </summary>
+        [ForeignKey(nameof(Game))]
+        [Display(Name = "Jogo")]
+        public int GameFK { get; set; }
+        [ValidateNever]
+        public Game Game { get; set; } = null!;
+
+        /// <summary>
+        /// Conexão de N-1, várias review/análise pertence á um utilizadores
+        /// </summary>
+        [ForeignKey(nameof(User))]
+        [Display(Name = "Utilizador")]
+        public int UserFK { get; set; }
+        [ValidateNever]
+        public User User { get; set; } = null!;
+
+
     }
 }
 

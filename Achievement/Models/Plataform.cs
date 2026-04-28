@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Achievement.Models
 {
@@ -24,6 +26,17 @@ namespace Achievement.Models
         [Display(Name = "Nome do Aparelho")]
         [StringLength(50)]
         public string Name { get; set; } = string.Empty;
+
+        // ============================================
+        // Chaves Estrangeiras | Relacionamentos
+        // ============================================
+
+        /// <summary>
+        /// Conexão de N-N, várias plataforma pertence á vários um jogo
+        /// </summary>
+        [Display(Name = "Jogos")]
+        public ICollection<Game> Games { get; set; } = new List<Game>();
+
     }
 
     /// <summary>

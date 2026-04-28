@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static Achievement.Models.Plataform;
 
 namespace Achievement.Models
@@ -64,5 +66,33 @@ namespace Achievement.Models
         /// </summary>
         [Display(Name = "Jogadores que jogaram")]
         public int? Plays { get; set; }
+
+        // ============================================
+        // Chaves Estrangeiras | Relacionamentos
+        // ============================================
+
+        /// <summary>
+        /// Conexão de N-N, vários jogo possui várias plataformas
+        /// </summary>
+        [Display(Name = "Plataformas")]
+        public ICollection<Plataform> Plataforms { get; set; } = new List<Plataform>();
+
+        /// <summary>
+        /// Conexão de N-N, vários jogo possui vários gêneros
+        /// </summary>
+        [Display(Name = "Gêneros")]
+        public ICollection<Genre> Genres { get; set; } = new List<Genre>();
+
+        /// <summary>
+        /// Conexão de 1-N, um jogo possui várias reviews/análises
+        /// </summary>
+        [Display(Name = "Reviews")]
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        /// <summary>
+        /// Conexão de N-N, vários jogo possuem vários utilizadores
+        /// </summary>
+        [Display(Name = "Utilizadores")]
+        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }
