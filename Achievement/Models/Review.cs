@@ -17,12 +17,14 @@ namespace Achievement.Models
         /// </summary>
         [Required]
         [Display(Name = "Review")]
+        [StringLength(1000, MinimumLength = 10)]
         public string ReviewContent { get; set; } = string.Empty;
 
         /// <summary>
         /// Avaliação final do jogo pelo utilizador
         /// </summary>
         [Required]
+        [Range(1, 10)]
         [Display(Name = "Avaliação")]
         public int Rating { get; set; }
 
