@@ -1,0 +1,43 @@
+﻿@page
+@model Achievement.Pages.Reviews.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Review</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Review.ReviewContent)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Review.ReviewContent)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Review.Rating)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Review.Rating)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Review.Game)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Review.Game.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Review.User)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Review.User.Email)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Review.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

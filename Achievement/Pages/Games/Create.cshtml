@@ -1,0 +1,72 @@
+﻿@page
+@model Achievement.Pages.Games.CreateModel
+
+        @{
+        ViewData["Title"] = "Create";
+        }
+        
+        <h1>Create</h1>
+        
+    <h4>Game</h4>
+    <hr />
+    <div class="row">
+    <div class="col-md-4">
+    <form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Game.Name" class="control-label"></label>
+                <input asp-for="Game.Name" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Game.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Game.Description" class="control-label"></label>
+                <input asp-for="Game.Description" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Game.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <span class="text-danger">*</span>
+                <label asp-for="Game.ReleaseDate" class="control-label"></label>
+                <input asp-for="Game.ReleaseDate" class="form-control" aria-required="true"/>
+                <span asp-validation-for="Game.ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Game.Rating" class="control-label"></label>
+                <input asp-for="Game.Rating" class="form-control" />
+                <span asp-validation-for="Game.Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Game.Length" class="control-label"></label>
+                <input asp-for="Game.Length" class="form-control" />
+                <span asp-validation-for="Game.Length" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Game.CoverImage" class="control-label"></label>
+                <input asp-for="Game.CoverImage" class="form-control" />
+                <span asp-validation-for="Game.CoverImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Game.BannerImage" class="control-label"></label>
+                <input asp-for="Game.BannerImage" class="form-control" />
+                <span asp-validation-for="Game.BannerImage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Game.Plays" class="control-label"></label>
+                <input asp-for="Game.Plays" class="form-control" />
+                <span asp-validation-for="Game.Plays" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
