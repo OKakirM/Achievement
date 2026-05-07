@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 using Achievement.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Achievement.Pages.Users
 {
@@ -29,16 +30,15 @@ namespace Achievement.Pages.Users
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
 
-            if (user is not null)
+            if (user is null)
             {
-                User = user;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            User = user;
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)

@@ -28,7 +28,11 @@ namespace Achievement.Pages.Games
                 return NotFound();
             }
 
-            var game = await _context.Games.FirstOrDefaultAsync(m => m.Id == id);
+            var game = await _context.Games
+                .Include(g => g.Genres)
+                .Include(g => g.Plataforms)
+                .Include(g => g.Reviews)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (game is not null)
             {

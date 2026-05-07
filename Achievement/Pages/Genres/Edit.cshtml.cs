@@ -48,6 +48,12 @@ namespace Achievement.Pages.Genres
                 return Page();
             }
 
+            // Ensure slug exists
+            if (string.IsNullOrWhiteSpace(Genre.Slug))
+            {
+                Genre.Slug = Genre.Name?.ToLowerInvariant().Replace(' ', '-') ?? string.Empty;
+            }
+
             _context.Attach(Genre).State = EntityState.Modified;
 
             try

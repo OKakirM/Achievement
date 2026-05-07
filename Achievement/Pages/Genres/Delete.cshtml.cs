@@ -29,7 +29,9 @@ namespace Achievement.Pages.Genres
                 return NotFound();
             }
 
-            var genre = await _context.Genres.FirstOrDefaultAsync(m => m.Id == id);
+            var genre = await _context.Genres
+                .Include(g => g.Games)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (genre is not null)
             {
@@ -48,9 +50,20 @@ namespace Achievement.Pages.Genres
                 return NotFound();
             }
 
-            var genre = await _context.Genres.FindAsync(id);
+            var genre = await _context.Genres
+                .Include(g => g.Games)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
             if (genre != null)
             {
+                // Block deletion if there are linked games
+                if (genre.Games.Any())
+                {
+                    ModelState.AddModelError(string.Empty, "Não é possível excluir este gênero porque existem jogos vinculados. Remova as relações antes de excluir.");
+                    Genre = genre;
+                    return Page();
+                }
+
                 Genre = genre;
                 _context.Genres.Remove(Genre);
                 await _context.SaveChangesAsync();

@@ -19,11 +19,14 @@ namespace Achievement.Pages.Genres
             _context = context;
         }
 
-        public IList<Genre> Genre { get;set; } = default!;
+        public IList<Genre> Genre { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            Genre = await _context.Genres.ToListAsync();
+            // Include Games to be able to show counts without additional queries
+            Genre = await _context.Genres
+                .Include(g => g.Games)
+                .ToListAsync();
         }
     }
 }

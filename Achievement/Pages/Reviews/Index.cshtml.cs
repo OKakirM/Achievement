@@ -19,13 +19,53 @@ namespace Achievement.Pages.Reviews
             _context = context;
         }
 
-        public IList<Review> Review { get;set; } = default!;
+        // Results shown on the page
+        public IList<Review> Review { get; set; } = default!;
 
-        public async Task OnGetAsync()
+        // Basic paging and filtering parameters (optional)
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+
+        public async Task OnGetAsync(int? rating, int? gameId, string? q, int pageNumber = 1, int pageSize = 10, bool showHidden = false)
         {
-            Review = await _context.Reviews
+            PageNumber = pageNumber;
+            PageSize = pageSize;
+
+            var query = _context.Reviews
                 .Include(r => r.Game)
-                .Include(r => r.User).ToListAsync();
+                .Include(r => r.User)
+                .AsQueryable();
+
+            // By default only visible reviews
+            if (!showHidden)
+            {
+                query = query.Where(r => r.IsVisible);
+            }
+
+            if (rating.HasValue)
+            {
+                query = query.Where(r => r.Rating == rating.Value);
+            }
+
+            if (gameId.HasValue)
+            {
+                query = query.Where(r => r.GameFK == gameId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                var text = q.Trim();
+                query = query.Where(r => r.ReviewContent.Contains(text));
+            }
+
+            TotalCount = await query.CountAsync();
+
+            Review = await query
+                .OrderByDescending(r => r.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
     }
 }

@@ -73,6 +73,33 @@ namespace Achievement.Models
         [Range(0, int.MaxValue, ErrorMessage = "O número de jogadores não pode ser negativo.")]
         public int? Plays { get; set; }
 
+        /// <summary>
+        /// Desenvolvedora
+        /// </summary>
+        [Display(Name = "Desenvolvedora")]
+        [StringLength(200)]
+        public string? Developer { get; set; }
+
+        /// <summary>
+        /// Publicadora
+        /// </summary>
+        [Display(Name = "Publicadora")]
+        [StringLength(200)]
+        public string? Publisher { get; set; }
+
+        /// <summary>
+        /// URL amigável / slug
+        /// </summary>
+        [Display(Name = "Slug")]
+        [StringLength(200)]
+        public string? Slug { get; set; }
+
+        /// <summary>
+        /// Soft-delete flag
+        /// </summary>
+        [Display(Name = "Ativo")]
+        public bool IsActive { get; set; } = true;
+
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
         // ============================================

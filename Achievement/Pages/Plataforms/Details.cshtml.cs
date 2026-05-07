@@ -28,16 +28,18 @@ namespace Achievement.Pages.Plataforms
                 return NotFound();
             }
 
-            var plataform = await _context.Plataforms.FirstOrDefaultAsync(m => m.Id == id);
+            var plataform = await _context.Plataforms
+                .Include(p => p.Games)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (plataform is not null)
+            if (plataform is null)
             {
-                Plataform = plataform;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            Plataform = plataform;
+
+            return Page();
         }
     }
 }

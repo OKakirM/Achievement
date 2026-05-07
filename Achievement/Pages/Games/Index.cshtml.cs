@@ -19,11 +19,33 @@ namespace Achievement.Pages.Games
             _context = context;
         }
 
-        public IList<Game> Game { get;set; } = default!;
+        public IList<Game> Game { get; set; } = default!;
 
-        public async Task OnGetAsync()
+        // Simplified pagination parameters
+        public int PageSize { get; set; } = 20;
+        public int PageNumber { get; set; } = 1;
+
+        public string? Search { get; set; }
+
+        public async Task OnGetAsync(int? pageNumber, string? search)
         {
-            Game = await _context.Games.ToListAsync();
+            PageNumber = pageNumber ?? 1;
+            Search = search;
+
+            var query = _context.Games.AsQueryable();
+
+            // Only active games in admin list? Admin should see all; keep all.
+
+            if (!string.IsNullOrWhiteSpace(Search))
+            {
+                query = query.Where(g => g.Name.Contains(Search));
+            }
+
+            Game = await query
+                .OrderByDescending(g => g.ReleaseDate)
+                .Skip((PageNumber - 1) * PageSize)
+                .Take(PageSize)
+                .ToListAsync();
         }
     }
 }

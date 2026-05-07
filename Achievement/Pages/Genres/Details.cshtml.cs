@@ -20,6 +20,7 @@ namespace Achievement.Pages.Genres
         }
 
         public Genre Genre { get; set; } = default!;
+        public IList<Game> Games { get; set; } = new List<Game>();
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,11 +29,14 @@ namespace Achievement.Pages.Genres
                 return NotFound();
             }
 
-            var genre = await _context.Genres.FirstOrDefaultAsync(m => m.Id == id);
+            var genre = await _context.Genres
+                .Include(g => g.Games)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (genre is not null)
             {
                 Genre = genre;
+                Games = genre.Games.ToList();
 
                 return Page();
             }

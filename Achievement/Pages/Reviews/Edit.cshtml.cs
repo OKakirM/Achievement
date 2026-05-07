@@ -29,7 +29,6 @@ namespace Achievement.Pages.Reviews
             {
                 return NotFound();
             }
-
             var review =  await _context.Reviews.FirstOrDefaultAsync(m => m.Id == id);
             if (review == null)
             {
@@ -50,7 +49,19 @@ namespace Achievement.Pages.Reviews
                 return Page();
             }
 
-            _context.Attach(Review).State = EntityState.Modified;
+            // Only allow moderators to edit ReviewContent and IsVisible; prevent changing GameFK/UserFK/Rating here unless intended
+            var dbReview = await _context.Reviews.FindAsync(Review.Id);
+            if (dbReview == null)
+            {
+                return NotFound();
+            }
+
+            dbReview.ReviewContent = Review.ReviewContent;
+            // preserve rating by default (administrators can modify if you want to enable it explicitly)
+            // dbReview.Rating = Review.Rating; // commented out to avoid accidental rating changes
+            dbReview.IsVisible = Review.IsVisible;
+
+            _context.Attach(dbReview).State = EntityState.Modified;
 
             try
             {

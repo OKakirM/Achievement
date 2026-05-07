@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace Achievement.Models
 {
@@ -26,6 +28,35 @@ namespace Achievement.Models
         [Display(Name = "Nome do Aparelho")]
         [StringLength(50)]
         public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Fabricante (ex: Sony, Microsoft, Nintendo)
+        /// </summary>
+        [Required]
+        [Display(Name = "Fabricante")]
+        [StringLength(100)]
+        public string Manufacturer { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Data de lançamento da plataforma
+        /// </summary>
+        [Display(Name = "Data de Lançamento")]
+        [DataType(DataType.Date)]
+        public DateTime? ReleaseDate { get; set; }
+
+        /// <summary>
+        /// Slug amigável para URL (ex: ps5, xbox-series-x)
+        /// </summary>
+        [Required]
+        [Display(Name = "Slug")]
+        [StringLength(100)]
+        public string Slug { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Visibilidade/soft-delete
+        /// </summary>
+        [Display(Name = "Visível")]
+        public bool IsVisible { get; set; } = true;
 
         // ============================================
         // Chaves Estrangeiras | Relacionamentos

@@ -28,16 +28,19 @@ namespace Achievement.Pages.Reviews
                 return NotFound();
             }
 
-            var review = await _context.Reviews.FirstOrDefaultAsync(m => m.Id == id);
+            var review = await _context.Reviews
+                .Include(r => r.Game)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (review is not null)
+            if (review is null)
             {
-                Review = review;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            Review = review;
+
+            return Page();
         }
     }
 }

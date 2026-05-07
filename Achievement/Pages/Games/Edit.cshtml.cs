@@ -30,7 +30,10 @@ namespace Achievement.Pages.Games
                 return NotFound();
             }
 
-            var game =  await _context.Games.FirstOrDefaultAsync(m => m.Id == id);
+            var game =  await _context.Games
+                .Include(g => g.Genres)
+                .Include(g => g.Plataforms)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (game == null)
             {
                 return NotFound();
@@ -46,6 +49,12 @@ namespace Achievement.Pages.Games
             if (!ModelState.IsValid)
             {
                 return Page();
+            }
+
+            // Ensure slug
+            if (string.IsNullOrWhiteSpace(Game.Slug))
+            {
+                Game.Slug = Game.Name?.ToLowerInvariant().Replace(' ', '-') ?? string.Empty;
             }
 
             _context.Attach(Game).State = EntityState.Modified;

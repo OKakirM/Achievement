@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
 namespace Achievement.Models
 {
+    [Index(nameof(Slug), IsUnique = true)]
     public class Genre : IValidatableObject
     {
         /// <summary>
@@ -20,6 +22,21 @@ namespace Achievement.Models
         [Display(Name = "Nome do Gênero")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "O nome do gênero deve ter entre {2} e {1} caracteres.")]
         public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Breve descrição do gênero
+        /// </summary>
+        [Display(Name = "Descrição")]
+        [StringLength(1000)]
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// URL amigável / slug
+        /// </summary>
+        [Required(ErrorMessage = "O slug é obrigatório.")]
+        [Display(Name = "Slug")]
+        [StringLength(100)]
+        public string Slug { get; set; } = string.Empty;
 
         // ============================================
         // Chaves Estrangeiras | Relacionamentos

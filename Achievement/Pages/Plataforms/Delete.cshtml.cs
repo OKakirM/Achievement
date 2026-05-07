@@ -48,13 +48,27 @@ namespace Achievement.Pages.Plataforms
                 return NotFound();
             }
 
-            var plataform = await _context.Plataforms.FindAsync(id);
-            if (plataform != null)
+            var plataform = await _context.Plataforms
+                .Include(p => p.Games)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (plataform == null)
             {
-                Plataform = plataform;
-                _context.Plataforms.Remove(Plataform);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
+
+            // If platform has games, prevent physical delete and mark as not visible
+            if (plataform.Games != null && plataform.Games.Any())
+            {
+                plataform.IsVisible = false;
+                _context.Attach(plataform).State = EntityState.Modified;
+            }
+            else
+            {
+                _context.Plataforms.Remove(plataform);
+            }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

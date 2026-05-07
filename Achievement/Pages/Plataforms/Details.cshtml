@@ -23,6 +23,24 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Plataform.Name)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Plataform.Manufacturer)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Plataform.Manufacturer)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Plataform.ReleaseDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Plataform.ReleaseDate)
+        </dd>
+        <dt class="col-sm-2">
+            Jogos cadastrados
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Plataform.Games?.Count()
+        </dd>
     </dl>
 </div>
 <div>

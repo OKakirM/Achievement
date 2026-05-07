@@ -10,6 +10,10 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+<form method="get" class="form-inline mb-3">
+    <input type="text" name="search" value="@Model.Search" class="form-control mr-2" placeholder="Pesquisar título..." />
+    <button type="submit" class="btn btn-primary">Buscar</button>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -76,3 +80,13 @@
 }
     </tbody>
 </table>
+
+@* Simple pager *@
+<div>
+    @if (Model.PageNumber > 1)
+    {
+        <a asp-page="." asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-search="@Model.Search">Previous</a>
+    }
+    <span class="mx-2">Page @Model.PageNumber</span>
+    <a asp-page="." asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-search="@Model.Search">Next</a>
+</div>

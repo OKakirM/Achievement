@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -35,10 +36,30 @@ namespace Achievement.Pages.Games
                 return Page();
             }
 
+            // Ensure slug
+            if (string.IsNullOrWhiteSpace(Game.Slug))
+            {
+                Game.Slug = GenerateSlug(Game.Name);
+            }
+
+            // Set active by default
+            Game.IsActive = true;
+
+            // Associate selected Genres/Plataforms if ids provided via form (not implemented in view yet)
+
             _context.Games.Add(Game);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
+        }
+
+        private static string GenerateSlug(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+            var s = value.Trim().ToLowerInvariant();
+            s = Regex.Replace(s, "[^a-z0-9]+", "-");
+            s = s.Trim('-');
+            return s;
         }
     }
 }

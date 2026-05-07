@@ -21,9 +21,15 @@ namespace Achievement.Pages.Plataforms
 
         public IList<Plataform> Plataform { get;set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(bool showHidden = false)
         {
-            Plataform = await _context.Plataforms.ToListAsync();
+            var query = _context.Plataforms.AsQueryable();
+            if (!showHidden)
+            {
+                query = query.Where(p => p.IsVisible);
+            }
+
+            Plataform = await query.ToListAsync();
         }
     }
 }

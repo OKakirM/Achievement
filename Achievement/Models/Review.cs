@@ -28,6 +28,12 @@ namespace Achievement.Models
         [Display(Name = "Avaliação")]
         public int Rating { get; set; }
 
+        /// <summary>
+        /// Marca se a review está visível ao público. Usado para soft-delete/ocultação.
+        /// </summary>
+        [Display(Name = "Visível")] 
+        public bool IsVisible { get; set; } = true;
+
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
         // ============================================
