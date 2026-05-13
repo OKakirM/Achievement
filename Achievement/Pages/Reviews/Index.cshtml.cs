@@ -37,12 +37,6 @@ namespace Achievement.Pages.Reviews
                 .Include(r => r.User)
                 .AsQueryable();
 
-            // By default only visible reviews
-            if (!showHidden)
-            {
-                query = query.Where(r => r.IsVisible);
-            }
-
             if (rating.HasValue)
             {
                 query = query.Where(r => r.Rating == rating.Value);

@@ -36,33 +36,10 @@ namespace Achievement.Pages.Genres
                 return Page();
             }
 
-            // Ensure slug exists
-            if (string.IsNullOrWhiteSpace(Genre.Slug))
-            {
-                Genre.Slug = GenerateSlug(Genre.Name);
-            }
-
-            // Check uniqueness of slug
-            if (_context.Genres.Any(g => g.Slug == Genre.Slug))
-            {
-                ModelState.AddModelError("Genre.Slug", "O slug informado já está em uso. Escolha outro.");
-                return Page();
-            }
-
             _context.Genres.Add(Genre);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
-        }
-
-        private static string GenerateSlug(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
-            var s = value.Trim().ToLowerInvariant();
-            // Replace spaces and invalid chars with hyphens
-            s = Regex.Replace(s, "[^a-z0-9]+", "-");
-            s = s.Trim('-');
-            return s;
         }
     }
 }

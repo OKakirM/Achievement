@@ -42,9 +42,6 @@ namespace Achievement.Pages.Games
                 Game.Slug = GenerateSlug(Game.Name);
             }
 
-            // Set active by default
-            Game.IsActive = true;
-
             // Associate selected Genres/Plataforms if ids provided via form (not implemented in view yet)
 
             _context.Games.Add(Game);

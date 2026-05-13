@@ -52,8 +52,6 @@ namespace Achievement.Pages.Games
             if (game != null)
             {
                 Game = game;
-                // Soft delete
-                game.IsActive = false;
                 _context.Games.Update(game);
                 await _context.SaveChangesAsync();
             }

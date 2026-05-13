@@ -90,9 +90,6 @@ namespace Achievement.Pages.Reviews
                 }
             }
 
-            // Ensure visible by default
-            Review.IsVisible = true;
-
             _context.Reviews.Add(Review);
             await _context.SaveChangesAsync();
 

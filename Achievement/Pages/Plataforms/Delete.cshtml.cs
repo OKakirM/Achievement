@@ -57,17 +57,7 @@ namespace Achievement.Pages.Plataforms
                 return NotFound();
             }
 
-            // If platform has games, prevent physical delete and mark as not visible
-            if (plataform.Games != null && plataform.Games.Any())
-            {
-                plataform.IsVisible = false;
-                _context.Attach(plataform).State = EntityState.Modified;
-            }
-            else
-            {
-                _context.Plataforms.Remove(plataform);
-            }
-
+            _context.Plataforms.Remove(plataform);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

@@ -57,8 +57,6 @@ namespace Achievement.Pages.Reviews
                 return NotFound();
             }
 
-            // Soft delete: mark as not visible instead of removing from database
-            review.IsVisible = false;
             _context.Attach(review).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 

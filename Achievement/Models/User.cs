@@ -12,26 +12,38 @@ namespace Achievement.Models
 
         /// <summary>
         /// Nome do Utilizador
+        /// - Máximo de 50 caracteres, mínimo de 2 caracteres
+        /// - Obrigatório
         /// </summary> 
-        [Required]
+        [Required(ErrorMessage = "O {0} é obrigatório.")]
         [Display(Name = "Nome")]
-        [StringLength(50)]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres")]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Endereço email do Utilizador
+        /// - Máximo de 150 caracteres
+        /// - Formato de email válido
+        /// - Obrigatório
         /// </summary> 
-        [Required]
+        [Required(ErrorMessage = "O {0} é obrigatório.")]
         [Display(Name = "E-mail")]
-        [StringLength (150)]
+        [StringLength (150, ErrorMessage = "O {0} não pode exceder {1} caracteres")]
+        [EmailAddress(ErrorMessage = "Formato de {0} inválido")]
         public string Email { get; set; } = string.Empty;
 
         /// <summary>
         /// Password do Utilizador
+        /// - Máximo de 100 caracteres, mínimo de 8 caracteres
+        /// - Deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial
+        /// - Obrigatório
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "A {0} é obrigatória.")]
         [Display(Name = "Palavra-Passe")]
-        [RegularExpression(pattern: "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/", ErrorMessage = "A Palavra-Passe tem que ter: \n - Minimo de 8 caracteres \n - Pelo menos uma letra maiuscula \n - Pelo menos uma letra minuscula \n - Pelo menos um numero \n - Pelo menos uma letra especial")]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "A {0} deve ter no mínimo {2} caracteres")]
+        [RegularExpression(
+            pattern: "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/", 
+            ErrorMessage = "A {0} tem que ter: \n - Minimo de 8 caracteres \n - Pelo menos uma letra maiuscula \n - Pelo menos uma letra minuscula \n - Pelo menos um numero \n - Pelo menos uma letra especial")]
         public string Password { get; set; } = string.Empty;
 
         /// <summary>

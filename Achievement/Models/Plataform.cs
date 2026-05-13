@@ -16,47 +16,30 @@ namespace Achievement.Models
 
         /// <summary>
         /// Tipo da plataforma (Console, PC, Portable ou Mobile)
+        /// - Obrigatório
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "O {0} é obrigatório.")]
         [Display(Name = "Tipo de Plataforma")]
+        [EnumDataType(typeof(PlataformType), ErrorMessage = "Tipo de Plataforma inválido")]
         public PlataformType Type { get; set; }
 
         /// <summary>
         /// Nome do aparelho, ou seja, o nome do console, do pc, do portátil ou do dispositivo móvel
+        /// - Máximo de 50 caracteres, mínimo de 2 caracteres
+        /// - Obrigatório
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "O {0} é obrigatório.")]
         [Display(Name = "Nome do Aparelho")]
-        [StringLength(50)]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres")]
         public string Name { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Fabricante (ex: Sony, Microsoft, Nintendo)
-        /// </summary>
-        [Required]
-        [Display(Name = "Fabricante")]
-        [StringLength(100)]
-        public string Manufacturer { get; set; } = string.Empty;
 
         /// <summary>
         /// Data de lançamento da plataforma
         /// </summary>
+        [Required(ErrorMessage = "A {0} é obrigatória.")]
         [Display(Name = "Data de Lançamento")]
         [DataType(DataType.Date)]
-        public DateTime? ReleaseDate { get; set; }
-
-        /// <summary>
-        /// Slug amigável para URL (ex: ps5, xbox-series-x)
-        /// </summary>
-        [Required]
-        [Display(Name = "Slug")]
-        [StringLength(100)]
-        public string Slug { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Visibilidade/soft-delete
-        /// </summary>
-        [Display(Name = "Visível")]
-        public bool IsVisible { get; set; } = true;
+        public DateTime ReleaseDate { get; set; }
 
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
@@ -76,10 +59,15 @@ namespace Achievement.Models
     public enum PlataformType
 
     {
+        [Display(Name = "Consola")]
         Console,
+        [Display(Name = "PC")]
         PC,
+        [Display(Name = "Portátil")]
         Portable,
+        [Display(Name = "Móvel")]
         Mobile,
+        [Display(Name = "Realidade Virtual")]
         VR
     }
 }

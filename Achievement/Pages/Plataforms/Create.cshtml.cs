@@ -24,6 +24,7 @@ namespace Achievement.Pages.Plataforms
         {
             return Page();
         }
+
         [BindProperty]
         public Plataform Plataform { get; set; } = default!;
 
@@ -32,20 +33,6 @@ namespace Achievement.Pages.Plataforms
         {
             if (!ModelState.IsValid)
             {
-                return Page();
-            }
-
-            // Slug generation if not provided
-            if (string.IsNullOrWhiteSpace(Plataform.Slug) && !string.IsNullOrWhiteSpace(Plataform.Name))
-            {
-                Plataform.Slug = Plataform.Name.Trim().ToLower().Replace(" ", "-");
-            }
-
-            // Prevent deleting if slug already exists (unique constraint recommended)
-            var exists = await _context.Plataforms.AnyAsync(p => p.Slug == Plataform.Slug);
-            if (exists)
-            {
-                ModelState.AddModelError(nameof(Plataform.Slug), "Slug já existe. Escolha outro.");
                 return Page();
             }
 

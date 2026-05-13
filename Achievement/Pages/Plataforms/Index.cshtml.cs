@@ -24,10 +24,6 @@ namespace Achievement.Pages.Plataforms
         public async Task OnGetAsync(bool showHidden = false)
         {
             var query = _context.Plataforms.AsQueryable();
-            if (!showHidden)
-            {
-                query = query.Where(p => p.IsVisible);
-            }
 
             Plataform = await query.ToListAsync();
         }

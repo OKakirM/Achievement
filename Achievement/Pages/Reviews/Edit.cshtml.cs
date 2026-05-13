@@ -57,9 +57,6 @@ namespace Achievement.Pages.Reviews
             }
 
             dbReview.ReviewContent = Review.ReviewContent;
-            // preserve rating by default (administrators can modify if you want to enable it explicitly)
-            // dbReview.Rating = Review.Rating; // commented out to avoid accidental rating changes
-            dbReview.IsVisible = Review.IsVisible;
 
             _context.Attach(dbReview).State = EntityState.Modified;
 
