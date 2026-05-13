@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Achievement.Models
 {
@@ -34,17 +36,31 @@ namespace Achievement.Models
 
         /// <summary>
         /// Password do Utilizador
+        /// - Apenas armazenado na BD do ASP.NET Identity, nunca nesta tabela personalizada
         /// - Máximo de 100 caracteres, mínimo de 8 caracteres
         /// - Deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial
         /// - Obrigatório
         /// </summary>
+        [NotMapped]
         [Required(ErrorMessage = "A {0} é obrigatória.")]
+        [DataType(DataType.Password)]
         [Display(Name = "Palavra-Passe")]
         [StringLength(100, MinimumLength = 8, ErrorMessage = "A {0} deve ter no mínimo {2} caracteres")]
         [RegularExpression(
-            pattern: "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/", 
-            ErrorMessage = "A {0} tem que ter: \n - Minimo de 8 caracteres \n - Pelo menos uma letra maiuscula \n - Pelo menos uma letra minuscula \n - Pelo menos um numero \n - Pelo menos uma letra especial")]
+            @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*\-]).{8,}$",
+            ErrorMessage = "A Palavra-Passe tem que ter: mínimo 8 caracteres, uma maiúscula, uma minúscula, um número e um caractere especial")]
         public string Password { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Confirmar a Password do Utilizador
+        /// - Nunca será armazenada na BD
+        /// </summary>
+        [NotMapped]
+        [Required(ErrorMessage = "{0} é obrigatório.")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirmar Palavra-Passe")]
+        [Compare("Password", ErrorMessage = "A palavra-passe e a confirmação não coincidem.")]
+        public string ConfirmPassword { get; set; } = string.Empty;
 
         /// <summary>
         /// Imagem/Avatar do Utilizador

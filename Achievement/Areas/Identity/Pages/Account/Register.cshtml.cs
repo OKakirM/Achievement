@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Achievement.Data;
+using Achievement.Models;
 
 namespace Achievement.Areas.Identity.Pages.Account;
 
@@ -29,13 +30,15 @@ public class RegisterModel : PageModel
     private readonly IUserEmailStore<IdentityUser> _emailStore;
     private readonly ILogger<RegisterModel> _logger;
     private readonly IEmailSender _emailSender;
+    private readonly ApplicationDbContext _context;
 
     public RegisterModel(
         UserManager<IdentityUser> userManager,
         IUserStore<IdentityUser> userStore,
         SignInManager<IdentityUser> signInManager,
         ILogger<RegisterModel> logger,
-        IEmailSender emailSender)
+        IEmailSender emailSender,
+        ApplicationDbContext context)
     {
         _userManager = userManager;
         _userStore = userStore;
@@ -43,6 +46,7 @@ public class RegisterModel : PageModel
         _signInManager = signInManager;
         _logger = logger;
         _emailSender = emailSender;
+        _context = context;
     }
 
     /// <summary>
@@ -71,32 +75,9 @@ public class RegisterModel : PageModel
     public class InputModel
     {
         /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
+        /// Classe abaixo usada para guardar atributos adicionais não presentes na tabela AspNetUsers
         /// </summary>
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; } = default!;
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; } = default!;
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string? ConfirmPassword { get; set; }
+        public User UserData { get; set; } = new User();
     }
 
 
@@ -114,9 +95,9 @@ public class RegisterModel : PageModel
         {
             var user = CreateUser();
 
-            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-            var result = await _userManager.CreateAsync(user, Input.Password);
+            await _userStore.SetUserNameAsync(user, Input.UserData.Name, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.UserData.Email, CancellationToken.None);
+            var result = await _userManager.CreateAsync(user, Input.UserData.Password);
 
             if (result.Succeeded)
             {
@@ -124,6 +105,7 @@ public class RegisterModel : PageModel
 
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
@@ -131,12 +113,15 @@ public class RegisterModel : PageModel
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme)!;
 
-                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                await _emailSender.SendEmailAsync(Input.UserData.Email, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                _context.Users.Add(Input.UserData);
+                await _context.SaveChangesAsync();
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.UserData.Email, returnUrl = returnUrl });
                 }
                 else
                 {
