@@ -86,19 +86,8 @@ namespace Achievement.Models
         /// - - Uma nova tabela para as desenvolvedoras, onde cada jogo tem um FK para a desenvolvedora, e a desenvolvedora tem uma coleção de jogos
         /// </summary>
         [Display(Name = "Desenvolvedora")]
-        [StringLength(200, MinimumLength = 2, ErrorMessage = "A {0} deve ter entre {2} e {1} caracteres.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "A {0} deve ter entre {2} e {1} caracteres.")]
         public string? Developer { get; set; }
-
-        /// <summary>
-        /// Publicadora
-        /// - Maximo de 200 caracteres, mínimo de 2 caracteres
-        /// ==================================================
-        /// - TODO:
-        /// - - Uma nova tabela para as publicadoras, onde cada jogo tem um FK para a publicadora, e a publicadora tem uma coleção de jogos
-        /// </summary>
-        [Display(Name = "Publicadora")]
-        [StringLength(200, MinimumLength = 2, ErrorMessage = "A {0} deve ter entre {2} e {1} caracteres.")]
-        public string? Publisher { get; set; }
 
         /// <summary>
         /// URL amigável / slug
