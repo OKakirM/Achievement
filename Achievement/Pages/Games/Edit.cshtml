@@ -11,9 +11,16 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Game.Id" />
+
+            <input type="hidden" asp-for="Game.CoverImage" />
+            <input type="hidden" asp-for="Game.BannerImage" />
+
+            <input type="hidden" asp-for="RemoveCoverImage" id="RemoveCoverImageInput" />
+            <input type="hidden" asp-for="RemoveBannerImage" id="RemoveBannerImageInput" />
+
             <div class="form-group">
 <span class="text-danger">*</span>
                 <label asp-for="Game.Name" class="control-label"></label>
@@ -43,14 +50,34 @@
                 <span asp-validation-for="Game.Length" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Game.CoverImage" class="control-label"></label>
-                <input asp-for="Game.CoverImage" class="form-control" />
-                <span asp-validation-for="Game.CoverImage" class="text-danger"></span>
+                <label>Imagem de Capa</label>
+                <div id="coverPreviewWrapper" class="mb-2" style="@(string.IsNullOrEmpty(Model.Game.CoverImage) ? "display:none;" : "")">
+                    <img id="coverPreview" src="@Url.Content("~/" + Model.Game.CoverImage)" style="max-width:200px;" class="d-block mb-2" />
+                    <button type="button" id="removeCoverBtn" class="btn btn-sm btn-outline-danger">Remover imagem</button>
+                </div>
+                <p id="coverRemovedMsg" class="text-muted" style="display:none;">
+                    A imagem será substituída pela imagem padrão ao guardar.
+                    <button type="button" id="undoRemoveCoverBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
+                </p>
+
+                <label asp-for="CoverImageFile" class="control-label"></label>
+                <input asp-for="CoverImageFile" class="form-control" id="CoverImageFileInput" />
+                <span asp-validation-for="CoverImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Game.BannerImage" class="control-label"></label>
-                <input asp-for="Game.BannerImage" class="form-control" />
-                <span asp-validation-for="Game.BannerImage" class="text-danger"></span>
+                <label>Imagem do Banner</label>
+                <div id="bannerPreviewWrapper" class="mb-2" style="@(string.IsNullOrEmpty(Model.Game.BannerImage) ? "display:none;" : "")">
+                    <img id="bannerPreview" src="@Url.Content("~/" + Model.Game.BannerImage)" style="max-width:400px;" class="d-block mb-2" />
+                    <button type="button" id="removeBannerBtn" class="btn btn-sm btn-outline-danger">Remover imagem</button>
+                </div>
+                <p id="bannerRemovedMsg" class="text-muted" style="display:none;">
+                    A imagem será substituída pela imagem padrão ao guardar.
+                    <button type="button" id="undoRemoveBannerBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
+                </p>
+
+                <label asp-for="BannerImageFile" class="control-label"></label>
+                <input asp-for="BannerImageFile" class="form-control" id="BannerImageFileInput" />
+                <span asp-validation-for="BannerImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Game.Plays" class="control-label"></label>
@@ -70,4 +97,49 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    
+    <script>
+        function setupImageControl(fileInputId, previewWrapperId, previewImgId, removeBtnId, removedMsgId, undoBtnId, removeFlagId) {
+            const fileInput = document.getElementById(fileInputId);
+            const previewWrapper = document.getElementById(previewWrapperId);
+            const previewImg = document.getElementById(previewImgId);
+            const removeBtn = document.getElementById(removeBtnId);
+            const removedMsg = document.getElementById(removedMsgId);
+            const undoBtn = document.getElementById(undoBtnId);
+            const removeFlag = document.getElementById(removeFlagId);
+
+            // Selecionar novo ficheiro -> mostra preview dele e cancela remoção
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImg.src = e.target.result;
+                        previewWrapper.style.display = '';
+                        removedMsg.style.display = 'none';
+                        removeFlag.value = 'false';
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+            });
+
+            // Clicar em remover -> esconde preview, marca flag, limpa input de ficheiro
+            removeBtn.addEventListener('click', function () {
+                previewWrapper.style.display = 'none';
+                removedMsg.style.display = '';
+                removeFlag.value = 'true';
+                fileInput.value = '';
+            });
+
+            // Desfazer remoção
+            undoBtn.addEventListener('click', function () {
+                previewWrapper.style.display = '';
+                removedMsg.style.display = 'none';
+                removeFlag.value = 'false';
+            });
+        }
+
+        setupImageControl('CoverImageFileInput', 'coverPreviewWrapper', 'coverPreview', 'removeCoverBtn', 'coverRemovedMsg', 'undoRemoveCoverBtn', 'RemoveCoverImageInput');
+        setupImageControl('BannerImageFileInput', 'bannerPreviewWrapper', 'bannerPreview', 'removeBannerBtn', 'bannerRemovedMsg', 'undoRemoveBannerBtn', 'RemoveBannerImageInput');
+    </script>
 }

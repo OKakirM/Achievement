@@ -39,7 +39,6 @@ namespace Achievement.Models
         /// </summary>
         [Required(ErrorMessage = "A {0} é obrigatória.")]
         [Display(Name = "Data de Lançamento")]
-        [Range(1958, 2100, ErrorMessage = "O ano de lançamento do jogo deve ser 1958 ou posterior.")]
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
 
