@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Achievement.Data;
+using Achievement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Achievement.Data;
-using Achievement.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Achievement.Pages.Games
 {
+    //[Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly Achievement.Data.ApplicationDbContext _context;
@@ -23,21 +25,31 @@ namespace Achievement.Pages.Games
         [BindProperty]
         public Game Game { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, string? slug)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var game =  await _context.Games
+            var game = await _context.Games
                 .Include(g => g.Genres)
                 .Include(g => g.Plataforms)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(g => g.Reviews)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
             if (game == null)
             {
                 return NotFound();
             }
+
+            // Se o slug na URL não corresponder ao slug real do jogo,
+            // redireciona para a URL correta.
+            if (string.IsNullOrEmpty(slug) || slug != game.Slug)
+            {
+                return RedirectToPagePermanent("./Edit", new { id = game.Id, slug = game.Slug });
+            }
+
             Game = game;
             return Page();
         }

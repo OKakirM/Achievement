@@ -15,12 +15,12 @@ namespace Achievement.Models
 
         /// <summary>
         /// Nome do Jogo
-        /// - Máximo de 500 caracteres, mínimo de 2 caracteres]
+        /// - Máximo de 100 caracteres, mínimo de 2 caracteres
         /// - Obrigatório
         /// </summary>
         [Required(ErrorMessage = "O {0} é obrigatório.")]
         [Display(Name = "Nome do Jogo")]
-        [StringLength(500, MinimumLength = 2, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres.")]
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
@@ -62,14 +62,12 @@ namespace Achievement.Models
         /// Imagem do jogo (Capa)
         /// </summary>
         [Display(Name = "Imagem de Capa")]
-        [Url(ErrorMessage = "A imagem de capa deve ser uma URL válida.")]
         public string? CoverImage { get; set; }
 
         /// <summary>
         /// Imagem do jogo (Banner)
         /// </summary>
         [Display(Name = "Imagem de Banner")]
-        [Url(ErrorMessage = "A imagem de banner deve ser uma URL válida.")]
         public string? BannerImage { get; set; }
 
         /// <summary>
