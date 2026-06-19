@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 using Achievement.Models;
 using Microsoft.AspNetCore.Authorization;
+using Achievement.ValidationFiles;
 
 namespace Achievement.Pages.Games
 {
@@ -64,7 +65,28 @@ namespace Achievement.Pages.Games
             if (game != null)
             {
                 Game = game;
-                _context.Games.Update(game);
+
+                // Só apaga o cover se a imagem não for a default
+                if(Game.CoverImage != CustomValidationFiles._GamesCoverDefaultImage)
+                {
+                    // Apagar a imagem associada
+                    var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", Game.CoverImage ?? string.Empty);
+
+                    if (System.IO.File.Exists(oldFilePath))
+                        System.IO.File.Delete(oldFilePath);
+                }
+
+                // Só apaga o bammer se a imagem não for a default
+                if (Game.CoverImage != CustomValidationFiles._GamesCoverDefaultImage)
+                {
+                    // Apagar a imagem associada
+                    var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", Game.BannerImage ?? string.Empty);
+
+                    if (System.IO.File.Exists(oldFilePath))
+                        System.IO.File.Delete(oldFilePath);
+                }
+
+                _context.Games.Remove(game);
                 await _context.SaveChangesAsync();
             }
 

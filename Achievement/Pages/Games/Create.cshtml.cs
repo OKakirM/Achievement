@@ -68,6 +68,13 @@ namespace Achievement.Pages.Games
                     hasErrors = true;
                 }
 
+
+                if(Game.ReleaseDate.Year < 1958 || Game.ReleaseDate.Year > 2100)
+                {
+                    ModelState.AddModelError("Game.ReleaseDate", "O ano de lançamento do jogo deve ser 1958 ou posterior.");
+                    hasErrors = true;
+                }
+
                 // =============================================
                 // Validação do tamanho do arquivo das imagens
                 // - Limite de 10 MB
