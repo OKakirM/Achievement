@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "/Games/Create"
 @model Achievement.Pages.Games.CreateModel
 
 @{
@@ -53,34 +53,15 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Game.Publisher" class="control-label"></label>
-                <input asp-for="Game.Publisher" class="form-control" />
-                <span asp-validation-for="Game.Publisher" class="text-danger"></span>
+                <label asp-for="CoverImageFile" class="control-label"></label>
+                <input asp-for="CoverImageFile" class="form-control" type="file" />
+                <span asp-validation-for="CoverImageFile" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Game.CoverImage" class="control-label"></label>
-                <input asp-for="Game.CoverImage" class="form-control" />
-                <span asp-validation-for="Game.CoverImage" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Game.BannerImage" class="control-label"></label>
-                <input asp-for="Game.BannerImage" class="form-control" />
-                <span asp-validation-for="Game.BannerImage" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Game.Plays" class="control-label"></label>
-                <input asp-for="Game.Plays" class="form-control" />
-                <span asp-validation-for="Game.Plays" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Game.Slug" class="control-label"></label>
-                <input asp-for="Game.Slug" class="form-control" />
-                <small class="form-text text-muted">Deixe em branco para gerar automaticamente.</small>
-                <span asp-validation-for="Game.Slug" class="text-danger"></span>
+                <label asp-for="BannerImageFile" class="control-label"></label>
+                <input asp-for="BannerImageFile" class="form-control" type="file" />
+                <span asp-validation-for="BannerImageFile" class="text-danger"></span>
             </div>
 
             <div class="form-group">

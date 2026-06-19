@@ -21,7 +21,7 @@ namespace Achievement.Pages.Games
 
         public Game Game { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, string? slug)
         {
             if (id == null)
             {
@@ -32,16 +32,22 @@ namespace Achievement.Pages.Games
                 .Include(g => g.Genres)
                 .Include(g => g.Plataforms)
                 .Include(g => g.Reviews)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(g => g.Id == id);
 
-            if (game is not null)
+            if (game == null)
             {
-                Game = game;
-
-                return Page();
+                return NotFound();
             }
 
-            return NotFound();
+            // Se o slug na URL não corresponder ao slug real do jogo,
+            // redireciona para a URL correta.
+            if (string.IsNullOrEmpty(slug) || slug != game.Slug)
+            {
+                return RedirectToPagePermanent("./Details", new { id = game.Id, slug = game.Slug });
+            }
+
+            Game = game;
+            return Page();
         }
     }
 }
