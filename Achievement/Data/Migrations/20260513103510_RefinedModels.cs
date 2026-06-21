@@ -39,7 +39,7 @@ namespace Achievement.Data.Migrations
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ReleaseDate",
-                table: "Plataforms",
+                table: "Platforms",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
@@ -89,7 +89,7 @@ namespace Achievement.Data.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "ReleaseDate",
-                table: "Plataforms");
+                table: "Platforms");
 
             migrationBuilder.DropColumn(
                 name: "Developer",

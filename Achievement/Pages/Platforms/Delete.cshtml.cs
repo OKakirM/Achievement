@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 using Achievement.Models;
 
-namespace Achievement.Pages.Plataforms
+namespace Achievement.Pages.Platforms
 {
     public class DeleteModel : PageModel
     {
@@ -20,7 +20,7 @@ namespace Achievement.Pages.Plataforms
         }
 
         [BindProperty]
-        public Plataform Plataform { get; set; } = default!;
+        public Platform Platform { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,11 +29,11 @@ namespace Achievement.Pages.Plataforms
                 return NotFound();
             }
 
-            var plataform = await _context.Plataforms.FirstOrDefaultAsync(m => m.Id == id);
+            var Platform = await _context.Platforms.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (plataform is not null)
+            if (Platform is not null)
             {
-                Plataform = plataform;
+                Platform = Platform;
 
                 return Page();
             }
@@ -48,16 +48,16 @@ namespace Achievement.Pages.Plataforms
                 return NotFound();
             }
 
-            var plataform = await _context.Plataforms
+            var Platform = await _context.Platforms
                 .Include(p => p.Games)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (plataform == null)
+            if (Platform == null)
             {
                 return NotFound();
             }
 
-            _context.Plataforms.Remove(plataform);
+            _context.Platforms.Remove(Platform);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

@@ -71,7 +71,7 @@ namespace Achievement.Models
         public string? BannerImage { get; set; }
 
         /// <summary>
-        /// Quantas pessoas, na plataforma, jogaram o jogo
+        /// Quantas pessoas, na Platforma, jogaram o jogo
         /// - Deve ser um valor positivo, representando o número de jogadores que jogaram o jogo
         /// </summary>
         [Display(Name = "Jogadores que jogaram")]
@@ -103,10 +103,10 @@ namespace Achievement.Models
         // ============================================
 
         /// <summary>
-        /// Conexão de N-N, vários jogo possui várias plataformas
+        /// Conexão de N-N, vários jogo possui várias Plataformas
         /// </summary>
-        [Display(Name = "Plataformas")]
-        public ICollection<Plataform> Plataforms { get; set; } = new List<Plataform>();
+        [Display(Name = "Platformas")]
+        public ICollection<Platform> Platforms { get; set; } = new List<Platform>();
 
         /// <summary>
         /// Conexão de N-N, vários jogo possui vários gêneros

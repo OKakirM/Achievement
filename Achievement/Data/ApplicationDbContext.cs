@@ -29,9 +29,9 @@ namespace Achievement.Data
         /// </summary>
         public DbSet <Genre> Genres { get; set; }
         /// <summary>
-        /// Implementação da tabela Plataforms na Base de Dados
+        /// Implementação da tabela Platforms na Base de Dados
         /// </summary>
-        public DbSet<Plataform> Plataforms { get; set; }
+        public DbSet<Platform> Platforms { get; set; }
 
     }
 }

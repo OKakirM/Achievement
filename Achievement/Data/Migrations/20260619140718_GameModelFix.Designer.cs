@@ -92,7 +92,7 @@ namespace Achievement.Data.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("Achievement.Models.Plataform", b =>
+            modelBuilder.Entity("Achievement.Models.Platform", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,7 +113,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Plataforms");
+                    b.ToTable("Platforms");
                 });
 
             modelBuilder.Entity("Achievement.Models.Review", b =>
@@ -188,19 +188,19 @@ namespace Achievement.Data.Migrations
                     b.ToTable("GameGenre");
                 });
 
-            modelBuilder.Entity("GamePlataform", b =>
+            modelBuilder.Entity("GamePlatform", b =>
                 {
                     b.Property<int>("GamesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlataformsId")
+                    b.Property<int>("PlatformsId")
                         .HasColumnType("int");
 
-                    b.HasKey("GamesId", "PlataformsId");
+                    b.HasKey("GamesId", "PlatformsId");
 
-                    b.HasIndex("PlataformsId");
+                    b.HasIndex("PlatformsId");
 
-                    b.ToTable("GamePlataform");
+                    b.ToTable("GamePlatform");
                 });
 
             modelBuilder.Entity("GameUser", b =>
@@ -454,7 +454,7 @@ namespace Achievement.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GamePlataform", b =>
+            modelBuilder.Entity("GamePlatform", b =>
                 {
                     b.HasOne("Achievement.Models.Game", null)
                         .WithMany()
@@ -462,9 +462,9 @@ namespace Achievement.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Achievement.Models.Plataform", null)
+                    b.HasOne("Achievement.Models.Platform", null)
                         .WithMany()
-                        .HasForeignKey("PlataformsId")
+                        .HasForeignKey("PlatformsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 using Achievement.Models;
 
-namespace Achievement.Pages.Plataforms
+namespace Achievement.Pages.Platforms
 {
     public class DetailsModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace Achievement.Pages.Plataforms
             _context = context;
         }
 
-        public Plataform Plataform { get; set; } = default!;
+        public Platform Platform { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,16 +28,16 @@ namespace Achievement.Pages.Plataforms
                 return NotFound();
             }
 
-            var plataform = await _context.Plataforms
+            var Platform = await _context.Platforms
                 .Include(p => p.Games)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (plataform is null)
+            if (Platform is null)
             {
                 return NotFound();
             }
 
-            Plataform = plataform;
+            Platform = Platform;
 
             return Page();
         }

@@ -68,7 +68,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("Achievement.Models.Genre", b =>
@@ -86,10 +86,10 @@ namespace Achievement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
                 });
 
-            modelBuilder.Entity("Achievement.Models.Plataform", b =>
+            modelBuilder.Entity("Achievement.Models.Platform", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,7 +110,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Plataforms");
+                    b.ToTable("Platforms", (string)null);
                 });
 
             modelBuilder.Entity("Achievement.Models.Review", b =>
@@ -141,7 +141,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasIndex("UserFK");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Achievement.Models.User", b =>
@@ -167,7 +167,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("GameGenre", b =>
@@ -182,22 +182,22 @@ namespace Achievement.Data.Migrations
 
                     b.HasIndex("GenresId");
 
-                    b.ToTable("GameGenre");
+                    b.ToTable("GameGenre", (string)null);
                 });
 
-            modelBuilder.Entity("GamePlataform", b =>
+            modelBuilder.Entity("GamePlatform", b =>
                 {
                     b.Property<int>("GamesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlataformsId")
+                    b.Property<int>("PlatformsId")
                         .HasColumnType("int");
 
-                    b.HasKey("GamesId", "PlataformsId");
+                    b.HasKey("GamesId", "PlatformsId");
 
-                    b.HasIndex("PlataformsId");
+                    b.HasIndex("PlatformsId");
 
-                    b.ToTable("GamePlataform");
+                    b.ToTable("GamePlatform", (string)null);
                 });
 
             modelBuilder.Entity("GameUser", b =>
@@ -212,7 +212,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("GameUser");
+                    b.ToTable("GameUser", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -451,7 +451,7 @@ namespace Achievement.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GamePlataform", b =>
+            modelBuilder.Entity("GamePlatform", b =>
                 {
                     b.HasOne("Achievement.Models.Game", null)
                         .WithMany()
@@ -459,9 +459,9 @@ namespace Achievement.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Achievement.Models.Plataform", null)
+                    b.HasOne("Achievement.Models.Platform", null)
                         .WithMany()
-                        .HasForeignKey("PlataformsId")
+                        .HasForeignKey("PlatformsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

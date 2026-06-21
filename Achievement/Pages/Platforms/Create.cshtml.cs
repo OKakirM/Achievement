@@ -9,7 +9,7 @@ using Achievement.Data;
 using Achievement.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Achievement.Pages.Plataforms
+namespace Achievement.Pages.Platforms
 {
     public class CreateModel : PageModel
     {
@@ -22,11 +22,12 @@ namespace Achievement.Pages.Plataforms
 
         public IActionResult OnGet()
         {
+
             return Page();
         }
 
         [BindProperty]
-        public Plataform Plataform { get; set; } = default!;
+        public Platform Platform { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -36,7 +37,7 @@ namespace Achievement.Pages.Plataforms
                 return Page();
             }
 
-            _context.Plataforms.Add(Plataform);
+            _context.Platforms.Add(Platform);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

@@ -53,6 +53,22 @@
             </div>
 
             <div class="form-group">
+                <label asp-for="SelectedPlatformIds" class="control-label">Plataformas</label>
+                <select asp-for="SelectedPlatformIds" asp-items="Model.PlatformsList" class="form-control" multiple size="6">
+                </select>
+                <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
+                <span asp-validation-for="SelectedPlatformIds" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SelectedGenreIds" class="control-label">Géneros</label>
+                <select asp-for="SelectedGenreIds" asp-items="Model.GenresList" class="form-control" multiple size="6">
+                </select>
+                <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
+                <span asp-validation-for="SelectedGenreIds" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
                 <label asp-for="CoverImageFile" class="control-label"></label>
                 <input asp-for="CoverImageFile" class="form-control" type="file" />
                 <span asp-validation-for="CoverImageFile" class="text-danger"></span>

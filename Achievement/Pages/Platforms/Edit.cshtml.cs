@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 using Achievement.Models;
 
-namespace Achievement.Pages.Plataforms
+namespace Achievement.Pages.Platforms
 {
     public class EditModel : PageModel
     {
@@ -21,7 +21,7 @@ namespace Achievement.Pages.Plataforms
         }
 
         [BindProperty]
-        public Plataform Plataform { get; set; } = default!;
+        public Platform Platform { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,12 +30,12 @@ namespace Achievement.Pages.Plataforms
                 return NotFound();
             }
 
-            var plataform =  await _context.Plataforms.FirstOrDefaultAsync(m => m.Id == id);
-            if (plataform == null)
+            var Platform =  await _context.Platforms.FirstOrDefaultAsync(m => m.Id == id);
+            if (Platform == null)
             {
                 return NotFound();
             }
-            Plataform = plataform;
+            Platform = Platform;
             return Page();
         }
 
@@ -48,7 +48,7 @@ namespace Achievement.Pages.Plataforms
                 return Page();
             }
 
-            _context.Attach(Plataform).State = EntityState.Modified;
+            _context.Attach(Platform).State = EntityState.Modified;
 
             try
             {
@@ -56,7 +56,7 @@ namespace Achievement.Pages.Plataforms
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlataformExists(Plataform.Id))
+                if (!PlatformExists(Platform.Id))
                 {
                     return NotFound();
                 }
@@ -69,9 +69,9 @@ namespace Achievement.Pages.Plataforms
             return RedirectToPage("./Index");
         }
 
-        private bool PlataformExists(int id)
+        private bool PlatformExists(int id)
         {
-            return _context.Plataforms.Any(e => e.Id == id);
+            return _context.Platforms.Any(e => e.Id == id);
         }
     }
 }

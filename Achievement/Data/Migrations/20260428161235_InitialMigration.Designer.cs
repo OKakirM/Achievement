@@ -84,7 +84,7 @@ namespace Achievement.Data.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("Achievement.Models.Plataform", b =>
+            modelBuilder.Entity("Achievement.Models.Platform", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,7 +102,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Plataforms");
+                    b.ToTable("Platforms");
                 });
 
             modelBuilder.Entity("Achievement.Models.Review", b =>

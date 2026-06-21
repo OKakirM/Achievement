@@ -25,8 +25,9 @@ namespace Achievement.Pages.Games
             _context = context;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
+            await LoadSelectedFieldsAsync();
             return Page();
         }
 
@@ -40,6 +41,17 @@ namespace Achievement.Pages.Games
         [Display(Name = "Imagem do Banner")]
         public IFormFile? BannerImageFile { get; set; }
 
+        // Popular as listas de seleção para Platformas e gêneros
+        public IEnumerable<SelectListItem> PlatformsList { get; set; } = new List<SelectListItem>();
+        public IEnumerable<SelectListItem> GenresList { get; set; } = new List<SelectListItem>();
+
+        // Variavel para armazenar as Platformas e gêneros selecionados
+        [BindProperty]
+        public int[] SelectedPlatformIds { get; set; } = Array.Empty<int>();
+
+        [BindProperty]
+        public int[] SelectedGenreIds { get; set; } = Array.Empty<int>();
+
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
@@ -48,6 +60,7 @@ namespace Achievement.Pages.Games
             // Verifica se o modelo é válido antes de tentar salvar
             if (!ModelState.IsValid)
             {
+                await LoadSelectedFieldsAsync();
                 return Page();
             }
 
@@ -55,15 +68,15 @@ namespace Achievement.Pages.Games
             // Validação do tamanho dos campos de texto
             // =============================================
 
-            if (Game.Name.Length > 100)
+            if (Game.Name.Length > 100 || Game.Name.Length < 2)
             {
-                ModelState.AddModelError("Game.Name", "O nome do jogo deve ter no máximo 100 caracteres.");
+                ModelState.AddModelError("Game.Name", "O nome do jogo deve ter entre 2 e 100 caracteres.");
                 hasErrors = true;
             }
 
-            if (Game.Description.Length > 2000)
+            if (Game.Description.Length > 2000 || Game.Description.Length < 10)
             {
-                ModelState.AddModelError("Game.Description", "A descrição do jogo deve ter no máximo 2000 caracteres.");
+                ModelState.AddModelError("Game.Description", "A descrição do jogo deve ter entre 10 e 2000 caracteres.");
                 hasErrors = true;
             }
 
@@ -71,6 +84,24 @@ namespace Achievement.Pages.Games
             if(Game.ReleaseDate.Year < 1958 || Game.ReleaseDate.Year > 2100)
             {
                 ModelState.AddModelError("Game.ReleaseDate", "O ano de lançamento do jogo deve ser 1958 ou posterior.");
+                hasErrors = true;
+            }
+
+            if(Game.Rating < 0.0 || Game.Rating > 10.0)
+            {
+                ModelState.AddModelError("Game.Rating", "A avaliação do jogo deve estar entre 0.0 e 10.0.");
+                hasErrors = true;
+            }
+
+            // =============================================
+            // Validação de Duplicidade dos campos de texto
+            // =============================================
+
+            bool duplicatedName = await _context.Games.AnyAsync(g => g.Name == Game.Name);
+
+            if (duplicatedName)
+            {
+                ModelState.AddModelError("Game.Name", "Já existe um jogo com este nome. Por favor, escolha outro nome.");
                 hasErrors = true;
             }
 
@@ -112,6 +143,7 @@ namespace Achievement.Pages.Games
 
             if(hasErrors)
             {
+                await LoadSelectedFieldsAsync();
                 return Page();
             }
 
@@ -190,14 +222,60 @@ namespace Achievement.Pages.Games
                 Game.BannerImage = CustomValidationFiles._GamesBannerDefaultImage;
             }
 
+            // =============================================
+            // Associação de Plataformas e Géneros (N-N)
+            // =============================================
+
+            if (SelectedPlatformIds.Length > 0)
+            {
+                var platforms = await _context.Platforms
+                    .Where(p => SelectedPlatformIds.Contains(p.Id))
+                    .ToListAsync();
+
+                foreach (var platform in platforms)
+                    Game.Platforms.Add(platform);
+            }
+
+            if (SelectedGenreIds.Length > 0)
+            {
+                var genres = await _context.Genres
+                    .Where(g => SelectedGenreIds.Contains(g.Id))
+                    .ToListAsync();
+
+                foreach (var genre in genres)
+                    Game.Genres.Add(genre);
+            }
+
             Game.Slug = await GenerateUniqueSlugAsync(GenerateSlug(Game.Name));
 
             _context.Games.Add(Game);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Details/" + Game.Id);
+            return RedirectToPage("./Games/" + Game.Id + "/" + Game.Slug);
         }
 
+        /// <summary>
+        /// Preenche os fields necessários de chaves estrangeiras, exclusivamente para plataformas e gêneros da base de dados
+        /// </summary>
+        /// <returns></returns>
+        private async Task LoadSelectedFieldsAsync()
+        {
+            PlatformsList = await _context.Platforms
+                .OrderBy(p => p.Name)
+                .Select(p => new SelectListItem { Value = p.Id.ToString(), Text = p.Name })
+                .ToListAsync();
+
+            GenresList = await _context.Genres
+                .OrderBy(g => g.Name)
+                .Select(g => new SelectListItem { Value = g.Id.ToString(), Text = g.Name })
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Gera um slug a partir do nome do jogo, removendo caracteres especiais e espaços, e substituindo-os por hífens.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private static string GenerateSlug(string value)
         {
             if (string.IsNullOrWhiteSpace(value)) return "jogo";
@@ -207,6 +285,11 @@ namespace Achievement.Pages.Games
             return string.IsNullOrWhiteSpace(s) ? "jogo" : s;
         }
 
+        /// <summary>
+        /// Gera um slug único verificando se já existe na base de dados. Se existir, adiciona um número incremental ao final do slug.
+        /// </summary>
+        /// <param name="baseSlug"></param>
+        /// <returns></returns>
         private async Task<string> GenerateUniqueSlugAsync(string baseSlug)
         {
             var slug = baseSlug;

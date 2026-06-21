@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 using Achievement.Models;
 
-namespace Achievement.Pages.Plataforms
+namespace Achievement.Pages.Platforms
 {
     public class IndexModel : PageModel
     {
@@ -19,13 +19,13 @@ namespace Achievement.Pages.Plataforms
             _context = context;
         }
 
-        public IList<Plataform> Plataform { get;set; } = default!;
+        public IList<Platform> Platform { get;set; } = default!;
 
         public async Task OnGetAsync(bool showHidden = false)
         {
-            var query = _context.Plataforms.AsQueryable();
+            var query = _context.Platforms.AsQueryable();
 
-            Plataform = await query.ToListAsync();
+            Platform = await query.ToListAsync();
         }
     }
 }

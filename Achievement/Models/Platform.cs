@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Achievement.Models
 {
-    public class Plataform
+    public class Platform
     {
         /// <summary>
         /// Chave Primária
@@ -15,13 +15,13 @@ namespace Achievement.Models
         public int Id { get; set; }
 
         /// <summary>
-        /// Tipo da plataforma (Console, PC, Portable ou Mobile)
+        /// Tipo da Plataforma (Console, PC, Portable ou Mobile)
         /// - Obrigatório
         /// </summary>
         [Required(ErrorMessage = "O {0} é obrigatório.")]
-        [Display(Name = "Tipo de Plataforma")]
-        [EnumDataType(typeof(PlataformType), ErrorMessage = "Tipo de Plataforma inválido")]
-        public PlataformType Type { get; set; }
+        [Display(Name = "Tipo de Platforma")]
+        [EnumDataType(typeof(PlatformType), ErrorMessage = "Tipo de Platforma inválido")]
+        public PlatformType Type { get; set; }
 
         /// <summary>
         /// Nome do aparelho, ou seja, o nome do console, do pc, do portátil ou do dispositivo móvel
@@ -34,7 +34,7 @@ namespace Achievement.Models
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// Data de lançamento da plataforma
+        /// Data de lançamento da Plataforma
         /// </summary>
         [Required(ErrorMessage = "A {0} é obrigatória.")]
         [Display(Name = "Data de Lançamento")]
@@ -46,7 +46,7 @@ namespace Achievement.Models
         // ============================================
 
         /// <summary>
-        /// Conexão de N-N, várias plataforma pertence á vários um jogo
+        /// Conexão de N-N, várias Plataforma pertence á vários um jogo
         /// </summary>
         [Display(Name = "Jogos")]
         public ICollection<Game> Games { get; set; } = new List<Game>();
@@ -54,9 +54,9 @@ namespace Achievement.Models
     }
 
     /// <summary>
-    /// Tipos de plataforma existentes atualmente.
+    /// Tipos de Plataforma existentes atualmente.
     /// </summary>
-    public enum PlataformType
+    public enum PlatformType
 
     {
         [Display(Name = "Consola")]

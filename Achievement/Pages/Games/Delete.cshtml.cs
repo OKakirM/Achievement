@@ -34,7 +34,7 @@ namespace Achievement.Pages.Games
 
             var game = await _context.Games
                 .Include(g => g.Genres)
-                .Include(g => g.Plataforms)
+                .Include(g => g.Platforms)
                 .Include(g => g.Reviews)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
