@@ -1,0 +1,352 @@
+/* =====================================================================
+   Achievement — Tema escuro partilhado
+   Inspirado em Backloggd / Anilist. Azul como acento, preto azulado.
+   Usado globalmente (ligado no _Layout) e por todas as páginas.
+   ===================================================================== */
+
+:root {
+    --bg-deep: #13151c;       /* fundo principal: preto azulado, não 100% preto */
+    --bg-elevated: #191c26;   /* navbar, footer, barras */
+    --bg-card: #1d212e;       /* cartões, inputs */
+    --bg-card-hover: #242a3b;
+    --accent: #4a7dff;        /* azul de acento */
+    --accent-soft: #6a93ff;
+    --text: #e7eaf3;
+    --text-muted: #9aa2bd;
+    --border: #2a3042;
+    --danger: #ff5d6c;
+    --star: #ffd24a;
+}
+
+/* ===================== Base global ===================== */
+body {
+    background: var(--bg-deep);
+    color: var(--text);
+}
+
+main { color: var(--text); }
+
+h1, h2, h3, h4, h5, h6 { color: var(--text); }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-soft); }
+
+hr { border-color: var(--border); opacity: 1; }
+
+/* ===================== Navbar ===================== */
+.navbar {
+    background: var(--bg-elevated) !important;
+    border-bottom: 1px solid var(--border) !important;
+    box-shadow: none !important;
+}
+.navbar-brand {
+    color: var(--text) !important;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+.navbar-brand:hover { color: var(--accent) !important; }
+.navbar .nav-link,
+.navbar .nav-link.text-dark {
+    color: var(--text-muted) !important;
+    transition: color .15s ease;
+}
+.navbar .nav-link:hover { color: var(--accent) !important; }
+.navbar-toggler { border-color: var(--border); }
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%239aa2bd' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* ===================== Footer ===================== */
+.footer {
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--border) !important;
+    color: var(--text-muted) !important;
+}
+.footer a { color: var(--accent); }
+
+/* ===================== Formulários (overrides Bootstrap) ===================== */
+.form-control,
+.form-select,
+textarea.form-control {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.form-control:focus,
+.form-select:focus {
+    background: var(--bg-card);
+    color: var(--text);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(74, 125, 255, .2);
+}
+.form-control::placeholder { color: var(--text-muted); }
+.form-group { margin-bottom: 1rem; }
+label, .control-label, .form-label { color: var(--text); font-weight: 600; }
+.form-text, .text-muted { color: var(--text-muted) !important; }
+.text-danger { color: var(--danger) !important; }
+select[multiple] option { background: var(--bg-card); color: var(--text); padding: .25rem; }
+
+/* ===================== Botões ===================== */
+.btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background: var(--accent-soft);
+    border-color: var(--accent-soft);
+}
+.btn-secondary {
+    background: var(--bg-card);
+    border-color: var(--border);
+    color: var(--text);
+}
+.btn-secondary:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border);
+    color: var(--text);
+}
+.btn-danger { background: var(--danger); border-color: var(--danger); }
+.btn-outline-danger { color: var(--danger); border-color: var(--danger); }
+.btn-outline-danger:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn-link { color: var(--accent); }
+
+/* Botão de acento (CTA principal: "Novo Jogo", etc.) */
+.btn-accent {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: .6rem 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .15s ease, transform .15s ease;
+}
+.btn-accent:hover { background: var(--accent-soft); color: #fff; transform: translateY(-1px); }
+
+/* ===================== Cabeçalho de página ===================== */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(90deg, #fff, var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.page-subtitle { margin: .25rem 0 0; color: var(--text-muted); font-size: .95rem; }
+
+/* ===================== Cartão de conteúdo (forms / detalhes) ===================== */
+.content-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .35);
+}
+.content-card dt { color: var(--text-muted); font-weight: 600; }
+.content-card dd { color: var(--text); }
+
+/* ===================== Pesquisa ===================== */
+.games-search { display: flex; gap: .6rem; margin-bottom: 2rem; }
+.games-search-input {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .65rem 1rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.games-search-input::placeholder { color: var(--text-muted); }
+.games-search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(74, 125, 255, .2); }
+.games-search-btn {
+    background: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .65rem 1.3rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+}
+.games-search-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ===================== Grelha de jogos (Index) ===================== */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.5rem;
+}
+.game-card { display: flex; flex-direction: column; }
+.game-card-link { text-decoration: none; display: block; }
+
+.game-cover {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-card);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .45);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+.game-card-link:hover .game-cover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 26px rgba(74, 125, 255, .35);
+}
+.game-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.game-cover-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 1rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--bg-card), var(--bg-card-hover));
+}
+.game-rating {
+    position: absolute;
+    top: .5rem;
+    left: .5rem;
+    background: rgba(19, 21, 28, .85);
+    color: var(--star);
+    font-size: .8rem;
+    font-weight: 700;
+    padding: .15rem .5rem;
+    border-radius: 6px;
+    backdrop-filter: blur(2px);
+}
+.game-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: .2rem;
+    padding: .75rem;
+    background: linear-gradient(to top, rgba(13, 15, 22, .92) 0%, rgba(13, 15, 22, 0) 60%);
+    opacity: 0;
+    transition: opacity .18s ease;
+}
+.game-card-link:hover .game-card-overlay { opacity: 1; }
+.game-overlay-name { color: #fff; font-weight: 700; font-size: .95rem; line-height: 1.2; }
+.game-overlay-plays { color: var(--accent-soft); font-size: .8rem; }
+
+.game-card-meta {
+    margin-top: .6rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+}
+.game-name {
+    color: var(--text);
+    font-weight: 600;
+    font-size: .92rem;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.game-name:hover { color: var(--accent); }
+.game-year { color: var(--text-muted); font-size: .82rem; flex-shrink: 0; }
+
+.game-card-actions { margin-top: .35rem; display: flex; gap: .75rem; font-size: .8rem; }
+.game-card-actions a { color: var(--text-muted); text-decoration: none; }
+.game-card-actions a:hover { color: var(--accent); }
+
+/* Estado vazio */
+.games-empty { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
+.games-empty p { margin-bottom: 1.25rem; font-size: 1.05rem; }
+
+/* Paginação */
+.games-pager { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2.5rem; }
+.pager-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .5rem 1rem;
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background .15s ease, border-color .15s ease;
+}
+.pager-btn:hover:not(.disabled) { background: var(--accent); border-color: var(--accent); color: #fff; }
+.pager-btn.disabled { opacity: .4; pointer-events: none; }
+.pager-current { color: var(--text-muted); }
+
+/* ===================== Detalhe do jogo (estilo Backloggd) ===================== */
+.game-detail-banner {
+    position: relative;
+    height: 320px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-card);
+    margin-bottom: -90px;
+}
+.game-detail-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.game-detail-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--bg-deep) 2%, rgba(19, 21, 28, .3) 60%, rgba(19, 21, 28, .15) 100%);
+}
+.game-detail-head {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 1.75rem;
+    padding: 0 1.5rem;
+    flex-wrap: wrap;
+}
+.game-detail-cover {
+    width: 200px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+    background: var(--bg-card);
+}
+.game-detail-cover img { width: 100%; display: block; aspect-ratio: 3/4; object-fit: cover; }
+.game-detail-info { flex: 1; min-width: 260px; padding-top: 100px; }
+.game-detail-title { font-size: 2.2rem; font-weight: 800; margin: 0 0 .25rem; }
+.game-detail-sub { color: var(--text-muted); margin-bottom: 1rem; }
+.game-detail-sub .dot { margin: 0 .5rem; opacity: .5; }
+
+.game-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1.25rem 0; }
+.game-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: .75rem 1.1rem; min-width: 90px; }
+.game-stat .value { font-size: 1.35rem; font-weight: 700; color: var(--text); }
+.game-stat .value.star { color: var(--star); }
+.game-stat .label { font-size: .78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+
+.tag-list { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 1.25rem; }
+.tag {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: .3rem .85rem;
+    font-size: .82rem;
+    font-weight: 600;
+}
+.tag.tag-accent { border-color: var(--accent); color: var(--accent-soft); }
+
+.game-section-title { font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 .6rem; }
+.game-description { color: var(--text); line-height: 1.7; white-space: pre-line; }
+.game-detail-actions { display: flex; gap: .75rem; margin-top: 1.75rem; flex-wrap: wrap; }
+
+/* Pré-visualização de imagens nos formulários */
+.image-preview { max-width: 220px; border-radius: 8px; border: 1px solid var(--border); }

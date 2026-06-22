@@ -1,92 +1,85 @@
-﻿@page "/Games"
+@page "/Games"
 @model Achievement.Pages.Games.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Jogos";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<form method="get" class="form-inline mb-3">
-    <input type="text" name="search" value="@Model.Search" class="form-control mr-2" placeholder="Pesquisar título..." />
-    <button type="submit" class="btn btn-primary">Buscar</button>
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].ReleaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].Length)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].CoverImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].BannerImage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game[0].Plays)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Game) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Length)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CoverImage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BannerImage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Plays)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-@* Simple pager *@
-<div>
-    @if (Model.PageNumber > 1)
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Jogos</h1>
+        <p class="page-subtitle">Explora e regista os jogos que já jogaste</p>
+    </div>
+    @if (User.IsInRole("Admin"))
     {
-        <a asp-page="." asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-search="@Model.Search">Previous</a>
+        <a asp-page="Create" class="btn-accent"><span>+</span> Novo Jogo</a>
     }
-    <span class="mx-2">Page @Model.PageNumber</span>
-    <a asp-page="." asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-search="@Model.Search">Next</a>
 </div>
+
+<form method="get" class="games-search">
+    <input type="text" name="search" value="@Model.Search" class="games-search-input"
+           placeholder="Pesquisar título..." />
+    <button type="submit" class="games-search-btn">Buscar</button>
+</form>
+
+@if (Model.Game == null || Model.Game.Count == 0)
+{
+    <div class="games-empty">
+        <p>Nenhum jogo encontrado@(string.IsNullOrWhiteSpace(Model.Search) ? "." : $" para \"{Model.Search}\".")</p>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-page="Create" class="btn-accent">Adicionar o primeiro jogo</a>
+        }
+    </div>
+}
+else
+{
+    <div class="games-grid">
+        @foreach (var item in Model.Game)
+        {
+            <div class="game-card">
+                <a class="game-card-link" asp-page="./Details" asp-route-id="@item.Id" asp-route-slug="@item.Slug">
+                    <div class="game-cover">
+                        <img src="~/@item.CoverImage" alt="@item.Name" loading="lazy" />
+                        <div class="game-card-overlay">
+                            <span class="game-overlay-name">@item.Name</span>
+                        </div>
+                    </div>
+                </a>
+                <div class="game-card-meta">
+                    <a class="game-name" asp-page="./Details" asp-route-id="@item.Id" asp-route-slug="@item.Slug">@item.Name</a>
+                    <span class="game-year">@item.ReleaseDate.Year</span>
+                </div>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="game-card-actions">
+                        <a asp-page="./Edit" asp-route-id="@item.Id" asp-route-slug="@item.Slug">Editar</a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" asp-route-slug="@item.Slug">Eliminar</a>
+                    </div>
+                }
+
+            </div>
+        }
+    </div>
+
+    <div class="games-pager">
+        @if (Model.PageNumber > 1)
+        {
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-search="@Model.Search" class="pager-btn">‹ Anterior</a>
+        }
+        else
+        {
+            <span class="pager-btn disabled">‹ Anterior</span>
+        }
+        <span class="pager-current">Página @Model.PageNumber</span>
+        @if (Model.Game.Count == Model.PageSize)
+        {
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-search="@Model.Search" class="pager-btn">Seguinte ›</a>
+        }
+        else
+        {
+            <span class="pager-btn disabled">Seguinte ›</span>
+        }
+    </div>
+}

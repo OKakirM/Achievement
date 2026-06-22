@@ -1,70 +1,49 @@
-﻿@page "/Games/Delete/{id:int}/{slug?}"
+@page "/Games/Delete/{id:int}/{slug?}"
 @model Achievement.Pages.Games.DeleteModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar Jogo";
 }
 
-<h1>Delete</h1>
+<div class="page-header">
+    <h1 class="page-title">Eliminar Jogo</h1>
+</div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Game</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.ReleaseDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.ReleaseDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.Rating)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.Rating)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.Length)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.Length)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.CoverImage)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.CoverImage)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.BannerImage)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.BannerImage)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Game.Plays)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Game.Plays)
-        </dd>
-    </dl>
-    
-    <form method="post">
-        <input type="hidden" asp-for="Game.Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
-    </form>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="content-card">
+            <h4 class="mb-3" style="color: var(--danger);">Tens a certeza que queres eliminar este jogo?</h4>
+
+            <div class="d-flex gap-3 flex-wrap mb-3">
+                @if (!string.IsNullOrWhiteSpace(Model.Game.CoverImage))
+                {
+                    <img src="~/@Model.Game.CoverImage" alt="Capa de @Model.Game.Name" class="image-preview" style="max-width:140px;" />
+                }
+                <dl class="row flex-grow-1 mb-0">
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Game.Name)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Game.Name)</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Game.ReleaseDate)</dt>
+                    <dd class="col-sm-9">@Model.Game.ReleaseDate.ToString("dd/MM/yyyy")</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Game.Rating)</dt>
+                    <dd class="col-sm-9">@(Model.Game.Rating.HasValue ? Model.Game.Rating.Value.ToString("0.0") : "—")</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Game.Plays)</dt>
+                    <dd class="col-sm-9">@(Model.Game.Plays?.ToString() ?? "0")</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Game.Description)</dt>
+                    <dd class="col-sm-9">@Model.Game.Description</dd>
+                </dl>
+            </div>
+
+            <form method="post">
+                <input type="hidden" asp-for="Game.Id" />
+                <div class="game-detail-actions">
+                    <input type="submit" value="Eliminar" class="btn btn-danger" />
+                    <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

@@ -12,7 +12,7 @@ using Achievement.ValidationFiles;
 
 namespace Achievement.Pages.Games
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly Achievement.Data.ApplicationDbContext _context;
@@ -76,8 +76,8 @@ namespace Achievement.Pages.Games
                         System.IO.File.Delete(oldFilePath);
                 }
 
-                // Só apaga o bammer se a imagem não for a default
-                if (Game.CoverImage != CustomValidationFiles._GamesCoverDefaultImage)
+                // Só apaga o banner se a imagem não for a default
+                if (Game.BannerImage != CustomValidationFiles._GamesBannerDefaultImage)
                 {
                     // Apagar a imagem associada
                     var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", Game.BannerImage ?? string.Empty);

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Achievement.Pages.Games
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
     {
         private readonly Achievement.Data.ApplicationDbContext _context;
@@ -41,14 +41,26 @@ namespace Achievement.Pages.Games
         [BindProperty]
         public bool RemoveBannerImage { get; set; }
 
+        // Variável auxiliar para facilitar a digitação da data de lançamento
+        [BindProperty]
+        [Display(Name = "Data de Lançamento")]
+        [RegularExpression(CustomValidationFiles._ReleaseDateRegexPattern, ErrorMessage = "Data inválida. Use yyyy/MM/dd, dd/MM/yyyy ou MM/dd/yyyy.")]
+        public string? ReleaseDateInput { get; set; }
+
         // Popular as listas de seleção para Platformas e gêneros
         public IEnumerable<SelectListItem>? PlatformsList { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem>? GenresList { get; set; } = new List<SelectListItem>();
 
         // Variavel para armazenar as Platformas e gêneros selecionados
+        /// <summary>
+        /// Armazena os IDs das plataformas selecionadas pelo usuário no formulário de criação do jogo.
+        /// </summary>
         [BindProperty]
         public int[] SelectedPlatformIds { get; set; } = Array.Empty<int>();
 
+                /// <summary>
+        /// Armazena os IDs dos gêneros selecionados pelo usuário no formulário de criação do jogo.
+        /// </summary>
         [BindProperty]
         public int[] SelectedGenreIds { get; set; } = Array.Empty<int>();
 
@@ -79,6 +91,13 @@ namespace Achievement.Pages.Games
             }
 
             Game = game;
+            ReleaseDateInput = game.ReleaseDate.ToString("dd/MM/yyyy");
+
+            // Pré-seleciona as plataformas e géneros já associados ao jogo
+            SelectedPlatformIds = game.Platforms.Select(p => p.Id).ToArray();
+            SelectedGenreIds = game.Genres.Select(g => g.Id).ToArray();
+
+            await LoadSelectedFieldsAsync();
 
             HttpContext.Session.SetInt32("Game", Game.Id);
 
@@ -91,6 +110,17 @@ namespace Achievement.Pages.Games
         {
             var oldId = HttpContext.Session.GetInt32("Game");
             bool hasErrors = false;
+
+            // Converte a data para DateTime antes de validar o modelo
+            if (CustomValidationFiles.TryParseReleaseDate(ReleaseDateInput, out var releaseDate))
+            {
+                Game.ReleaseDate = releaseDate;
+                ModelState.Remove("Game.ReleaseDate");
+            }
+            else
+            {
+                ModelState.AddModelError("ReleaseDateInput", "Data inválida. Use yyyy/MM/dd, dd/MM/yyyy ou MM/dd/yyyy.");
+            }
 
             // Verifica se o modelo é válido antes de tentar salvar
             if (!ModelState.IsValid)
@@ -118,7 +148,7 @@ namespace Achievement.Pages.Games
 
             if (Game.ReleaseDate.Year < 1958 || Game.ReleaseDate.Year > 2100)
             {
-                ModelState.AddModelError("Game.ReleaseDate", "O ano de lançamento do jogo deve ser 1958 ou posterior.");
+                ModelState.AddModelError("ReleaseDateInput", "O ano de lançamento do jogo deve ser 1958 ou posterior.");
                 hasErrors = true;
             }
 
@@ -132,7 +162,7 @@ namespace Achievement.Pages.Games
             // Validação de Duplicidade dos campos de texto
             // =============================================
 
-            bool duplicatedName = await _context.Games.AnyAsync(g => g.Name == Game.Name);
+            bool duplicatedName = await _context.Games.AnyAsync(g => g.Name == Game.Name && g.Id != Game.Id);
 
             if (duplicatedName)
             {
@@ -178,8 +208,32 @@ namespace Achievement.Pages.Games
 
             if (hasErrors)
             {
+                await LoadSelectedFieldsAsync();
                 return Page();
             }
+
+            // =============================================
+            // Atualização do jogo
+            // =============================================
+
+            // Carrega o jogo existente (com as coleções N-N) para o ALTERAR em vez de criar um novo
+            var gameToUpdate = await _context.Games
+                .Include(g => g.Platforms)
+                .Include(g => g.Genres)
+                .FirstOrDefaultAsync(g => g.Id == Game.Id);
+
+            if (gameToUpdate == null)
+            {
+                await LoadSelectedFieldsAsync();
+                return NotFound();
+            }
+
+            // Atualiza os campos escalares
+            gameToUpdate.Name = Game.Name;
+            gameToUpdate.Description = Game.Description;
+            gameToUpdate.ReleaseDate = Game.ReleaseDate;
+            gameToUpdate.Rating = Game.Rating;
+            gameToUpdate.Length = Game.Length;
 
             // =============================================
             // Salvamento das imagens
@@ -188,9 +242,9 @@ namespace Achievement.Pages.Games
             if (CoverImageFile != null)
             {
                 // apagar o ficheiro antigo
-                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", Game.CoverImage ?? string.Empty);
+                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", gameToUpdate.CoverImage ?? string.Empty);
 
-                if (System.IO.File.Exists(oldFilePath) && Game.CoverImage != CustomValidationFiles._GamesCoverDefaultImage)
+                if (System.IO.File.Exists(oldFilePath) && gameToUpdate.CoverImage != CustomValidationFiles._GamesCoverDefaultImage)
                     System.IO.File.Delete(oldFilePath);
 
                 // Geração de um nome único para a imagem
@@ -200,7 +254,7 @@ namespace Achievement.Pages.Games
                 coverImageName += coverImageExtension;
 
                 // Guarda o caminho da imagem no banco de dados
-                Game.CoverImage = Path.Combine(CustomValidationFiles._GamesCoverFolder, coverImageName);
+                gameToUpdate.CoverImage = Path.Combine(CustomValidationFiles._GamesCoverFolder, coverImageName);
 
                 // Caminho físico para salvar a imagem no servidor
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/", CustomValidationFiles._GamesCoverFolder);
@@ -223,19 +277,19 @@ namespace Achievement.Pages.Games
             }
             else if (RemoveCoverImage)
             {
-                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", Game.CoverImage ?? string.Empty);
-                if (System.IO.File.Exists(oldFilePath) && Game.CoverImage != CustomValidationFiles._GamesCoverDefaultImage)
+                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", gameToUpdate.CoverImage ?? string.Empty);
+                if (System.IO.File.Exists(oldFilePath) && gameToUpdate.CoverImage != CustomValidationFiles._GamesCoverDefaultImage)
                     System.IO.File.Delete(oldFilePath);
 
-                Game.CoverImage = CustomValidationFiles._GamesCoverDefaultImage;
+                gameToUpdate.CoverImage = CustomValidationFiles._GamesCoverDefaultImage;
             }
 
             if (BannerImageFile != null)
             {
                 // apagar o ficheiro antigo
-                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", Game.BannerImage ?? string.Empty);
+                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", gameToUpdate.BannerImage ?? string.Empty);
 
-                if (System.IO.File.Exists(oldFilePath) && Game.BannerImage != CustomValidationFiles._GamesBannerDefaultImage)
+                if (System.IO.File.Exists(oldFilePath) && gameToUpdate.BannerImage != CustomValidationFiles._GamesBannerDefaultImage)
                     System.IO.File.Delete(oldFilePath);
 
                 // Geração de um nome único para a imagem
@@ -245,7 +299,7 @@ namespace Achievement.Pages.Games
                 bannerImageName += bannerImageExtension;
 
                 // Guarda o caminho da imagem no banco de dados
-                Game.BannerImage = Path.Combine(CustomValidationFiles._GamesBannerFolder, bannerImageName);
+                gameToUpdate.BannerImage = Path.Combine(CustomValidationFiles._GamesBannerFolder, bannerImageName);
 
                 // Caminho físico para salvar a imagem no servidor
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/", CustomValidationFiles._GamesBannerFolder);
@@ -267,17 +321,22 @@ namespace Achievement.Pages.Games
             }
             else if (RemoveBannerImage)
             {
-                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", Game.BannerImage ?? string.Empty);
-                if (System.IO.File.Exists(oldFilePath) && Game.BannerImage != CustomValidationFiles._GamesBannerDefaultImage)
+                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot", gameToUpdate.BannerImage ?? string.Empty);
+                if (System.IO.File.Exists(oldFilePath) && gameToUpdate.BannerImage != CustomValidationFiles._GamesBannerDefaultImage)
                     System.IO.File.Delete(oldFilePath);
 
-                Game.BannerImage = CustomValidationFiles._GamesBannerDefaultImage;
+                gameToUpdate.BannerImage = CustomValidationFiles._GamesBannerDefaultImage;
             }
 
             // =============================================
             // Associação de Plataformas e Géneros (N-N)
+            // - Limpa as associações atuais e re-adiciona as selecionadas
             // =============================================
 
+            gameToUpdate.Platforms.Clear();
+            gameToUpdate.Genres.Clear();
+
+            // Se houver plataformas selecionadas, busca as entidades correspondentes e associa ao jogo
             if (SelectedPlatformIds.Length > 0)
             {
                 var platforms = await _context.Platforms
@@ -285,9 +344,10 @@ namespace Achievement.Pages.Games
                     .ToListAsync();
 
                 foreach (var platform in platforms)
-                    Game.Platforms.Add(platform);
+                    gameToUpdate.Platforms.Add(platform);
             }
 
+            // Se houver gêneros selecionados, busca as entidades correspondentes e associa ao jogo
             if (SelectedGenreIds.Length > 0)
             {
                 var genres = await _context.Genres
@@ -295,12 +355,11 @@ namespace Achievement.Pages.Games
                     .ToListAsync();
 
                 foreach (var genre in genres)
-                    Game.Genres.Add(genre);
+                    gameToUpdate.Genres.Add(genre);
             }
 
-            Game.Slug = await GenerateUniqueSlugAsync(GenerateSlug(Game.Name));
-
-            _context.Attach(Game).State = EntityState.Modified;
+            // Gera um slug único para o jogo com base no nome atualizado
+            gameToUpdate.Slug = await GenerateUniqueSlugAsync(GenerateSlug(gameToUpdate.Name), gameToUpdate.Id);
 
             try
             {
@@ -308,7 +367,7 @@ namespace Achievement.Pages.Games
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GameExists(Game.Id))
+                if (!GameExists(gameToUpdate.Id))
                 {
                     return NotFound();
                 }
@@ -318,7 +377,7 @@ namespace Achievement.Pages.Games
                 }
             }
 
-            return RedirectToPage("./Games/" + Game.Id + "/" + Game.Slug);
+            return RedirectToPage("/Games/Details", new { id = gameToUpdate.Id, slug = gameToUpdate.Slug });
         }
 
         private bool GameExists(int id)
@@ -362,12 +421,12 @@ namespace Achievement.Pages.Games
         /// </summary>
         /// <param name="baseSlug"></param>
         /// <returns></returns>
-        private async Task<string> GenerateUniqueSlugAsync(string baseSlug)
+        private async Task<string> GenerateUniqueSlugAsync(string baseSlug, int excludeId)
         {
             var slug = baseSlug;
             var counter = 1;
 
-            while (await _context.Games.AnyAsync(g => g.Slug == slug))
+            while (await _context.Games.AnyAsync(g => g.Slug == slug && g.Id != excludeId))
             {
                 slug = $"{baseSlug}-{counter}";
                 counter++;

@@ -15,7 +15,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Achievement.Pages.Games
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly Achievement.Data.ApplicationDbContext _context;
@@ -41,14 +41,26 @@ namespace Achievement.Pages.Games
         [Display(Name = "Imagem do Banner")]
         public IFormFile? BannerImageFile { get; set; }
 
+        // Variável auxiliar para facilitar a digitação da data de lançamento
+        [BindProperty]
+        [Display(Name = "Data de Lançamento")]
+        [RegularExpression(CustomValidationFiles._ReleaseDateRegexPattern, ErrorMessage = "Data inválida. Use yyyy/MM/dd, dd/MM/yyyy ou MM/dd/yyyy.")]
+        public string? ReleaseDateInput { get; set; }
+
         // Popular as listas de seleção para Platformas e gêneros
         public IEnumerable<SelectListItem> PlatformsList { get; set; } = new List<SelectListItem>();
         public IEnumerable<SelectListItem> GenresList { get; set; } = new List<SelectListItem>();
 
         // Variavel para armazenar as Platformas e gêneros selecionados
+        /// <summary>
+        /// Armazena os IDs das plataformas selecionadas pelo usuário no formulário de criação do jogo.
+        /// </summary>
         [BindProperty]
         public int[] SelectedPlatformIds { get; set; } = Array.Empty<int>();
-
+        
+        /// <summary>
+        /// Armazena os IDs dos gêneros selecionados pelo usuário no formulário de criação do jogo.
+        /// </summary>
         [BindProperty]
         public int[] SelectedGenreIds { get; set; } = Array.Empty<int>();
 
@@ -56,6 +68,17 @@ namespace Achievement.Pages.Games
         public async Task<IActionResult> OnPostAsync()
         {
             bool hasErrors = false;
+
+            // Converte a data para DateTime antes de validar o modelo
+            if (CustomValidationFiles.TryParseReleaseDate(ReleaseDateInput, out var releaseDate))
+            {
+                Game.ReleaseDate = releaseDate;
+                ModelState.Remove("Game.ReleaseDate");
+            }
+            else
+            {
+                ModelState.AddModelError("ReleaseDateInput", "Data inválida. Use yyyy/MM/dd, dd/MM/yyyy ou MM/dd/yyyy.");
+            }
 
             // Verifica se o modelo é válido antes de tentar salvar
             if (!ModelState.IsValid)
@@ -83,7 +106,7 @@ namespace Achievement.Pages.Games
 
             if(Game.ReleaseDate.Year < 1958 || Game.ReleaseDate.Year > 2100)
             {
-                ModelState.AddModelError("Game.ReleaseDate", "O ano de lançamento do jogo deve ser 1958 ou posterior.");
+                ModelState.AddModelError("ReleaseDateInput", "O ano de lançamento do jogo deve ser 1958 ou posterior.");
                 hasErrors = true;
             }
 
@@ -251,7 +274,7 @@ namespace Achievement.Pages.Games
             _context.Games.Add(Game);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("./Games/" + Game.Id + "/" + Game.Slug);
+            return RedirectToPage("/Games/Details", new { id = Game.Id, slug = Game.Slug });
         }
 
         /// <summary>

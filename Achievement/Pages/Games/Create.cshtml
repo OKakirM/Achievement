@@ -1,90 +1,94 @@
-﻿@page "/Games/Create"
+@page "/Games/Create"
 @model Achievement.Pages.Games.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Novo Jogo";
 }
 
-<h1>Create</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Novo Jogo</h1>
+        <p class="page-subtitle">Adiciona um novo jogo ao catálogo</p>
+    </div>
+    <a asp-page="Index" class="btn btn-secondary">Voltar à lista</a>
+</div>
 
-<h4>Game</h4>
-<hr />
 <div class="row">
-    <div class="col-md-8">
-        <form method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Game.Name" class="control-label"></label>
-                <input asp-for="Game.Name" class="form-control" aria-required="true" />
-                <span asp-validation-for="Game.Name" class="text-danger"></span>
-            </div>
+    <div class="col-lg-8">
+        <div class="content-card">
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <span class="text-danger">*</span>
-                <label asp-for="Game.Description" class="control-label"></label>
-                <textarea asp-for="Game.Description" class="form-control" aria-required="true"></textarea>
-                <span asp-validation-for="Game.Description" class="text-danger"></span>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <span class="text-danger">*</span>
-                    <label asp-for="Game.ReleaseDate" class="control-label"></label>
-                    <input asp-for="Game.ReleaseDate" class="form-control" aria-required="true" />
-                    <span asp-validation-for="Game.ReleaseDate" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="Game.Name" class="control-label"></label> <span class="text-danger">*</span>
+                    <input asp-for="Game.Name" class="form-control" aria-required="true" />
+                    <span asp-validation-for="Game.Name" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-2">
-                    <label asp-for="Game.Rating" class="control-label"></label>
-                    <input asp-for="Game.Rating" class="form-control" />
-                    <span asp-validation-for="Game.Rating" class="text-danger"></span>
+
+                <div class="form-group">
+                    <label asp-for="Game.Description" class="control-label"></label> <span class="text-danger">*</span>
+                    <textarea asp-for="Game.Description" class="form-control" rows="5" aria-required="true"></textarea>
+                    <span asp-validation-for="Game.Description" class="text-danger"></span>
                 </div>
-                <div class="form-group col-md-3">
-                    <label asp-for="Game.Length" class="control-label"></label>
-                    <input asp-for="Game.Length" class="form-control" />
-                    <span asp-validation-for="Game.Length" class="text-danger"></span>
+
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label asp-for="ReleaseDateInput" class="control-label"></label> <span class="text-danger">*</span>
+                        <input asp-for="ReleaseDateInput" class="form-control" placeholder="dd/MM/aaaa" aria-required="true" />
+                        <span asp-validation-for="ReleaseDateInput" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Game.Rating" class="control-label"></label>
+                        <input asp-for="Game.Rating" class="form-control" />
+                        <span asp-validation-for="Game.Rating" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Game.Length" class="control-label"></label>
+                        <input asp-for="Game.Length" class="form-control" />
+                        <span asp-validation-for="Game.Length" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label asp-for="Game.Developer" class="control-label"></label>
-                <input asp-for="Game.Developer" class="form-control" />
-                <span asp-validation-for="Game.Developer" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Game.Developer" class="control-label"></label>
+                    <input asp-for="Game.Developer" class="form-control" />
+                    <span asp-validation-for="Game.Developer" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="SelectedPlatformIds" class="control-label">Plataformas</label>
-                <select asp-for="SelectedPlatformIds" asp-items="Model.PlatformsList" class="form-control" multiple size="6">
-                </select>
-                <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
-                <span asp-validation-for="SelectedPlatformIds" class="text-danger"></span>
-            </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="SelectedPlatformIds" class="control-label">Plataformas</label>
+                        <select asp-for="SelectedPlatformIds" asp-items="Model.PlatformsList" class="form-select" multiple size="6"></select>
+                        <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
+                        <span asp-validation-for="SelectedPlatformIds" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="SelectedGenreIds" class="control-label">Géneros</label>
+                        <select asp-for="SelectedGenreIds" asp-items="Model.GenresList" class="form-select" multiple size="6"></select>
+                        <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
+                        <span asp-validation-for="SelectedGenreIds" class="text-danger"></span>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="SelectedGenreIds" class="control-label">Géneros</label>
-                <select asp-for="SelectedGenreIds" asp-items="Model.GenresList" class="form-control" multiple size="6">
-                </select>
-                <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
-                <span asp-validation-for="SelectedGenreIds" class="text-danger"></span>
-            </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="CoverImageFile" class="control-label"></label>
+                        <input asp-for="CoverImageFile" class="form-control" type="file" />
+                        <span asp-validation-for="CoverImageFile" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="BannerImageFile" class="control-label"></label>
+                        <input asp-for="BannerImageFile" class="form-control" type="file" />
+                        <span asp-validation-for="BannerImageFile" class="text-danger"></span>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="CoverImageFile" class="control-label"></label>
-                <input asp-for="CoverImageFile" class="form-control" type="file" />
-                <span asp-validation-for="CoverImageFile" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="BannerImageFile" class="control-label"></label>
-                <input asp-for="BannerImageFile" class="form-control" type="file" />
-                <span asp-validation-for="BannerImageFile" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-page="Index" class="btn btn-secondary">Back to List</a>
-            </div>
-        </form>
+                <div class="game-detail-actions">
+                    <input type="submit" value="Criar" class="btn btn-primary" />
+                    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
