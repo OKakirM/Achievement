@@ -21,15 +21,15 @@ namespace Achievement.Pages.Reviews
             _context = context;
         }
 
-        public IActionResult OnGet(int? productId)
+        public IActionResult OnGet(int? id)
         {
+            // Prepara os dados para os dropdowns de seleção de jogos e utilizadores
             ViewData["GameFK"] = new SelectList(_context.Games, "Id", "Description");
             ViewData["UserFK"] = new SelectList(_context.Users, "Id", "Email");
 
-            if (productId.HasValue)
+            if (id.HasValue)
             {
-                // Let the page pre-select the game being reviewed
-                ViewData["SelectedGameId"] = productId.Value;
+                ViewData["SelectedGameId"] = id.Value;
             }
 
             return Page();
@@ -38,7 +38,6 @@ namespace Achievement.Pages.Reviews
         [BindProperty]
         public Review Review { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -46,19 +45,22 @@ namespace Achievement.Pages.Reviews
                 return Page();
             }
 
-            // Try to resolve the logged-in user by email claim or username
+            // Obtém o email do utilizador autenticado
             string? email = User.FindFirstValue(ClaimTypes.Email) ?? User.Identity?.Name;
             Models.User? currentUser = null;
+
+            // Se o email não for nulo ou vazio, procura o utilizador na base de dados
             if (!string.IsNullOrWhiteSpace(email))
             {
                 currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             }
 
-            // If we found the user, set the foreign key; otherwise require the form to provide a valid UserFK (admin scenario)
+            // Se o utilizador autenticado for encontrado, define a chave estrangeira do utilizador na review
             if (currentUser != null)
             {
                 Review.UserFK = currentUser.Id;
             }
+            // Se o utilizador autenticado não for encontrado, adiciona um erro ao ModelState
             else if (Review.UserFK == 0)
             {
                 ModelState.AddModelError(string.Empty, "Utilizador não autenticado. Faça login para criar uma review.");
@@ -67,8 +69,9 @@ namespace Achievement.Pages.Reviews
                 return Page();
             }
 
-            // Validate game exists
-            var game = await _context.Games.Include(g => g.Users).FirstOrDefaultAsync(g => g.Id == Review.GameFK);
+            // Verifica se o jogo existe na base de dados
+            var game = await _context.Games.Include(g => g.UserGames).FirstOrDefaultAsync(g => g.Id == Review.GameFK);
+            // Se o jogo não for encontrado, adiciona um erro ao ModelState
             if (game == null)
             {
                 ModelState.AddModelError(string.Empty, "Jogo inválido.");
@@ -77,10 +80,10 @@ namespace Achievement.Pages.Reviews
                 return Page();
             }
 
-            // Business rule: user can only review a game they "own". We treat Game.Users as ownership relation.
+            // Verifica se o utilizador autenticado possui o jogo antes de permitir a criação da review
             if (currentUser != null)
             {
-                var owns = game.Users.Any(u => u.Id == currentUser.Id);
+                var owns = game.UserGames.Any(ug => ug.UserFK == currentUser.Id);
                 if (!owns)
                 {
                     ModelState.AddModelError(string.Empty, "Só pode avaliar jogos que possui.");
@@ -91,6 +94,9 @@ namespace Achievement.Pages.Reviews
             }
 
             _context.Reviews.Add(Review);
+            await _context.SaveChangesAsync();
+
+            await _context.RecalculateGameRatingAsync(Review.GameFK);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

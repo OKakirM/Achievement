@@ -152,12 +152,6 @@ namespace Achievement.Pages.Games
                 hasErrors = true;
             }
 
-            if (Game.Rating < 0.0 || Game.Rating > 10.0)
-            {
-                ModelState.AddModelError("Game.Rating", "A avaliação do jogo deve estar entre 0.0 e 10.0.");
-                hasErrors = true;
-            }
-
             // =============================================
             // Validação de Duplicidade dos campos de texto
             // =============================================
@@ -232,7 +226,6 @@ namespace Achievement.Pages.Games
             gameToUpdate.Name = Game.Name;
             gameToUpdate.Description = Game.Description;
             gameToUpdate.ReleaseDate = Game.ReleaseDate;
-            gameToUpdate.Rating = Game.Rating;
             gameToUpdate.Length = Game.Length;
 
             // =============================================

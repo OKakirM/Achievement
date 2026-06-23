@@ -70,3 +70,63 @@
         </div>
     </div>
 </div>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="content-card" style="margin-top:1.5rem;">
+        <h2 class="game-section-title">Minha Lista</h2>
+        <form method="post" asp-page-handler="Status" style="display:flex;gap:.75rem;align-items:end;flex-wrap:wrap;">
+            <div class="form-group" style="margin:0;">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" asp-items="Html.GetEnumSelectList<Achievement.Models.GameStatus>()" class="form-select"></select>
+            </div>
+            <button type="submit" class="btn btn-primary">@(Model.MyEntry == null ? "Adicionar à lista" : "Atualizar estado")</button>
+        </form>
+    </div>
+}
+
+<div class="content-card" style="margin-top:1.5rem;">
+    <h2 class="game-section-title">Reviews (@Model.Game.Reviews.Count)</h2>
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <form method="post" asp-page-handler="Review" style="margin-bottom:1.5rem;">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ReviewRating" class="control-label">Nota (0 a 10)</label>
+                <input asp-for="ReviewRating" type="number" step="0.1" min="0" max="10" class="form-control" style="max-width:120px;" />
+                <span asp-validation-for="ReviewRating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReviewText" class="control-label">A tua review</label>
+                <textarea asp-for="ReviewText" rows="4" class="form-control" placeholder="O que achaste do jogo?"></textarea>
+                <span asp-validation-for="ReviewText" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">@(Model.MyReview == null ? "Publicar review" : "Atualizar review")</button>
+        </form>
+    }
+    else
+    {
+        <p class="text-muted">
+            <a asp-area="Identity" asp-page="/Account/Login">Inicia sessão</a> para deixar uma review.
+        </p>
+    }
+
+    @if (!Model.Game.Reviews.Any())
+    {
+        <p class="text-muted">Ainda não há reviews. Sê o primeiro!</p>
+    }
+    else
+    {
+        foreach (var r in Model.Game.Reviews.OrderByDescending(r => r.Id))
+        {
+            <div style="border-top:1px solid #2a2a2a;padding:.75rem 0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <strong>@r.User?.Name</strong>
+                    <span class="star">@r.Rating.ToString("0.0")</span>
+                </div>
+                <p style="margin:.25rem 0 0;">@r.ReviewContent</p>
+            </div>
+        }
+    }
+</div>

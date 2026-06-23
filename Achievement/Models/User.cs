@@ -80,9 +80,9 @@ namespace Achievement.Models
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
         /// <summary>
-        /// Conexão de N-N, vários utilizador possui vários jogos
+        /// Conexão de N-N, via entidade de junção UserGame.
         /// </summary>
         [Display(Name = "Jogos")]
-        public ICollection<Game> Games { get; set; } = new List<Game>();
+        public ICollection<UserGame> UserGames { get; set; } = new List<UserGame>();
     }
 }
