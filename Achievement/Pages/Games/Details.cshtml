@@ -82,13 +82,29 @@
             </div>
             <button type="submit" class="btn btn-primary">@(Model.MyEntry == null ? "Adicionar à lista" : "Atualizar estado")</button>
         </form>
+        @if (Model.MyEntry != null)
+        {
+            <form method="post" asp-page-handler="Remove" style="margin-top:.75rem;">
+                <button type="submit" class="btn btn-danger">Remover da lista</button>
+            </form>
+        }
     </div>
 }
 
 <div class="content-card" style="margin-top:1.5rem;">
     <h2 class="game-section-title">Reviews (@Model.Game.Reviews.Count)</h2>
 
-    @if (User.Identity?.IsAuthenticated == true)
+    @if (User.Identity?.IsAuthenticated != true)
+    {
+        <p class="text-muted">
+            <a asp-area="Identity" asp-page="/Account/Login">Inicia sessão</a> para deixar uma review.
+        </p>
+    }
+    else if (!Model.CanReview)
+    {
+        <p class="text-muted">Adiciona o jogo à tua lista com um estado diferente de "Pretendo Jogar" para poderes avaliar.</p>
+    }
+    else
     {
         <form method="post" asp-page-handler="Review" style="margin-bottom:1.5rem;">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -105,12 +121,6 @@
             <button type="submit" class="btn btn-primary">@(Model.MyReview == null ? "Publicar review" : "Atualizar review")</button>
         </form>
     }
-    else
-    {
-        <p class="text-muted">
-            <a asp-area="Identity" asp-page="/Account/Login">Inicia sessão</a> para deixar uma review.
-        </p>
-    }
 
     @if (!Model.Game.Reviews.Any())
     {
@@ -122,7 +132,13 @@
         {
             <div style="border-top:1px solid #2a2a2a;padding:.75rem 0;">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <strong>@r.User?.Name</strong>
+                    <strong>
+                        @r.User?.Name
+                        @if (Model.ReviewerStatus.TryGetValue(r.UserFK, out var st))
+                        {
+                            <span class="tag">@st</span>
+                        }
+                    </strong>
                     <span class="star">@r.Rating.ToString("0.0")</span>
                 </div>
                 <p style="margin:.25rem 0 0;">@r.ReviewContent</p>

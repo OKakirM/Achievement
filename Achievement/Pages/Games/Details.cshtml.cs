@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Achievement.Pages.Games
@@ -26,6 +27,12 @@ namespace Achievement.Pages.Games
         // Entrada do utilizador logado para este jogo
         public Review? MyReview { get; set; }
         public UserGame? MyEntry { get; set; }
+
+        // Estado na lista de cada autor de review, para mostrar junto à review
+        public Dictionary<int, string> ReviewerStatus { get; set; } = new();
+
+        // Indica se o utilizador logado pode avaliar este jogo.
+        public bool CanReview => MyEntry != null && MyEntry.Status != GameStatus.PlanToPlay;
 
         // Campos do formulário de review
         [BindProperty]
@@ -85,6 +92,14 @@ namespace Achievement.Pages.Games
             if (currentUser == null)
             {
                 return Challenge();
+            }
+
+            // Só pode avaliar quem tem o jogo na lista com um estado diferente de "Pretendo Jogar"
+            var entry = await _context.UserGames.FindAsync(currentUser.Id, id);
+
+            if (entry == null || entry.Status == GameStatus.PlanToPlay)
+            {
+                ModelState.AddModelError(string.Empty, "Só podes avaliar jogos que tens na lista com um estado diferente de \"Pretendo Jogar\".");
             }
 
             if (ReviewRating < 0.0 || ReviewRating > 10.0)
@@ -170,6 +185,35 @@ namespace Achievement.Pages.Games
         }
 
         /// <summary>
+        /// Remove o jogo da lista do utilizador logado.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostRemoveAsync(int id, string? slug)
+        {
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser == null)
+            {
+                return Challenge();
+            }
+
+            var entry = await _context.UserGames.FindAsync(currentUser.Id, id);
+            if (entry != null)
+            {
+                _context.UserGames.Remove(entry);
+                await _context.SaveChangesAsync();
+
+                // Recalcula o número de jogadas do jogo
+                await _context.RecalculateGamePlaysAsync(id);
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage("./Details", new { id, slug });
+        }
+
+        /// <summary>
         /// Carrega o jogo (com géneros, plataformas e reviews+autor) e a entrada do utilizador logado.
         /// </summary>
         private async Task<bool> LoadGameAsync(int id, Models.User? currentUser)
@@ -178,6 +222,7 @@ namespace Achievement.Pages.Games
                 .Include(g => g.Genres)
                 .Include(g => g.Platforms)
                 .Include(g => g.Reviews).ThenInclude(r => r.User)
+                .Include(g => g.UserGames)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
             if (game == null)
@@ -187,6 +232,8 @@ namespace Achievement.Pages.Games
 
             Game = game;
 
+            ReviewerStatus = game.UserGames.ToDictionary(ug => ug.UserFK, ug => StatusName(ug.Status));
+
             if (currentUser != null)
             {
                 MyReview = game.Reviews.FirstOrDefault(r => r.UserFK == currentUser.Id);
@@ -194,6 +241,15 @@ namespace Achievement.Pages.Games
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Nome de apresentação ([Display(Name=...)]) de um estado da lista.
+        /// </summary>
+        private static string StatusName(GameStatus status)
+        {
+            var member = typeof(GameStatus).GetMember(status.ToString()).FirstOrDefault();
+            return member?.GetCustomAttribute<DisplayAttribute>()?.Name ?? status.ToString();
         }
 
         /// <summary>

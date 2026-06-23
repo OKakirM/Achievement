@@ -69,6 +69,13 @@ namespace Achievement.Models
         [Display(Name = "Foto de Perfil")]
         public string? Image { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Imagem de banner do perfil do Utilizador
+        /// - Pode não ser obrigatório
+        /// </summary>
+        [Display(Name = "Banner do Perfil")]
+        public string? Banner { get; set; } = string.Empty;
+
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
         // ============================================

@@ -22,10 +22,15 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-page="/Index">Início</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="jogosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Jogos</a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="jogosDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Games/Index">Todos os Jogos</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Genres/Index">Géneros</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-page="/Platforms/Index">Plataformas</a></li>
+                            </ul>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
