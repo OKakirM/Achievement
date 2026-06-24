@@ -5,31 +5,26 @@
     ViewData["Title"] = "Novo Género";
 }
 
-<div class="page-header">
-    <div>
-        <h1 class="page-title">Novo Género</h1>
-        <p class="page-subtitle">Adiciona um novo género ao catálogo</p>
-    </div>
-    <a asp-page="Index" class="btn btn-secondary">Voltar à lista</a>
-</div>
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Novo Género</h1>
+        <p class="auth-subtitle">Adiciona um novo género ao catálogo</p>
 
-<div class="content-card form-shell">
-    <form method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <section class="form-section">
             <div class="form-group">
                 <label asp-for="Genre.Name" class="control-label"></label> <span class="req">*</span>
                 <input asp-for="Genre.Name" class="form-control" aria-required="true" />
                 <span asp-validation-for="Genre.Name" class="text-danger"></span>
             </div>
-        </section>
 
-        <div class="form-actions">
-            <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
-            <button type="submit" class="btn-accent">Criar género</button>
-        </div>
-    </form>
+            <div class="form-actions">
+                <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn-accent">Criar género</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 @section Scripts {

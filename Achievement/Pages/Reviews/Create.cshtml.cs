@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Achievement.Data;
+using Achievement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
-using Achievement.Data;
-using Achievement.Models;
+using System.Threading.Tasks;
 
 namespace Achievement.Pages.Reviews
 {
@@ -93,6 +94,7 @@ namespace Achievement.Pages.Reviews
                 }
             }
 
+            Review.CreatedAt = DateTime.UtcNow;
             _context.Reviews.Add(Review);
             await _context.SaveChangesAsync();
 

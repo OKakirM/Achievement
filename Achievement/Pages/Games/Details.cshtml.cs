@@ -130,7 +130,8 @@ namespace Achievement.Pages.Games
                     GameFK = id,
                     UserFK = currentUser.Id,
                     Rating = ReviewRating,
-                    ReviewContent = ReviewText!
+                    ReviewContent = ReviewText!,
+                    CreatedAt = DateTime.UtcNow
                 });
             }
             else

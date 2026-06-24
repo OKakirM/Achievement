@@ -121,7 +121,7 @@
             else
             {
                 <div class="review-list">
-                    @foreach (var r in Model.Game.Reviews.OrderByDescending(r => r.Id))
+                    @foreach (var r in Model.Game.Reviews.OrderByDescending(r => r.CreatedAt).ThenByDescending(r => r.Id))
                     {
                         <article class="review-card">
                             <a class="review-avatar" asp-page="/Users/Details" asp-route-id="@r.UserFK">
@@ -141,6 +141,7 @@
                                     {
                                         <span class="tag @st.CssClass()">@st.DisplayName()</span>
                                     }
+                                    <span class="review-date">@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
                                     <span class="review-rating">★ @r.Rating.ToString("0.0")</span>
                                 </div>
                                 <p class="review-text">@r.ReviewContent</p>

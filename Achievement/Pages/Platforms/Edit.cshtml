@@ -1,40 +1,46 @@
 ﻿@page
 @model Achievement.Pages.Platforms.EditModel
+@using Achievement.Models
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Plataforma";
 }
 
-<h1>Edit</h1>
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Editar Plataforma</h1>
+        <p class="auth-subtitle">Atualiza os dados da plataforma</p>
 
-<h4>Platform</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Platform.Id" />
+
             <div class="form-group">
-<span class="text-danger">*</span>
-                <label asp-for="Platform.Type" class="control-label"></label>
-                <select asp-for="Platform.Type" class="form-control" aria-required="true"></select>
+                <label asp-for="Platform.Type" class="control-label"></label> <span class="req">*</span>
+                <select asp-for="Platform.Type" class="form-select" asp-items="Html.GetEnumSelectList<PlatformType>()" aria-required="true">
+                    <option value="">Selecione...</option>
+                </select>
                 <span asp-validation-for="Platform.Type" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-<span class="text-danger">*</span>
-                <label asp-for="Platform.Name" class="control-label"></label>
-                <input asp-for="Platform.Name" class="form-control" aria-required="true"/>
+                <label asp-for="Platform.Name" class="control-label"></label> <span class="req">*</span>
+                <input asp-for="Platform.Name" class="form-control" aria-required="true" />
                 <span asp-validation-for="Platform.Name" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="Platform.ReleaseDate" class="control-label"></label> <span class="req">*</span>
+                <input asp-for="Platform.ReleaseDate" class="form-control" type="date" />
+                <span asp-validation-for="Platform.ReleaseDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn-accent">Guardar</button>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {

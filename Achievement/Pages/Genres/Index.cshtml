@@ -1,42 +1,50 @@
-﻿@page
+@page
 @model Achievement.Pages.Genres.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Géneros";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Géneros</h1>
+        <p class="page-subtitle">Explora os jogos por categoria</p>
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="Create" class="btn-accent"><span>+</span> Novo Género</a>
+    }
+</div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre[0].Name)
-            </th>
-            <th>
-                Jogos
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Genre) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @item.Games.Count
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (Model.Genre == null || Model.Genre.Count == 0)
+{
+    <div class="games-empty">
+        <p>Ainda não há géneros.</p>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-page="Create" class="btn-accent">Criar o primeiro género</a>
+        }
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="genre-grid">
+        @foreach (var item in Model.Genre)
+        {
+            <div class="genre-card">
+                <a class="genre-card-link" asp-page="/Games/Index" asp-route-genre="@item.Id">
+                    <span class="genre-card-name">@item.Name</span>
+                    <span class="genre-card-count">@item.Games.Count @(item.Games.Count == 1 ? "jogo" : "jogos")</span>
+                </a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="game-card-actions">
+                        <a asp-page="./Edit" asp-route-id="@item.Id" title="Editar">✎</a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" title="Eliminar">🗑</a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

@@ -56,7 +56,8 @@ namespace Achievement.Pages.Reviews
             TotalCount = await query.CountAsync();
 
             Review = await query
-                .OrderByDescending(r => r.Id)
+                .OrderByDescending(r => r.CreatedAt)
+                .ThenByDescending(r => r.Id)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();

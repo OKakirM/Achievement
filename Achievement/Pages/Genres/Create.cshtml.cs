@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Achievement.Data;
 using Achievement.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Achievement.Pages.Genres
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly Achievement.Data.ApplicationDbContext _context;

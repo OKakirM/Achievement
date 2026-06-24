@@ -29,11 +29,13 @@ namespace Achievement.Pages.Platforms
                 return NotFound();
             }
 
-            var Platform = await _context.Platforms.FirstOrDefaultAsync(m => m.Id == id);
+            var platform = await _context.Platforms
+                .Include(p => p.Games)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (Platform is not null)
+            if (platform is not null)
             {
-                Platform = Platform;
+                Platform = platform;
 
                 return Page();
             }
@@ -48,16 +50,24 @@ namespace Achievement.Pages.Platforms
                 return NotFound();
             }
 
-            var Platform = await _context.Platforms
+            var platform = await _context.Platforms
                 .Include(p => p.Games)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (Platform == null)
+            if (platform == null)
             {
                 return NotFound();
             }
 
-            _context.Platforms.Remove(Platform);
+            // Bloqueia exclusão se houver jogos vinculados
+            if (platform.Games.Any())
+            {
+                ModelState.AddModelError(string.Empty, "Não é possível excluir esta plataforma porque existem jogos vinculados. Remova as relações antes de excluir.");
+                Platform = platform;
+                return Page();
+            }
+
+            _context.Platforms.Remove(platform);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

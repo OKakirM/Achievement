@@ -30,6 +30,12 @@ namespace Achievement.Models
         [Range(0.0, 10.0, ErrorMessage = "A avaliação deve estar entre {1} e {2}.")]
         public double Rating { get; set; }
 
+        /// <summary>
+        /// Data de criação da review (UTC). Usada para ordenar o feed de reviews recentes.
+        /// </summary>
+        [Display(Name = "Criada em")]
+        public DateTime CreatedAt { get; set; }
+
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
         // ============================================

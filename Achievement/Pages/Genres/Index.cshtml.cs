@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Achievement.Data;
+using Achievement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Achievement.Data;
-using Achievement.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Achievement.Pages.Genres
 {
@@ -26,6 +27,7 @@ namespace Achievement.Pages.Genres
             // Include Games to be able to show counts without additional queries
             Genre = await _context.Genres
                 .Include(g => g.Games)
+                .OrderBy(g => g.Name)
                 .ToListAsync();
         }
     }

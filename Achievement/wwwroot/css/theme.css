@@ -453,6 +453,33 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .pager-btn.disabled { opacity: .4; pointer-events: none; }
 .pager-current { color: var(--text-muted); }
 
+/* ===================== Grelha de géneros (Index) ===================== */
+.genre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+.genre-card { position: relative; }
+.genre-card-link {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    text-decoration: none;
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.genre-card-link:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+.genre-card-name { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--text); }
+.genre-card-count { color: var(--text-muted); font-size: .85rem; }
+.genre-card:hover .game-card-actions { opacity: 1; }
+
 /* ===================== Detalhe do jogo (estilo Backloggd) ===================== */
 .game-detail-banner {
     position: relative;
@@ -581,7 +608,26 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
     margin-left: auto; color: var(--star); font-weight: 700;
     font-family: var(--font-display); font-variant-numeric: tabular-nums;
 }
+.review-date { color: var(--text-muted); font-size: .82rem; font-variant-numeric: tabular-nums; }
 .review-text { margin: 0; color: var(--text); line-height: 1.6; overflow-wrap: anywhere; }
+
+/* Bloco do jogo no feed de reviews (link para o detalhe) */
+.review-game {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    margin-top: .6rem;
+    padding: .35rem .7rem .35rem .35rem;
+    background: var(--bg-card-hover);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: border-color .15s ease;
+}
+.review-game:hover { border-color: var(--accent); }
+.review-game img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+.review-game span { color: var(--text); font-weight: 600; font-size: .85rem; }
+.review-game:hover span { color: var(--accent-soft); }
 .review-text.clamped {
     position: relative;
     display: -webkit-box;

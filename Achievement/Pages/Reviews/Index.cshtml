@@ -1,54 +1,73 @@
-﻿@page
+@page
 @model Achievement.Pages.Reviews.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Reviews recentes";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Reviews recentes</h1>
+        <p class="page-subtitle">As últimas análises da comunidade</p>
+    </div>
+</div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Review[0].ReviewContent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Review[0].Rating)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Review[0].Game)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Review[0].User)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Review) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReviewContent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Game.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (Model.Review == null || Model.Review.Count == 0)
+{
+    <div class="games-empty">
+        <p>Ainda não há reviews.</p>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="review-list">
+        @foreach (var r in Model.Review)
+        {
+            <article class="review-card">
+                <a class="review-avatar" asp-page="/Users/Details" asp-route-id="@r.UserFK">
+                    @if (string.IsNullOrEmpty(r.User?.Image))
+                    {
+                        <span>@((r.User?.Name ?? "?").Substring(0, 1).ToUpper())</span>
+                    }
+                    else
+                    {
+                        <img src="~/@r.User!.Image" alt="@r.User.Name" />
+                    }
+                </a>
+                <div class="review-body">
+                    <div class="review-head">
+                        <a class="review-author" asp-page="/Users/Details" asp-route-id="@r.UserFK">@r.User?.Name</a>
+                        <span class="review-date">@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                        <span class="review-rating">★ @r.Rating.ToString("0.0")</span>
+                    </div>
+                    <p class="review-text">@r.ReviewContent</p>
+
+                    <a class="review-game" asp-page="/Games/Details" asp-route-id="@r.GameFK" asp-route-slug="@r.Game?.Slug">
+                        <img src="~/@r.Game?.CoverImage" alt="@r.Game?.Name" loading="lazy" />
+                        <span>@r.Game?.Name</span>
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+
+    <div class="games-pager">
+        @if (Model.PageNumber > 1)
+        {
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber - 1)" class="pager-btn">‹ Anterior</a>
+        }
+        else
+        {
+            <span class="pager-btn disabled">‹ Anterior</span>
+        }
+        <span class="pager-current">Página @Model.PageNumber</span>
+        @if (Model.PageNumber * Model.PageSize < Model.TotalCount)
+        {
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber + 1)" class="pager-btn">Seguinte ›</a>
+        }
+        else
+        {
+            <span class="pager-btn disabled">Seguinte ›</span>
+        }
+    </div>
+}

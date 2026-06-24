@@ -30,12 +30,12 @@ namespace Achievement.Pages.Platforms
                 return NotFound();
             }
 
-            var Platform =  await _context.Platforms.FirstOrDefaultAsync(m => m.Id == id);
-            if (Platform == null)
+            var platform = await _context.Platforms.FirstOrDefaultAsync(m => m.Id == id);
+            if (platform == null)
             {
                 return NotFound();
             }
-            Platform = Platform;
+            Platform = platform;
             return Page();
         }
 

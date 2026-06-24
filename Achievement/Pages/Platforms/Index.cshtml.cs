@@ -23,9 +23,10 @@ namespace Achievement.Pages.Platforms
 
         public async Task OnGetAsync(bool showHidden = false)
         {
-            var query = _context.Platforms.AsQueryable();
-
-            Platform = await query.ToListAsync();
+            Platform = await _context.Platforms
+                .Include(p => p.Games)
+                .OrderBy(p => p.Type).ThenBy(p => p.Name)
+                .ToListAsync();
         }
     }
 }
