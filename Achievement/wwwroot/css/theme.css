@@ -33,6 +33,17 @@ body {
     background: var(--bg-deep);
     color: var(--text);
     font-family: var(--font-body);
+    overflow-x: clip; /* corta o excesso do .full-bleed (100vw) sem scrollbar nem quebrar o sticky */
+}
+
+/* Escapa do .container e ocupa a largura toda da viewport */
+.full-bleed {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
 }
 
 main { color: var(--text); }
@@ -45,9 +56,24 @@ a:hover { color: var(--accent-soft); }
 hr { border-color: var(--border); opacity: 1; }
 
 /* ===================== Navbar ===================== */
+/* Header sticky e transparente; ganha fundo + blur ao rolar (classe .scrolled no body).
+   O fundo vai no header (não na navbar) para cobrir também a margem inferior. */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    border-bottom: 1px solid transparent;
+    transition: background .25s ease, border-color .25s ease, box-shadow .25s ease, backdrop-filter .25s ease;
+}
+body.scrolled header {
+    background: rgba(19, 21, 28, .8);
+    backdrop-filter: blur(10px);
+    border-bottom-color: var(--border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .35);
+}
 .navbar {
-    background: var(--bg-elevated) !important;
-    border-bottom: 1px solid var(--border) !important;
+    background: transparent !important;
+    border-bottom: none !important;
     box-shadow: none !important;
 }
 .navbar-brand {
@@ -527,7 +553,6 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .game-detail-banner {
     position: relative;
     height: 320px;
-    border-radius: 14px;
     overflow: hidden;
     background: var(--bg-card);
     margin-bottom: -90px;

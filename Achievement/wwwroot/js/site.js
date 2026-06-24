@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('input[type=file][data-preview]').forEach(initImagePreview);
     document.querySelectorAll('.review-text').forEach(initReviewClamp);
     document.querySelectorAll('form').forEach(initSubmitLoading);
+
+    // Header transparente no topo, ganha fundo ao rolar.
+    const onScroll = () => document.body.classList.toggle('scrolled', window.scrollY > 8);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 });
 
 // Spinner no botão de submeter enquanto o form é enviado.
