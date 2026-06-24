@@ -40,8 +40,8 @@ else
                 @if (User.IsInRole("Admin"))
                 {
                     <div class="game-card-actions">
-                        <a asp-page="./Edit" asp-route-id="@item.Id" title="Editar">✎</a>
-                        <a asp-page="./Delete" asp-route-id="@item.Id" title="Eliminar">🗑</a>
+                        <a asp-page="./Edit" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" title="Eliminar"><i class="bi bi-trash"></i></a>
                     </div>
                 }
             </div>

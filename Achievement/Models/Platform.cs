@@ -62,4 +62,20 @@ namespace Achievement.Models
         [Display(Name = "Realidade Virtual")]
         VR
     }
+
+    /// <summary>
+    /// Mapeia cada tipo de plataforma para a respetiva classe de Bootstrap Icons.
+    /// </summary>
+    public static class PlatformTypeIcon
+    {
+        public static string IconClass(this PlatformType type) => type switch
+        {
+            PlatformType.Console => "bi-controller",
+            PlatformType.PC => "bi-mouse",
+            PlatformType.Portable => "bi-nintendo-switch",
+            PlatformType.Mobile => "bi-phone",
+            PlatformType.VR => "bi-headset-vr",
+            _ => "bi-question-circle"
+        };
+    }
 }
