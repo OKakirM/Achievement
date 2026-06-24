@@ -236,6 +236,16 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .tag-suggestions .tag-suggestions-empty { color: var(--text-muted); cursor: default; }
 .tag-suggestions .tag-suggestions-empty:hover { background: transparent; color: var(--text-muted); }
 
+/* Bootstrap Icons: alinhar à baseline do texto */
+.bi { vertical-align: -.125em; }
+
+/* Centrar ícone + texto nos elementos que combinam os dois */
+.tag, .genre-card-name, .game-rating, .review-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+}
+
 /* ===================== Botões ===================== */
 .btn-primary {
     background: var(--accent);
@@ -456,7 +466,7 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 /* ===================== Grelha de géneros (Index) ===================== */
 .genre-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1rem;
 }
 .genre-card { position: relative; }

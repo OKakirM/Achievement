@@ -24,5 +24,14 @@ namespace Achievement.Models
             GameStatus.OnHold => "status-onhold",
             _ => "status-plan", // PlanToPlay
         };
+
+        public static string IconClass(this GameStatus status) => status switch
+        {
+            GameStatus.Completed => "bi-check-circle-fill",
+            GameStatus.Playing => "bi-play-circle-fill",
+            GameStatus.Dropped => "bi-x-circle-fill",
+            GameStatus.OnHold => "bi-pause-circle-fill",
+            _ => "bi-bookmark-fill", // PlanToPlay
+        };
     }
 }
