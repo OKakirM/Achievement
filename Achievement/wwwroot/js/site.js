@@ -5,7 +5,24 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.tag-input').forEach(initTagInput);
     document.querySelectorAll('input[type=file][data-preview]').forEach(initImagePreview);
     document.querySelectorAll('.review-text').forEach(initReviewClamp);
+    document.querySelectorAll('form').forEach(initSubmitLoading);
 });
+
+// Spinner no botão de submeter enquanto o form é enviado.
+// setTimeout(0) corre após o evento completar: se a validação cancelou
+// (defaultPrevented), não bloqueamos o botão. O payload já foi serializado
+// no submit síncrono, por isso desativar depois não afeta o envio.
+function initSubmitLoading(form) {
+    form.addEventListener('submit', function (e) {
+        const btn = form.querySelector('button[type=submit], input[type=submit]');
+        if (!btn) return;
+        setTimeout(function () {
+            if (e.defaultPrevented) return;
+            btn.disabled = true;
+            btn.classList.add('is-loading');
+        }, 0);
+    });
+}
 
 // Corta reviews longas a algumas linhas com gradiente + botão "Ler mais".
 // Só adiciona o botão quando o texto realmente transborda o clamp.

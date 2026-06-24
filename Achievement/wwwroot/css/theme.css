@@ -23,6 +23,12 @@
 }
 
 /* ===================== Base global ===================== */
+/* Cross-fade entre páginas (View Transitions). Browsers sem suporte ignoram. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
+}
+
 body {
     background: var(--bg-deep);
     color: var(--text);
@@ -55,8 +61,22 @@ hr { border-color: var(--border); opacity: 1; }
 .navbar .nav-link.text-dark {
     color: var(--text-muted) !important;
     transition: color .15s ease;
+    position: relative;
 }
 .navbar .nav-link:hover { color: var(--accent) !important; }
+/* Underline que cresce da esquerda no hover */
+.navbar .nav-link::after {
+    content: "";
+    position: absolute;
+    left: .5rem; right: .5rem;
+    bottom: .3rem;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .2s ease;
+}
+.navbar .nav-link:hover::after { transform: scaleX(1); }
 
 /* Avatar do utilizador na navbar */
 .nav-avatar {
@@ -71,6 +91,12 @@ hr { border-color: var(--border); opacity: 1; }
 .navbar .dropdown-menu-dark {
     background: var(--bg-card);
     border: 1px solid var(--border);
+}
+/* Entrada suave: a animação dispara quando o Bootstrap adiciona .show */
+.navbar .dropdown-menu.show { animation: dropdownIn .18s ease; }
+@keyframes dropdownIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 .navbar .dropdown-menu-dark .dropdown-item { color: var(--text); }
 .navbar .dropdown-menu-dark .dropdown-item:hover { background: var(--bg-card-hover); color: var(--accent); }
@@ -365,7 +391,8 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
     transform: translateY(-4px);
     box-shadow: 0 10px 26px rgba(139, 92, 246, .4);
 }
-.game-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.game-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+.game-card-link:hover .game-cover img { transform: scale(1.05); }
 /* Anel de acento ao passar o rato, como no Backloggd */
 .game-cover::after {
     content: "";
@@ -442,6 +469,12 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
     backdrop-filter: blur(2px);
 }
 .game-card-actions a:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.game-card-actions a i { transition: transform .15s ease; }
+.game-card-actions a:hover i { transform: scale(1.2); }
+
+/* Estrela do rating ganha um "pop" ao passar o rato no card */
+.game-rating .bi { transition: transform .2s ease; }
+.game-card-link:hover .game-rating .bi { transform: scale(1.25) rotate(-6deg); }
 
 /* Estado vazio */
 .games-empty { text-align: center; padding: 4rem 1rem; color: var(--text-muted); }
@@ -558,14 +591,8 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .status-onhold    { border-color: #e0a93b; color: #ffce6b; }
 .status-plan      { border-color: var(--border); color: var(--text-muted); }
 
-/* Ponto de cor do estado (cabeçalho de grupo no perfil) */
+/* Cabeçalho de grupo de estado no perfil */
 .profile-group-title { display: flex; align-items: center; gap: .55rem; }
-.status-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
-.status-dot.status-completed { background: #36c46b; }
-.status-dot.status-playing   { background: var(--accent); }
-.status-dot.status-dropped   { background: var(--danger); }
-.status-dot.status-onhold    { background: #e0a93b; }
-.status-dot.status-plan      { background: var(--text-muted); }
 
 .game-section-title { font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 .6rem; }
 .game-section-title:first-child { margin-top: 0; }
@@ -720,6 +747,39 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .form-floating > .form-control:focus ~ label,
 .form-floating > .form-control:not(:placeholder-shown) ~ label { color: var(--accent-soft); }
 
+/* Botão a submeter: esconde o texto e mostra um spinner */
+.is-loading { position: relative; color: transparent !important; pointer-events: none; }
+.is-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 1em; height: 1em;
+    margin: -.5em 0 0 -.5em;
+    border: 2px solid #fff;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===================== Entrada de conteúdo ===================== */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.game-card, .genre-card, .review-card { animation: fadeUp .4s ease both; }
+
+/* Cascata: só com movimento permitido (em reduced-motion não há atraso,
+   senão os cartões ficariam invisíveis durante o delay). Cap aos primeiros 6. */
+@media (prefers-reduced-motion: no-preference) {
+    .game-card:nth-child(2),  .genre-card:nth-child(2),  .review-card:nth-child(2)  { animation-delay: .04s; }
+    .game-card:nth-child(3),  .genre-card:nth-child(3),  .review-card:nth-child(3)  { animation-delay: .08s; }
+    .game-card:nth-child(4),  .genre-card:nth-child(4),  .review-card:nth-child(4)  { animation-delay: .12s; }
+    .game-card:nth-child(5),  .genre-card:nth-child(5),  .review-card:nth-child(5)  { animation-delay: .16s; }
+    .game-card:nth-child(6),  .genre-card:nth-child(6),  .review-card:nth-child(6)  { animation-delay: .20s; }
+    .game-card:nth-child(n+7), .genre-card:nth-child(n+7), .review-card:nth-child(n+7) { animation-delay: .24s; }
+}
+
 /* ===================== Toast de sucesso ===================== */
 .toast-host {
     position: fixed;
@@ -749,8 +809,16 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
     85%  { opacity: 1; transform: translateX(0); }
     100% { opacity: 0; transform: translateX(120%); }
 }
-/* Acessibilidade: sem deslize, mas ainda desaparece sozinho */
+/* Acessibilidade: respeitar quem prefere menos movimento.
+   Duração mínima (não "none") para as animações de auto-dismiss ainda concluírem. */
 @media (prefers-reduced-motion: reduce) {
-    .toast-pop { animation: toastFade 4s ease forwards; }
+    *, ::before, ::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+    /* Toast mantém os 4s visível (só sem o deslize) */
+    .toast-pop { animation: toastFade 4s ease forwards !important; }
     @keyframes toastFade { 0% { opacity: 0; } 8% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
 }
