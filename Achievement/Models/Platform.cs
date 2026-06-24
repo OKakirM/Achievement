@@ -33,14 +33,6 @@ namespace Achievement.Models
         [StringLength(50, MinimumLength = 2, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres")]
         public string Name { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Data de lançamento da Plataforma
-        /// </summary>
-        [Required(ErrorMessage = "A {0} é obrigatória.")]
-        [Display(Name = "Data de Lançamento")]
-        [DataType(DataType.Date)]
-        public DateTime ReleaseDate { get; set; }
-
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
         // ============================================
