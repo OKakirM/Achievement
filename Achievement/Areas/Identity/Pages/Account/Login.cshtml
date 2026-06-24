@@ -2,49 +2,38 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Entrar";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Login.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
-                    <label asp-for="Input.Username" class="form-label">Nome do Utilizador</label>
-                    <span asp-validation-for="Input.Username" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Palavra-Passe</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Esqueceu da tua Palavra-Passe?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Regista-te como um novo utilizador</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Reenviar confirmação do email</a>
-                    </p>
-                </div>
-            </form>
-        </section>
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Entrar</h1>
+        <p class="auth-subtitle">Bem-vindo de volta ao Achievement.</p>
+
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
+                <label asp-for="Input.Username">Nome do Utilizador</label>
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password">Palavra-Passe</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <label class="auth-check">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                <span>@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
+            </label>
+            <button id="login-submit" type="submit" class="btn-accent auth-submit">Entrar</button>
+        </form>
+
+        <div class="auth-links">
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Criar uma conta</a>
+            <a id="forgot-password" asp-page="./ForgotPassword">Esqueceste a palavra-passe?</a>
+            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Reenviar confirmação de email</a>
+        </div>
     </div>
 </div>
 

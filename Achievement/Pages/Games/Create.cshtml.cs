@@ -110,11 +110,8 @@ namespace Achievement.Pages.Games
                 hasErrors = true;
             }
 
-            if(Game.Rating < 0.0 || Game.Rating > 10.0)
-            {
-                ModelState.AddModelError("Game.Rating", "A avaliação do jogo deve estar entre 0.0 e 10.0.");
-                hasErrors = true;
-            }
+            // Rating funciona com a média das reviews dos utilizadores
+            Game.Rating = 0;
 
             // =============================================
             // Validação de Duplicidade dos campos de texto

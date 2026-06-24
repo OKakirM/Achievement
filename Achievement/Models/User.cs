@@ -69,6 +69,13 @@ namespace Achievement.Models
         [Display(Name = "Foto de Perfil")]
         public string? Image { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Imagem de banner do perfil do Utilizador
+        /// - Pode não ser obrigatório
+        /// </summary>
+        [Display(Name = "Banner do Perfil")]
+        public string? Banner { get; set; } = string.Empty;
+
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
         // ============================================
@@ -80,9 +87,9 @@ namespace Achievement.Models
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
         /// <summary>
-        /// Conexão de N-N, vários utilizador possui vários jogos
+        /// Conexão de N-N, via entidade de junção UserGame.
         /// </summary>
         [Display(Name = "Jogos")]
-        public ICollection<Game> Games { get; set; } = new List<Game>();
+        public ICollection<UserGame> UserGames { get; set; } = new List<UserGame>();
     }
 }

@@ -5,6 +5,7 @@
     ViewData["Title"] = "Editar Jogo";
 }
 
+<div class="form-page">
 <div class="page-header">
     <div>
         <h1 class="page-title">Editar Jogo</h1>
@@ -13,98 +14,156 @@
     <a asp-page="./Index" class="btn btn-secondary">Voltar à lista</a>
 </div>
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="content-card">
-            <form method="post" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Game.Id" />
-                <input type="hidden" asp-for="Game.CoverImage" />
-                <input type="hidden" asp-for="Game.BannerImage" />
-                <input type="hidden" asp-for="RemoveCoverImage" id="RemoveCoverImageInput" />
-                <input type="hidden" asp-for="RemoveBannerImage" id="RemoveBannerImageInput" />
+<div class="content-card">
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Game.Id" />
+        <input type="hidden" asp-for="Game.CoverImage" />
+        <input type="hidden" asp-for="Game.BannerImage" />
+        <input type="hidden" asp-for="RemoveCoverImage" id="RemoveCoverImageInput" />
+        <input type="hidden" asp-for="RemoveBannerImage" id="RemoveBannerImageInput" />
 
-                <div class="form-group">
-                    <label asp-for="Game.Name" class="control-label"></label> <span class="text-danger">*</span>
-                    <input asp-for="Game.Name" class="form-control" aria-required="true" />
-                    <span asp-validation-for="Game.Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Game.Description" class="control-label"></label> <span class="text-danger">*</span>
-                    <textarea asp-for="Game.Description" class="form-control" rows="5" aria-required="true"></textarea>
-                    <span asp-validation-for="Game.Description" class="text-danger"></span>
-                </div>
+        <div class="form-layout">
+            <div class="form-main">
+                <section class="form-section">
+                    <div class="form-section-legend">Identidade</div>
 
-                <div class="row">
-                    <div class="form-group col-md-4">
-                        <label asp-for="ReleaseDateInput" class="control-label"></label> <span class="text-danger">*</span>
-                        <input asp-for="ReleaseDateInput" class="form-control" placeholder="dd/MM/aaaa" aria-required="true" />
-                        <span asp-validation-for="ReleaseDateInput" class="text-danger"></span>
+                    <div class="form-group">
+                        <label asp-for="Game.Name" class="control-label"></label> <span class="req">*</span>
+                        <input asp-for="Game.Name" class="form-control" aria-required="true" />
+                        <span asp-validation-for="Game.Name" class="text-danger"></span>
                     </div>
-                    <div class="form-group col-md-4">
-                        <label asp-for="Game.Rating" class="control-label"></label>
-                        <input asp-for="Game.Rating" class="form-control" />
-                        <span asp-validation-for="Game.Rating" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label asp-for="Game.Length" class="control-label"></label>
-                        <input asp-for="Game.Length" class="form-control" />
-                        <span asp-validation-for="Game.Length" class="text-danger"></span>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="SelectedPlatformIds" class="control-label">Plataformas</label>
-                        <select asp-for="SelectedPlatformIds" asp-items="Model.PlatformsList" class="form-select" multiple size="6"></select>
-                        <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
-                        <span asp-validation-for="SelectedPlatformIds" class="text-danger"></span>
+                    <div class="form-group">
+                        <label asp-for="Game.Description" class="control-label"></label> <span class="req">*</span>
+                        <textarea asp-for="Game.Description" class="form-control" rows="5" aria-required="true"></textarea>
+                        <span asp-validation-for="Game.Description" class="text-danger"></span>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="SelectedGenreIds" class="control-label">Géneros</label>
-                        <select asp-for="SelectedGenreIds" asp-items="Model.GenresList" class="form-select" multiple size="6"></select>
-                        <small class="form-text text-muted">Use Ctrl (ou Cmd) + clique para selecionar várias.</small>
-                        <span asp-validation-for="SelectedGenreIds" class="text-danger"></span>
-                    </div>
-                </div>
+                </section>
 
-                <div class="form-group">
-                    <label>Imagem de Capa</label>
-                    <div id="coverPreviewWrapper" class="mb-2" style="@(string.IsNullOrEmpty(Model.Game.CoverImage) ? "display:none;" : "")">
-                        <img id="coverPreview" src="@Url.Content("~/" + Model.Game.CoverImage)" class="image-preview d-block mb-2" />
-                        <button type="button" id="removeCoverBtn" class="btn btn-sm btn-outline-danger">Remover imagem</button>
-                    </div>
-                    <p id="coverRemovedMsg" class="text-muted" style="display:none;">
-                        A imagem será substituída pela imagem padrão ao guardar.
-                        <button type="button" id="undoRemoveCoverBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
-                    </p>
-                    <label asp-for="CoverImageFile" class="control-label"></label>
-                    <input asp-for="CoverImageFile" class="form-control" id="CoverImageFileInput" />
-                    <span asp-validation-for="CoverImageFile" class="text-danger"></span>
-                </div>
+                <section class="form-section">
+                    <div class="form-section-legend">Detalhes</div>
 
-                <div class="form-group">
-                    <label>Imagem do Banner</label>
-                    <div id="bannerPreviewWrapper" class="mb-2" style="@(string.IsNullOrEmpty(Model.Game.BannerImage) ? "display:none;" : "")">
-                        <img id="bannerPreview" src="@Url.Content("~/" + Model.Game.BannerImage)" class="image-preview d-block mb-2" style="max-width:400px;" />
-                        <button type="button" id="removeBannerBtn" class="btn btn-sm btn-outline-danger">Remover imagem</button>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="ReleaseDateInput" class="control-label"></label> <span class="req">*</span>
+                            <input asp-for="ReleaseDateInput" class="form-control" placeholder="dd/MM/aaaa" aria-required="true" />
+                            <span asp-validation-for="ReleaseDateInput" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="Game.Length" class="control-label"></label>
+                            <input asp-for="Game.Length" class="form-control" />
+                            <span asp-validation-for="Game.Length" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="Game.Developer" class="control-label"></label>
+                            <input asp-for="Game.Developer" class="form-control" />
+                            <span asp-validation-for="Game.Developer" class="text-danger"></span>
+                        </div>
                     </div>
-                    <p id="bannerRemovedMsg" class="text-muted" style="display:none;">
-                        A imagem será substituída pela imagem padrão ao guardar.
-                        <button type="button" id="undoRemoveBannerBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
-                    </p>
-                    <label asp-for="BannerImageFile" class="control-label"></label>
-                    <input asp-for="BannerImageFile" class="form-control" id="BannerImageFileInput" />
-                    <span asp-validation-for="BannerImageFile" class="text-danger"></span>
-                </div>
+                </section>
 
-                <div class="game-detail-actions">
-                    <input type="submit" value="Guardar" class="btn btn-primary" />
-                    <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
-                </div>
-            </form>
+                <section class="form-section">
+                    <div class="form-section-legend">Categorização</div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Plataformas</label>
+                            <div class="tag-input" data-name="SelectedPlatformIds">
+                                <div class="tag-input-chips">
+                                    @foreach (var item in Model.PlatformsList.Where(i => Model.SelectedPlatformIds.Contains(int.Parse(i.Value))))
+                                    {
+                                        <span class="chip">
+                                            <span class="chip-label">@item.Text</span>
+                                            <button type="button" class="chip-x" aria-label="Remover">×</button>
+                                            <input type="hidden" name="SelectedPlatformIds" value="@item.Value" />
+                                        </span>
+                                    }
+                                </div>
+                                <input type="text" class="tag-input-search" data-source="platformsDatalist" placeholder="Escreve para procurar..." autocomplete="off" />
+                                <ul class="tag-suggestions" hidden></ul>
+                            </div>
+                            <datalist id="platformsDatalist">
+                                @foreach (var item in Model.PlatformsList)
+                                {
+                                    <option value="@item.Text" data-id="@item.Value"></option>
+                                }
+                            </datalist>
+                            <span class="form-hint">Escreve o nome e escolhe na lista para adicionar.</span>
+                            <span asp-validation-for="SelectedPlatformIds" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Géneros</label>
+                            <div class="tag-input" data-name="SelectedGenreIds">
+                                <div class="tag-input-chips">
+                                    @foreach (var item in Model.GenresList.Where(i => Model.SelectedGenreIds.Contains(int.Parse(i.Value))))
+                                    {
+                                        <span class="chip">
+                                            <span class="chip-label">@item.Text</span>
+                                            <button type="button" class="chip-x" aria-label="Remover">×</button>
+                                            <input type="hidden" name="SelectedGenreIds" value="@item.Value" />
+                                        </span>
+                                    }
+                                </div>
+                                <input type="text" class="tag-input-search" data-source="genresDatalist" placeholder="Escreve para procurar..." autocomplete="off" />
+                                <ul class="tag-suggestions" hidden></ul>
+                            </div>
+                            <datalist id="genresDatalist">
+                                @foreach (var item in Model.GenresList)
+                                {
+                                    <option value="@item.Text" data-id="@item.Value"></option>
+                                }
+                            </datalist>
+                            <span class="form-hint">Escreve o nome e escolhe na lista para adicionar.</span>
+                            <span asp-validation-for="SelectedGenreIds" class="text-danger"></span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="form-media">
+                <section class="form-section">
+                    <div class="form-section-legend">Media</div>
+
+                    <div class="form-group">
+                        <label asp-for="CoverImageFile" class="control-label">Imagem de Capa</label>
+                        <div id="coverPreviewWrapper" class="image-preview-wrap" style="@(string.IsNullOrEmpty(Model.Game.CoverImage) ? "display:none;" : "")">
+                            <img id="coverPreview" src="@Url.Content("~/" + Model.Game.CoverImage)" class="image-preview" alt="Capa atual" />
+                            <button type="button" id="removeCoverBtn" class="image-preview-x" aria-label="Remover imagem">×</button>
+                        </div>
+                        <p id="coverRemovedMsg" class="form-hint" style="display:none;">
+                            Vai ser substituída pela imagem padrão ao guardar.
+                            <button type="button" id="undoRemoveCoverBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
+                        </p>
+                        <input asp-for="CoverImageFile" type="file" class="form-control" id="CoverImageFileInput" accept="image/jpeg,image/png" />
+                        <span class="form-hint">JPG ou PNG, até 10 MB.</span>
+                        <span asp-validation-for="CoverImageFile" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="BannerImageFile" class="control-label">Imagem do Banner</label>
+                        <div id="bannerPreviewWrapper" class="image-preview-wrap" style="@(string.IsNullOrEmpty(Model.Game.BannerImage) ? "display:none;" : "")">
+                            <img id="bannerPreview" src="@Url.Content("~/" + Model.Game.BannerImage)" class="image-preview" alt="Banner atual" />
+                            <button type="button" id="removeBannerBtn" class="image-preview-x" aria-label="Remover imagem">×</button>
+                        </div>
+                        <p id="bannerRemovedMsg" class="form-hint" style="display:none;">
+                            Vai ser substituída pela imagem padrão ao guardar.
+                            <button type="button" id="undoRemoveBannerBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
+                        </p>
+                        <input asp-for="BannerImageFile" type="file" class="form-control" id="BannerImageFileInput" accept="image/jpeg,image/png" />
+                        <span class="form-hint">JPG ou PNG, até 10 MB.</span>
+                        <span asp-validation-for="BannerImageFile" class="text-danger"></span>
+                    </div>
+                </section>
+            </aside>
         </div>
-    </div>
+
+        <div class="form-actions">
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-accent">Guardar alterações</button>
+        </div>
+    </form>
+</div>
 </div>
 
 @section Scripts {

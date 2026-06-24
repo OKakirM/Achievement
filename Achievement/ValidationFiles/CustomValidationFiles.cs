@@ -36,5 +36,9 @@ namespace Achievement.ValidationFiles
         public const string _GamesBannerFolder = "images/games/banners";
         public const string _GamesCoverDefaultImage = "images/games/covers/_default_cover.png";
         public const string _GamesBannerDefaultImage = "images/games/banners/_default_banner.png";
+
+        // - Pastas para imagens de perfil de utilizadores
+        public const string _UsersAvatarFolder = "images/users/avatars";
+        public const string _UsersBannerFolder = "images/users/banners";
     }
 }
