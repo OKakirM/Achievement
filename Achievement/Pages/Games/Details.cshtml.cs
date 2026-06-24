@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Achievement.Pages.Games
@@ -29,7 +28,7 @@ namespace Achievement.Pages.Games
         public UserGame? MyEntry { get; set; }
 
         // Estado na lista de cada autor de review, para mostrar junto à review
-        public Dictionary<int, string> ReviewerStatus { get; set; } = new();
+        public Dictionary<int, GameStatus> ReviewerStatus { get; set; } = new();
 
         // Indica se o utilizador logado pode avaliar este jogo.
         public bool CanReview => MyEntry != null && MyEntry.Status != GameStatus.PlanToPlay;
@@ -147,6 +146,7 @@ namespace Achievement.Pages.Games
 
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = review == null ? "Review publicada com sucesso." : "Review atualizada.";
             return RedirectToPage("./Details", new { id, slug });
         }
 
@@ -174,13 +174,26 @@ namespace Achievement.Pages.Games
                 entry.Status = Status;
             }
 
+            // "Pretendo Jogar" não permite avaliar, por isso voltar a esse estado apaga a review.
+            if (Status == GameStatus.PlanToPlay)
+            {
+                var review = await _context.Reviews
+                    .FirstOrDefaultAsync(r => r.GameFK == id && r.UserFK == currentUser.Id);
+                if (review != null)
+                {
+                    _context.Reviews.Remove(review);
+                }
+            }
+
             await _context.SaveChangesAsync();
 
-            // Recalcula o número de jogadas do jogo
+            // Recalcula a nota (média das reviews) e o número de jogadas do jogo
+            await _context.RecalculateGameRatingAsync(id);
             await _context.RecalculateGamePlaysAsync(id);
 
             await _context.SaveChangesAsync();
 
+            TempData["Success"] = entry == null ? "Jogo adicionado à tua lista." : "Estado atualizado.";
             return RedirectToPage("./Details", new { id, slug });
         }
 
@@ -202,12 +215,24 @@ namespace Achievement.Pages.Games
             if (entry != null)
             {
                 _context.UserGames.Remove(entry);
+
+                // Remover o jogo da lista também remove a review do utilizador para esse jogo.
+                var review = await _context.Reviews
+                    .FirstOrDefaultAsync(r => r.GameFK == id && r.UserFK == currentUser.Id);
+                if (review != null)
+                {
+                    _context.Reviews.Remove(review);
+                }
+
                 await _context.SaveChangesAsync();
 
-                // Recalcula o número de jogadas do jogo
+                // Recalcula a nota (média das reviews) e o número de jogadas do jogo
+                await _context.RecalculateGameRatingAsync(id);
                 await _context.RecalculateGamePlaysAsync(id);
 
                 await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Jogo removido da tua lista.";
             }
 
             return RedirectToPage("./Details", new { id, slug });
@@ -232,7 +257,7 @@ namespace Achievement.Pages.Games
 
             Game = game;
 
-            ReviewerStatus = game.UserGames.ToDictionary(ug => ug.UserFK, ug => StatusName(ug.Status));
+            ReviewerStatus = game.UserGames.ToDictionary(ug => ug.UserFK, ug => ug.Status);
 
             if (currentUser != null)
             {
@@ -241,15 +266,6 @@ namespace Achievement.Pages.Games
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Nome de apresentação ([Display(Name=...)]) de um estado da lista.
-        /// </summary>
-        private static string StatusName(GameStatus status)
-        {
-            var member = typeof(GameStatus).GetMember(status.ToString()).FirstOrDefault();
-            return member?.GetCustomAttribute<DisplayAttribute>()?.Name ?? status.ToString();
         }
 
         /// <summary>

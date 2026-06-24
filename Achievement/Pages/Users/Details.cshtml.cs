@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Achievement.Data;
 using Achievement.Models;
@@ -50,6 +49,7 @@ namespace Achievement.Pages.Users
 
             ProfileUser.Image = await SaveImageAsync(AvatarFile!, CustomValidationFiles._UsersAvatarFolder);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Foto de perfil atualizada.";
             return RedirectToPage(new { id });
         }
 
@@ -61,6 +61,7 @@ namespace Achievement.Pages.Users
 
             ProfileUser.Banner = await SaveImageAsync(BannerFile!, CustomValidationFiles._UsersBannerFolder);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Banner do perfil atualizado.";
             return RedirectToPage(new { id });
         }
 
@@ -121,13 +122,5 @@ namespace Achievement.Pages.Users
             return $"{folder}/{name}";
         }
 
-        /// <summary>
-        /// Nome de apresentação ([Display(Name=...)]) de um estado da lista.
-        /// </summary>
-        public static string StatusName(GameStatus status)
-        {
-            var member = typeof(GameStatus).GetMember(status.ToString()).FirstOrDefault();
-            return member?.GetCustomAttribute<DisplayAttribute>()?.Name ?? status.ToString();
-        }
     }
 }

@@ -1,13 +1,13 @@
 @page "/Games/{id:int}/{slug?}"
+@using Achievement.Models
 @model Achievement.Pages.Games.DetailsModel
-
 @{
     ViewData["Title"] = Model.Game.Name;
 }
 
-    <div class="game-detail-banner">
-        <img src="~/@Model.Game.BannerImage" alt="Banner de @Model.Game.Name" />
-    </div>
+<div class="game-detail-banner">
+    <img src="~/@Model.Game.BannerImage" alt="Banner de @Model.Game.Name" />
+</div>
 
 <div class="game-detail-head">
     <div class="game-detail-cover">
@@ -18,12 +18,15 @@
         <h1 class="game-detail-title">@Model.Game.Name</h1>
         <div class="game-detail-sub">
             <span>@Model.Game.ReleaseDate.ToString("dd/MM/yyyy")</span>
-            <span class="dot">•</span><span>@Model.Game.Developer</span>
+            @if (!string.IsNullOrWhiteSpace(Model.Game.Developer))
+            {
+                <span class="dot">•</span><span>@Model.Game.Developer</span>
+            }
         </div>
 
         <div class="game-stats">
             <div class="game-stat">
-                <div class="value star">@(Model.Game.Rating.HasValue ? Model.Game.Rating.Value.ToString("0.0") : "—")</div>
+                <div class="value star">@(Model.Game.Rating.HasValue && Model.Game.Rating > 0 ? Model.Game.Rating.Value.ToString("0.0") : "—")</div>
                 <div class="label">Avaliação</div>
             </div>
             <div class="game-stat">
@@ -31,7 +34,7 @@
                 <div class="label">Duração</div>
             </div>
             <div class="game-stat">
-                <div class="value">@(Model.Game.Plays?.ToString() ?? "0")</div>
+                <div class="value">@(Model.Game.Plays ?? 0)</div>
                 <div class="label">Jogaram</div>
             </div>
             <div class="game-stat">
@@ -40,109 +43,141 @@
             </div>
         </div>
 
-        <div class="game-section-title">Plataformas</div>
-        <div class="tag-list">
-            @foreach (var p in Model.Game.Platforms)
-            {
-                <span class="tag tag-accent">@p.Name</span>
-            }
-        </div>
-
-        <div class="game-section-title">Géneros</div>
-        <div class="tag-list">
-            @foreach (var g in Model.Game.Genres)
-            {
-                <span class="tag">@g.Name</span>
-            }
-        </div>
-
-        <div class="game-section-title">Descrição</div>
-        <p class="game-description">@Model.Game.Description</p>
-
         <div class="game-detail-actions">
             @if (User.IsInRole("Admin"))
             {
                 <a asp-page="./Edit" asp-route-id="@Model.Game.Id" asp-route-slug="@Model.Game.Slug" class="btn-accent">Editar</a>
                 <a asp-page="./Delete" asp-route-id="@Model.Game.Id" asp-route-slug="@Model.Game.Slug" class="btn btn-danger">Eliminar</a>
             }
-
-            <a asp-page="./Index" class="btn btn-secondary">Voltar à lista</a>
+            <a asp-page="./Index" class="btn btn-secondary">Voltar aos jogos</a>
         </div>
     </div>
 </div>
 
-@if (User.Identity?.IsAuthenticated == true)
-{
-    <div class="content-card" style="margin-top:1.5rem;">
-        <h2 class="game-section-title">Minha Lista</h2>
-        <form method="post" asp-page-handler="Status" style="display:flex;gap:.75rem;align-items:end;flex-wrap:wrap;">
-            <div class="form-group" style="margin:0;">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" asp-items="Html.GetEnumSelectList<Achievement.Models.GameStatus>()" class="form-select"></select>
-            </div>
-            <button type="submit" class="btn btn-primary">@(Model.MyEntry == null ? "Adicionar à lista" : "Atualizar estado")</button>
-        </form>
-        @if (Model.MyEntry != null)
-        {
-            <form method="post" asp-page-handler="Remove" style="margin-top:.75rem;">
-                <button type="submit" class="btn btn-danger">Remover da lista</button>
-            </form>
-        }
-    </div>
-}
+<div class="game-detail-body">
+    <div class="game-detail-main">
+        <section class="content-card">
+            <h2 class="game-section-title">Sobre</h2>
+            <p class="game-description">@Model.Game.Description</p>
 
-<div class="content-card" style="margin-top:1.5rem;">
-    <h2 class="game-section-title">Reviews (@Model.Game.Reviews.Count)</h2>
-
-    @if (User.Identity?.IsAuthenticated != true)
-    {
-        <p class="text-muted">
-            <a asp-area="Identity" asp-page="/Account/Login">Inicia sessão</a> para deixar uma review.
-        </p>
-    }
-    else if (!Model.CanReview)
-    {
-        <p class="text-muted">Adiciona o jogo à tua lista com um estado diferente de "Pretendo Jogar" para poderes avaliar.</p>
-    }
-    else
-    {
-        <form method="post" asp-page-handler="Review" style="margin-bottom:1.5rem;">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ReviewRating" class="control-label">Nota (0 a 10)</label>
-                <input asp-for="ReviewRating" type="number" step="0.1" min="0" max="10" class="form-control" style="max-width:120px;" />
-                <span asp-validation-for="ReviewRating" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReviewText" class="control-label">A tua review</label>
-                <textarea asp-for="ReviewText" rows="4" class="form-control" placeholder="O que achaste do jogo?"></textarea>
-                <span asp-validation-for="ReviewText" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">@(Model.MyReview == null ? "Publicar review" : "Atualizar review")</button>
-        </form>
-    }
-
-    @if (!Model.Game.Reviews.Any())
-    {
-        <p class="text-muted">Ainda não há reviews. Sê o primeiro!</p>
-    }
-    else
-    {
-        foreach (var r in Model.Game.Reviews.OrderByDescending(r => r.Id))
-        {
-            <div style="border-top:1px solid #2a2a2a;padding:.75rem 0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <strong>
-                        @r.User?.Name
-                        @if (Model.ReviewerStatus.TryGetValue(r.UserFK, out var st))
-                        {
-                            <span class="tag">@st</span>
-                        }
-                    </strong>
-                    <span class="star">@r.Rating.ToString("0.0")</span>
+            @if (Model.Game.Platforms.Any())
+            {
+                <div class="game-section-title">Plataformas</div>
+                <div class="tag-list">
+                    @foreach (var p in Model.Game.Platforms)
+                    {
+                        <span class="tag tag-accent">@p.Name</span>
+                    }
                 </div>
-                <p style="margin:.25rem 0 0;">@r.ReviewContent</p>
-            </div>
+            }
+
+            @if (Model.Game.Genres.Any())
+            {
+                <div class="game-section-title">Géneros</div>
+                <div class="tag-list">
+                    @foreach (var g in Model.Game.Genres)
+                    {
+                        <span class="tag">@g.Name</span>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="content-card">
+            <h2 class="game-section-title">Reviews (@Model.Game.Reviews.Count)</h2>
+
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <p class="text-muted">
+                    <a asp-area="Identity" asp-page="/Account/Login">Inicia sessão</a> para deixar uma review.
+                </p>
+            }
+            else if (!Model.CanReview)
+            {
+                <p class="text-muted">Adiciona o jogo à tua lista com um estado diferente de "Pretendo Jogar" para poderes avaliar.</p>
+            }
+            else
+            {
+                <form method="post" asp-page-handler="Review" class="review-form">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="ReviewRating" class="control-label">Nota (0 a 10)</label>
+                        <input asp-for="ReviewRating" type="number" step="0.1" min="0" max="10" class="form-control" style="max-width:120px;" />
+                        <span asp-validation-for="ReviewRating" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ReviewText" class="control-label">A tua review</label>
+                        <textarea asp-for="ReviewText" rows="4" class="form-control" placeholder="O que achaste do jogo?"></textarea>
+                        <span asp-validation-for="ReviewText" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn-accent">@(Model.MyReview == null ? "Publicar review" : "Atualizar review")</button>
+                </form>
+            }
+
+            @if (!Model.Game.Reviews.Any())
+            {
+                <p class="text-muted">Ainda não há reviews. Sê o primeiro!</p>
+            }
+            else
+            {
+                <div class="review-list">
+                    @foreach (var r in Model.Game.Reviews.OrderByDescending(r => r.Id))
+                    {
+                        <article class="review-card">
+                            <a class="review-avatar" asp-page="/Users/Details" asp-route-id="@r.UserFK">
+                                @if (string.IsNullOrEmpty(r.User?.Image))
+                                {
+                                    <span>@((r.User?.Name ?? "?").Substring(0, 1).ToUpper())</span>
+                                }
+                                else
+                                {
+                                    <img src="~/@r.User!.Image" alt="@r.User.Name" />
+                                }
+                            </a>
+                            <div class="review-body">
+                                <div class="review-head">
+                                    <a class="review-author" asp-page="/Users/Details" asp-route-id="@r.UserFK">@r.User?.Name</a>
+                                    @if (Model.ReviewerStatus.TryGetValue(r.UserFK, out var st))
+                                    {
+                                        <span class="tag @st.CssClass()">@st.DisplayName()</span>
+                                    }
+                                    <span class="review-rating">★ @r.Rating.ToString("0.0")</span>
+                                </div>
+                                <p class="review-text">@r.ReviewContent</p>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+
+    <aside class="game-detail-side">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <section class="content-card list-panel">
+                <h2 class="game-section-title">A Minha Lista</h2>
+                <form method="post" asp-page-handler="Status" class="list-form"
+                      onsubmit="return @(Model.MyReview == null ? "true" : "this.Status.value !== '" + (int)GameStatus.PlanToPlay + "'") || confirm('Mudar para &quot;Pretendo Jogar&quot; vai apagar a tua review deste jogo. Queres mesmo continuar?');">
+                    <label asp-for="Status" class="control-label"></label>
+                    <select asp-for="Status" asp-items="Html.GetEnumSelectList<GameStatus>()" class="form-select"></select>
+                    <button type="submit" class="btn-accent">@(Model.MyEntry == null ? "Adicionar à lista" : "Atualizar estado")</button>
+                </form>
+                @if (Model.MyEntry != null)
+                {
+                    <form method="post" asp-page-handler="Remove" class="list-remove"
+                          onsubmit="return confirm('@(Model.MyReview != null ? "Tens uma review neste jogo. Ao remover o jogo da lista, a tua review também será apagada. Queres mesmo continuar?" : "Queres mesmo remover este jogo da tua lista?")');">
+                        <button type="submit" class="btn-link-danger">Remover da lista</button>
+                    </form>
+                }
+            </section>
         }
-    }
+        else
+        {
+            <section class="content-card list-panel">
+                <h2 class="game-section-title">A Minha Lista</h2>
+                <p class="text-muted"><a asp-area="Identity" asp-page="/Account/Login">Inicia sessão</a> para guardar este jogo na tua lista.</p>
+            </section>
+        }
+    </aside>
 </div>

@@ -58,7 +58,10 @@
         {
             foreach (var group in games.GroupBy(ug => ug.Status).OrderBy(g => g.Key))
             {
-                <div class="game-section-title">@DetailsModel.StatusName(group.Key) (@group.Count())</div>
+                <div class="game-section-title profile-group-title">
+                    <span class="status-dot @group.Key.CssClass()"></span>
+                    @group.Key.DisplayName() <span class="text-muted">(@group.Count())</span>
+                </div>
                 <div class="profile-games">
                     @foreach (var ug in group)
                     {
