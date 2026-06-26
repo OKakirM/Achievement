@@ -44,6 +44,7 @@ namespace Achievement.Pages.Games
         // Variável auxiliar para facilitar a digitação da data de lançamento
         [BindProperty]
         [Display(Name = "Data de Lançamento")]
+        [Required(ErrorMessage = "A {0} é obrigatória.")]
         [RegularExpression(CustomValidationFiles._ReleaseDateRegexPattern, ErrorMessage = "Data inválida. Use yyyy/MM/dd, dd/MM/yyyy ou MM/dd/yyyy.")]
         public string? ReleaseDateInput { get; set; }
 

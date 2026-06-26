@@ -136,8 +136,8 @@ public class RegisterModel : PageModel
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme)!;
 
-                await _emailSender.SendEmailAsync(Input.UserData.Email, "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                await _emailSender.SendEmailAsync(Input.UserData.Email, "Confirme seu e-mail!",
+                    $"Por favor, confirme seu e-mail ao <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicar aqui</a>.");
 
                 Input.UserData.CreatedAt = DateTime.UtcNow;
                 _context.Users.Add(Input.UserData);

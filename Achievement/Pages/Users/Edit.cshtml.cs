@@ -34,6 +34,9 @@ namespace Achievement.Pages.Users
         /// </summary>
         [BindProperty]
         [DataType(DataType.Password)]
+        [RegularExpression(
+            @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*\-]).{8,}$",
+            ErrorMessage = "A Palavra-Passe tem que ter: mínimo 8 caracteres, uma maiúscula, uma minúscula, um número e um caractere especial")]
         [Display(Name = "Nova Palavra-Passe")]
         public string? NewPassword { get; set; }
 
