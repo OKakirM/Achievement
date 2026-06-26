@@ -267,6 +267,7 @@ namespace Achievement.Pages.Games
             }
 
             Game.Slug = await GenerateUniqueSlugAsync(GenerateSlug(Game.Name));
+            Game.CreatedAt = DateTime.UtcNow;
 
             _context.Games.Add(Game);
             await _context.SaveChangesAsync();

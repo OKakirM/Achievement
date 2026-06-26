@@ -1,10 +1,91 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Início";
+    var hero = Model.Featured.FirstOrDefault();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (hero != null)
+{
+    <section class="home-hero">
+        <div class="home-hero-banner">
+            <img src="~/@hero.BannerImage" alt="@hero.Name" />
+            <div class="home-hero-fade"></div>
+        </div>
+        <div class="home-hero-content">
+            <img class="home-hero-cover" src="~/@hero.CoverImage" alt="@hero.Name" />
+            <div class="home-hero-info">
+                <span class="home-hero-tag"><i class="bi bi-fire"></i> Em destaque</span>
+                <h1 class="home-hero-title">@hero.Name</h1>
+                <div class="home-hero-meta">
+                    <span>@hero.ReleaseDate.Year</span>
+                    @if (hero.Rating.HasValue && hero.Rating.Value > 0)
+                    {
+                        <span class="home-hero-rating"><i class="bi bi-star-fill"></i> @hero.Rating.Value.ToString("0.0")</span>
+                    }
+                    @if (hero.Plays.HasValue && hero.Plays.Value > 0)
+                    {
+                        <span><i class="bi bi-people-fill"></i> @hero.Plays jogadores</span>
+                    }
+                </div>
+                <a class="btn-accent" asp-page="/Games/Details" asp-route-id="@hero.Id" asp-route-slug="@hero.Slug">Ver jogo</a>
+            </div>
+        </div>
+    </section>
+}
+
+@{
+    async Task GameRow(string title, string icon, IList<Achievement.Models.Game> games)
+    {
+        if (games.Count == 0) return;
+        <section class="home-section">
+            <h2 class="home-section-title"><i class="bi @icon"></i> @title</h2>
+            <div class="games-grid">
+                @foreach (var item in games)
+                {
+                    <div class="game-card">
+                        <a class="game-card-link" asp-page="/Games/Details" asp-route-id="@item.Id" asp-route-slug="@item.Slug">
+                            <div class="game-cover">
+                                <img src="~/@item.CoverImage" alt="@item.Name" loading="lazy" />
+                                @if (item.Rating.HasValue && item.Rating.Value > 0)
+                                {
+                                    <span class="game-rating"><i class="bi bi-star-fill"></i> @item.Rating.Value.ToString("0.0")</span>
+                                }
+                                <div class="game-card-overlay">
+                                    <span class="game-overlay-name">@item.Name</span>
+                                    <span class="game-overlay-year">@item.ReleaseDate.Year</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+}
+
+@{ await GameRow("Populares da semana", "bi-graph-up-arrow", Model.PopularThisWeek); }
+@{ await GameRow("Adicionados recentemente", "bi-stars", Model.RecentlyAdded); }
+
+@if (Model.RecentReviews.Count > 0)
+{
+    <section class="home-section">
+        <h2 class="home-section-title"><i class="bi bi-chat-square-quote"></i> Reviews recentes</h2>
+        <div class="home-review-grid">
+            @foreach (var r in Model.RecentReviews)
+            {
+                <article class="home-review-card">
+                    <a class="home-review-game" asp-page="/Games/Details" asp-route-id="@r.GameFK" asp-route-slug="@r.Game?.Slug">
+                        <img src="~/@r.Game?.CoverImage" alt="@r.Game?.Name" loading="lazy" />
+                        <span>@r.Game?.Name</span>
+                    </a>
+                    <p class="home-review-text">@r.ReviewContent</p>
+                    <div class="home-review-foot">
+                        <a class="review-author" asp-page="/Users/Details" asp-route-id="@r.UserFK">@r.User?.Name</a>
+                        <span class="review-rating"><i class="bi bi-star-fill"></i> @r.Rating.ToString("0.0")</span>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+}

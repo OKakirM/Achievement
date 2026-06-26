@@ -29,3 +29,88 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+/* ============================================
+   Homepage
+   ============================================ */
+
+/* Hero */
+.home-hero {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 0 0 2.5rem;
+    border: 1px solid var(--border);
+}
+.home-hero-banner { position: absolute; inset: 0; }
+.home-hero-banner img { width: 100%; height: 100%; object-fit: cover; }
+.home-hero-fade {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, var(--bg-deep) 0%, rgba(19,21,28,.85) 40%, rgba(19,21,28,.2) 100%),
+                linear-gradient(0deg, var(--bg-deep), transparent 60%);
+}
+.home-hero-content {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    min-height: 340px;
+    padding: 2rem;
+}
+.home-hero-cover {
+    width: 150px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.5);
+    flex-shrink: 0;
+}
+.home-hero-info { display: flex; flex-direction: column; gap: .6rem; }
+.home-hero-tag {
+    color: var(--accent-soft); font-weight: 600; font-size: .85rem;
+    text-transform: uppercase; letter-spacing: .04em;
+}
+.home-hero-title { font-size: 2.4rem; margin: 0; line-height: 1.05; }
+.home-hero-meta {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    color: var(--text-muted); font-size: .95rem;
+}
+.home-hero-rating { color: var(--star); }
+.home-hero-info .btn-accent { align-self: flex-start; margin-top: .4rem; }
+
+/* Secções */
+.home-section { margin-bottom: 3rem; }
+.home-section-title {
+    font-size: 1.4rem; margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: .5rem;
+}
+.home-section-title i { color: var(--accent); }
+
+/* Grid não-linear de reviews (masonry via columns) */
+.home-review-grid { columns: 3 280px; column-gap: 1rem; }
+.home-review-card {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+}
+.home-review-card:hover { border-color: var(--accent); }
+.home-review-game {
+    display: flex; align-items: center; gap: .6rem;
+    margin-bottom: .7rem; color: var(--text); font-weight: 600;
+}
+.home-review-game img { width: 36px; height: 48px; object-fit: cover; border-radius: 5px; }
+.home-review-text {
+    color: var(--text-muted); font-size: .92rem; margin: 0 0 .8rem;
+    line-height: 1.5;
+}
+.home-review-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: .85rem;
+}
+.home-review-foot .review-rating { color: var(--star); }
+
+@media (max-width: 640px) {
+    .home-hero-content { flex-direction: column; align-items: flex-start; min-height: 0; }
+    .home-hero-cover { width: 110px; }
+    .home-hero-title { font-size: 1.8rem; }
+}

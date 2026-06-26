@@ -1,10 +1,3 @@
-/* =====================================================================
-   Achievement — Tema escuro partilhado
-   Inspirado em Backloggd / Anilist. Roxo como acento, preto azulado.
-   Tipografia: Sora (display/números) + Inter (corpo).
-   Usado globalmente (ligado no _Layout) e por todas as páginas.
-   ===================================================================== */
-
 :root {
     --bg-deep: #13151c;       /* fundo principal: preto azulado, não 100% preto */
     --bg-elevated: #191c26;   /* navbar, footer, barras */
@@ -20,13 +13,6 @@
 
     --font-display: "Sora", system-ui, sans-serif;  /* títulos, números, marca */
     --font-body: "Inter", system-ui, sans-serif;    /* corpo e UI */
-}
-
-/* ===================== Base global ===================== */
-/* Cross-fade entre páginas (View Transitions). Browsers sem suporte ignoram. */
-@view-transition { navigation: auto; }
-@media (prefers-reduced-motion: reduce) {
-    @view-transition { navigation: none; }
 }
 
 body {
