@@ -74,4 +74,52 @@
             }
         }
     </div>
+
+    <div class="content-card" style="margin-top:1.5rem;">
+        <h2 class="game-section-title">Reviews de @Model.ProfileUser.Name</h2>
+
+        @if (!Model.ProfileUser.Reviews.Any())
+        {
+            <p class="text-muted">Ainda não há reviews.</p>
+        }
+        else
+        {
+            <div class="review-list">
+                @foreach (var r in Model.ProfileUser.Reviews.OrderByDescending(r => r.CreatedAt).ThenByDescending(r => r.Id))
+                {
+                    <article class="review-card">
+                        <a class="review-avatar" asp-page="/Users/Details" asp-route-id="@Model.ProfileUser.Id">
+                            @if (string.IsNullOrEmpty(Model.ProfileUser.Image))
+                            {
+                                <span>@(Model.ProfileUser.Name.Substring(0, 1).ToUpper())</span>
+                            }
+                            else
+                            {
+                                <img src="~/@Model.ProfileUser.Image" alt="@Model.ProfileUser.Name" />
+                            }
+                        </a>
+                        <div class="review-body">
+                            <div class="review-head">
+                                <a class="review-author" asp-page="/Users/Details" asp-route-id="@Model.ProfileUser.Id">@Model.ProfileUser.Name</a>
+                                <span class="review-date">@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                                <span class="review-rating"><i class="bi bi-star-fill"></i> @r.Rating.ToString("0.0")</span>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a class="review-delete" asp-page="/Reviews/Delete" asp-route-id="@r.Id" title="Eliminar review">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                }
+                            </div>
+                            <p class="review-text">@r.ReviewContent</p>
+
+                            <a class="review-game" asp-page="/Games/Details" asp-route-id="@r.GameFK" asp-route-slug="@r.Game?.Slug">
+                                <img src="~/@r.Game?.CoverImage" alt="@r.Game?.Name" loading="lazy" />
+                                <span>@r.Game?.Name</span>
+                            </a>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
 </div>

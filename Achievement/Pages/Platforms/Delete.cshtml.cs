@@ -61,14 +61,8 @@ namespace Achievement.Pages.Platforms
                 return NotFound();
             }
 
-            // Bloqueia exclusão se houver jogos vinculados
-            if (platform.Games.Any())
-            {
-                ModelState.AddModelError(string.Empty, "Não é possível excluir esta plataforma porque existem jogos vinculados. Remova as relações antes de excluir.");
-                Platform = platform;
-                return Page();
-            }
-
+            // Limpa as relações N-N (linhas da tabela de junção) antes de remover a plataforma
+            platform.Games.Clear();
             _context.Platforms.Remove(platform);
             await _context.SaveChangesAsync();
 

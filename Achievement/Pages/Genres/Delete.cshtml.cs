@@ -58,16 +58,9 @@ namespace Achievement.Pages.Genres
 
             if (genre != null)
             {
-                // Block deletion if there are linked games
-                if (genre.Games.Any())
-                {
-                    ModelState.AddModelError(string.Empty, "Não é possível excluir este gênero porque existem jogos vinculados. Remova as relações antes de excluir.");
-                    Genre = genre;
-                    return Page();
-                }
-
-                Genre = genre;
-                _context.Genres.Remove(Genre);
+                // Limpa as relações N-N (linhas da tabela de junção) antes de remover o género
+                genre.Games.Clear();
+                _context.Genres.Remove(genre);
                 await _context.SaveChangesAsync();
             }
 

@@ -51,7 +51,10 @@ namespace Achievement.Pages.Reviews
             var review = await _context.Reviews.FindAsync(Review.Id);
             if (review != null)
             {
+                var gameId = review.GameFK;
                 _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
+                await _context.RecalculateGameRatingAsync(gameId);
                 await _context.SaveChangesAsync();
             }
 

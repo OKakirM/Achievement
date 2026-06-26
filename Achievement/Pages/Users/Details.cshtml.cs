@@ -74,6 +74,7 @@ namespace Achievement.Pages.Users
         {
             var user = await _context.Users
                 .Include(u => u.UserGames).ThenInclude(ug => ug.Game)
+                .Include(u => u.Reviews).ThenInclude(r => r.Game)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) return false;
