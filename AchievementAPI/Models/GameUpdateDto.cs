@@ -16,10 +16,10 @@ public class GameUpdateDto
     public DateTime? ReleaseDate { get; set; }
 
     [Range(0, 10)]
-    public int? Rating { get; set; }
+    public double? Rating { get; set; }
 
     [StringLength(100)]
-    public string? Length { get; set; }
+    public double? Length { get; set; }
 
     [StringLength(1000)]
     public string? CoverImage { get; set; }
@@ -30,6 +30,6 @@ public class GameUpdateDto
     public int? Plays { get; set; }
 
     // relacionamentos por Ids (N-N)
-    public IEnumerable<int>? PlataformIds { get; set; }
+    public IEnumerable<int>? PlatformIds { get; set; }
     public IEnumerable<int>? GenreIds { get; set; }
 }

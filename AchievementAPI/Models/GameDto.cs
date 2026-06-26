@@ -16,9 +16,9 @@ public class GameDto
 
     public DateTime ReleaseDate { get; set; }
 
-    public int? Rating { get; set; }
+    public double? Rating { get; set; }
 
-    public string? Length { get; set; }
+    public double? Length { get; set; }
 
     public string? CoverImage { get; set; }
 

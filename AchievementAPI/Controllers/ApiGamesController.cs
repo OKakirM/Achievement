@@ -25,7 +25,7 @@ namespace AchievementAPI.Controllers
         public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             var games = await _context.Games
-                .Include(g => g.Plataforms)
+                .Include(g => g.Platforms)
                 .Include(g => g.Genres)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
@@ -41,7 +41,7 @@ namespace AchievementAPI.Controllers
         public async Task<ActionResult<GameDto>> GetGame(int id)
         {
             var game = await _context.Games
-                .Include(g => g.Plataforms)
+                .Include(g => g.Platforms)
                 .Include(g => g.Genres)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
@@ -71,12 +71,12 @@ namespace AchievementAPI.Controllers
             };
 
             // relacionamentos
-            if (dto.PlataformIds != null)
+            if (dto.PlatformIds != null)
             {
-                foreach (var pid in dto.PlataformIds.Distinct())
+                foreach (var pid in dto.PlatformIds.Distinct())
                 {
-                    var p = await _context.Plataforms.FindAsync(pid);
-                    if (p != null) game.Plataforms.Add(p);
+                    var p = await _context.Platforms.FindAsync(pid);
+                    if (p != null) game.Platforms.Add(p);
                 }
             }
 
@@ -105,7 +105,7 @@ namespace AchievementAPI.Controllers
                 return BadRequest(ModelState);
 
             var game = await _context.Games
-                .Include(g => g.Plataforms)
+                .Include(g => g.Platforms)
                 .Include(g => g.Genres)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
@@ -117,19 +117,19 @@ namespace AchievementAPI.Controllers
             if (!string.IsNullOrEmpty(dto.Description)) game.Description = dto.Description;
             if (dto.ReleaseDate.HasValue) game.ReleaseDate = dto.ReleaseDate.Value;
             if (dto.Rating.HasValue) game.Rating = dto.Rating.Value;
-            if (!string.IsNullOrEmpty(dto.Length)) game.Length = dto.Length;
+            if (dto.Length.HasValue) game.Length = dto.Length.Value;
             if (!string.IsNullOrEmpty(dto.CoverImage)) game.CoverImage = dto.CoverImage;
             if (!string.IsNullOrEmpty(dto.BannerImage)) game.BannerImage = dto.BannerImage;
             if (dto.Plays.HasValue) game.Plays = dto.Plays.Value;
 
             // atualizar relacionamentos se ids fornecidos
-            if (dto.PlataformIds != null)
+            if (dto.PlatformIds != null)
             {
-                game.Plataforms.Clear();
-                foreach (var pid in dto.PlataformIds.Distinct())
+                game.Platforms.Clear();
+                foreach (var pid in dto.PlatformIds.Distinct())
                 {
-                    var p = await _context.Plataforms.FindAsync(pid);
-                    if (p != null) game.Plataforms.Add(p);
+                    var p = await _context.Platforms.FindAsync(pid);
+                    if (p != null) game.Platforms.Add(p);
                 }
             }
 
@@ -177,7 +177,7 @@ namespace AchievementAPI.Controllers
                 CoverImage = g.CoverImage,
                 BannerImage = g.BannerImage,
                 Plays = g.Plays,
-                Platforms = g.Plataforms?.Select(p => p.Name) ?? Enumerable.Empty<string>(),
+                Platforms = g.Platforms?.Select(p => p.Name) ?? Enumerable.Empty<string>(),
                 Genres = g.Genres?.Select(x => x.Name) ?? Enumerable.Empty<string>()
             };
         }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AchievementAPI.Dtos;
 
-public class PlataformCreateDto
+public class PlatformCreateDto
 {
     [Required]
     public string Type { get; set; } = string.Empty;

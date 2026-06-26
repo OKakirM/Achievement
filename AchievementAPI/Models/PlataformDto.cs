@@ -1,6 +1,6 @@
 namespace AchievementAPI.Dtos;
 
-public class PlataformDto
+public class PlatformDto
 {
     public int Id { get; set; }
     public string Type { get; set; } = string.Empty;

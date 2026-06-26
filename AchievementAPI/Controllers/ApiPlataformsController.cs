@@ -11,76 +11,76 @@ namespace AchievementAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApiPlataformsController : ControllerBase
+    public class ApiPlatformsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public ApiPlataformsController(ApplicationDbContext context)
+        public ApiPlatformsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PlataformDto>>> GetPlataforms()
+        public async Task<ActionResult<IEnumerable<PlatformDto>>> GetPlatforms()
         {
-            var list = await _context.Plataforms.ToListAsync();
+            var list = await _context.Platforms.ToListAsync();
             return Ok(list.Select(p => MapToDto(p)));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PlataformDto>> GetPlataform(int id)
+        public async Task<ActionResult<PlatformDto>> GetPlatform(int id)
         {
-            var p = await _context.Plataforms.FindAsync(id);
+            var p = await _context.Platforms.FindAsync(id);
             if (p == null) return NotFound();
             return Ok(MapToDto(p));
         }
 
         [HttpPost]
-        public async Task<ActionResult<PlataformDto>> PostPlataform(PlataformCreateDto dto)
+        public async Task<ActionResult<PlatformDto>> PostPlatform(PlatformCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var exists = await _context.Plataforms.AnyAsync(x => x.Name == dto.Name && x.Type.ToString() == dto.Type);
-            if (exists) return BadRequest("Plataform already exists.");
+            var exists = await _context.Platforms.AnyAsync(x => x.Name == dto.Name && x.Type.ToString() == dto.Type);
+            if (exists) return BadRequest("Platform already exists.");
 
             // try parse enum if possible
-            Plataform p = new Plataform { Name = dto.Name };
+            Platform p = new Platform { Name = dto.Name };
             // parse type enum if matches
-            if (Enum.TryParse<PlataformType>(dto.Type, out var parsed)) p.Type = parsed;
+            if (Enum.TryParse<PlatformType>(dto.Type, out var parsed)) p.Type = parsed;
 
-            _context.Plataforms.Add(p);
+            _context.Platforms.Add(p);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPlataform), new { id = p.Id }, MapToDto(p));
+            return CreatedAtAction(nameof(GetPlatform), new { id = p.Id }, MapToDto(p));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlataform(int id, PlataformCreateDto dto)
+        public async Task<IActionResult> PutPlatform(int id, PlatformCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var p = await _context.Plataforms.FindAsync(id);
+            var p = await _context.Platforms.FindAsync(id);
             if (p == null) return NotFound();
 
             p.Name = dto.Name;
-            if (Enum.TryParse<PlataformType>(dto.Type, out var parsed)) p.Type = parsed;
+            if (Enum.TryParse<PlatformType>(dto.Type, out var parsed)) p.Type = parsed;
 
-            _context.Plataforms.Update(p);
+            _context.Platforms.Update(p);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlataform(int id)
+        public async Task<IActionResult> DeletePlatform(int id)
         {
-            var p = await _context.Plataforms.FindAsync(id);
+            var p = await _context.Platforms.FindAsync(id);
             if (p == null) return NotFound();
 
-            _context.Plataforms.Remove(p);
+            _context.Platforms.Remove(p);
             await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        private static PlataformDto MapToDto(Plataform p) => new PlataformDto { Id = p.Id, Name = p.Name, Type = p.Type.ToString() };
+        private static PlatformDto MapToDto(Platform p) => new PlatformDto { Id = p.Id, Name = p.Name, Type = p.Type.ToString() };
     }
 }
