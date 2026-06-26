@@ -1,23 +1,27 @@
 @page "/ResendEmailConfirmation"
 @model ResendEmailConfirmationModel
 @{
-    ViewData["Title"] = "Resend email confirmation";
+    ViewData["Title"] = "Reenviar confirmação de email";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h2>Enter your email.</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Reenviar confirmação</h1>
+        <p class="auth-subtitle">Introduz o teu email para receberes um novo link de confirmação.</p>
+
         <form method="post">
             <div asp-validation-summary="All" class="text-danger" role="alert"></div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email" class="form-label"></label>
+                <label asp-for="Input.Email">E-Mail</label>
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Resend</button>
+            <button type="submit" class="btn-accent auth-submit">Reenviar</button>
         </form>
+
+        <div class="auth-links">
+            <a asp-page="./Login">Voltar a entrar</a>
+        </div>
     </div>
 </div>
 

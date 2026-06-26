@@ -198,6 +198,14 @@ textarea.form-control {
     box-shadow: 0 0 0 3px rgba(139, 92, 246, .25);
 }
 .form-control::placeholder { color: var(--text-muted); }
+.form-control:disabled,
+.form-control[readonly],
+.form-select:disabled {
+    background: var(--bg-deep);
+    color: var(--text-muted);
+    border-color: var(--border);
+    opacity: 1;
+}
 .form-group { margin-bottom: 1rem; }
 label, .control-label, .form-label { color: var(--text); font-weight: 600; }
 .form-text, .text-muted { color: var(--text-muted) !important; }
@@ -933,6 +941,55 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
     margin-top: 1.5rem; padding-top: 1.25rem;
     border-top: 1px solid var(--border);
     font-size: .9rem;
+}
+.auth-message { color: var(--text-muted); margin: 0 0 1rem; line-height: 1.6; }
+.auth-message a { color: var(--accent-soft); }
+.auth-card .alert { border-radius: 10px; margin-bottom: 1.25rem; }
+.auth-status-success { background: rgba(34, 197, 94, .12); border: 1px solid rgba(34, 197, 94, .35); color: #86efac; }
+.auth-status-danger { background: rgba(239, 68, 68, .12); border: 1px solid rgba(239, 68, 68, .35); color: #fca5a5; }
+.auth-status-success .btn-close, .auth-status-danger .btn-close { filter: invert(1) grayscale(1); }
+
+/* ===================== Definições da conta (Manage) ===================== */
+.settings-wrap { max-width: 980px; margin: 0 auto; padding: 2.5rem 1rem; }
+.settings-header { margin-bottom: 1.75rem; }
+.settings-header h1 { font-size: 1.9rem; margin: 0 0 .25rem; }
+.settings-header p { color: var(--text-muted); margin: 0; }
+.settings-grid { display: grid; grid-template-columns: 220px 1fr; gap: 1.5rem; align-items: start; }
+.settings-nav { display: flex; flex-direction: column; gap: .25rem; position: sticky; top: 5rem; }
+.settings-nav a {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .6rem .85rem; border-radius: 10px;
+    color: var(--text-muted); font-weight: 500;
+    transition: background .15s ease, color .15s ease;
+}
+.settings-nav a:hover { background: var(--bg-card); color: var(--text); }
+.settings-nav a.active, .settings-nav a.active:hover { background: var(--accent); color: #fff; }
+.settings-nav i { font-size: 1.05rem; }
+.settings-panel {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.75rem;
+}
+.settings-panel h3 { font-size: 1.35rem; margin: 0 0 1.25rem; }
+.settings-panel h4 { font-size: 1.1rem; margin: 1.5rem 0 1rem; }
+.settings-form { max-width: 460px; }
+.settings-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .5rem; }
+.settings-panel .alert { border-radius: 10px; }
+.settings-panel .alert-warning { background: rgba(255, 210, 74, .1); border: 1px solid rgba(255, 210, 74, .35); color: #f5d77a; }
+.settings-panel .alert-info { background: rgba(139, 92, 246, .1); border: 1px solid rgba(139, 92, 246, .35); color: var(--accent-soft); }
+.settings-panel .alert-danger { background: rgba(239, 68, 68, .1); border: 1px solid rgba(239, 68, 68, .35); color: #fca5a5; }
+.danger-zone {
+    margin-top: 1.5rem; padding: 1.25rem;
+    border: 1px solid rgba(239, 68, 68, .35); border-radius: 12px;
+    background: rgba(239, 68, 68, .06);
+}
+.recovery-code {
+    display: inline-block; font-family: monospace; font-size: .95rem;
+    background: var(--bg-deep); border: 1px solid var(--border);
+    border-radius: 6px; padding: .35rem .6rem; margin: .2rem;
+}
+@media (max-width: 768px) {
+    .settings-grid { grid-template-columns: 1fr; }
+    .settings-nav { flex-direction: row; flex-wrap: wrap; position: static; }
 }
 
 /* Labels flutuantes do Bootstrap adaptadas ao tema escuro */
