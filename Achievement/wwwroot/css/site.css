@@ -163,3 +163,15 @@ header, .site-footer { flex-shrink: 0; }
     .home-cta-title { font-size: 1.55rem; }
     .home-cta-actions .btn-accent, .home-cta-actions .btn { width: 100%; justify-content: center; }
 }
+.home-about {
+    margin: 3.5rem 0 1rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+}
+.home-about-inner { max-width: 640px; margin: 0 auto; padding: 2.25rem 2rem; }
+.home-about-title { font-size: 1.25rem; margin: 0 0 1.25rem; }
+.home-about-title i { color: var(--accent); margin-right: .4rem; }
+.home-about-grid { display: grid; grid-template-columns: auto 1fr; gap: .4rem 1.25rem; margin: 0; }
+.home-about-grid dt { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+.home-about-grid dd { margin: 0; }

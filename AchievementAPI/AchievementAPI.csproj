@@ -14,7 +14,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.8" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
@@ -22,17 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Achievement\Achievement.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\js\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Exclude duplicated static assets from this project to avoid conflicts when referenced together -->
-    <Content Remove="wwwroot\favicon.ico" />
-    <Content Remove="wwwroot\js\site.js" />
-    <Content Remove="wwwroot\css\site.css" />
   </ItemGroup>
 
 </Project>
