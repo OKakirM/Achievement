@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Achievement.Data;
 using Achievement.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Achievement.Pages.Genres
 {
@@ -35,6 +36,14 @@ namespace Achievement.Pages.Genres
         {
             if (!ModelState.IsValid)
             {
+                return Page();
+            }
+
+            bool duplicatedName = await _context.Genres.AnyAsync(g => g.Name == Genre.Name);
+
+            if (duplicatedName)
+            {
+                ModelState.AddModelError("Genre.Name", "Já existe um género com este nome. Por favor, escolha outro nome.");
                 return Page();
             }
 

@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Achievement.Data;
+using Achievement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Achievement.Data;
-using Achievement.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Achievement.Pages.Platforms
 {
+    [Authorize(Roles = "Admin")]
     public class CreateModel : PageModel
     {
         private readonly Achievement.Data.ApplicationDbContext _context;
@@ -34,6 +36,14 @@ namespace Achievement.Pages.Platforms
         {
             if (!ModelState.IsValid)
             {
+                return Page();
+            }
+
+            bool duplicatedName = await _context.Platforms.AnyAsync(g => g.Name == Platform.Name);
+
+            if (duplicatedName)
+            {
+                ModelState.AddModelError("Platform.Name", "Já existe uma plataforma  com este nome. Por favor, escolha outro nome.");
                 return Page();
             }
 

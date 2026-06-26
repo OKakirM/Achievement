@@ -1,4 +1,4 @@
-@page
+@page "/Reviews"
 @model Achievement.Pages.Reviews.IndexModel
 
 @{
@@ -39,6 +39,12 @@ else
                         <a class="review-author" asp-page="/Users/Details" asp-route-id="@r.UserFK">@r.User?.Name</a>
                         <span class="review-date">@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
                         <span class="review-rating"><i class="bi bi-star-fill"></i> @r.Rating.ToString("0.0")</span>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="review-delete" asp-page="./Delete" asp-route-id="@r.Id" title="Eliminar review">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        }
                     </div>
                     <p class="review-text">@r.ReviewContent</p>
 

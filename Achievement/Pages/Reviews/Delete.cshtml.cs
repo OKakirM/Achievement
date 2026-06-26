@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Achievement.Data;
+using Achievement.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Achievement.Data;
-using Achievement.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Achievement.Pages.Reviews
 {
+    [Authorize(Roles = "Admin")]
     public class DeleteModel : PageModel
     {
         private readonly Achievement.Data.ApplicationDbContext _context;
@@ -44,21 +46,14 @@ namespace Achievement.Pages.Reviews
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync()
         {
-            if (id == null)
+            var review = await _context.Reviews.FindAsync(Review.Id);
+            if (review != null)
             {
-                return NotFound();
+                _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
             }
-
-            var review = await _context.Reviews.FindAsync(id);
-            if (review == null)
-            {
-                return NotFound();
-            }
-
-            _context.Attach(review).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }
