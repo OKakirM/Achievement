@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace Achievement.Models
 {
@@ -14,10 +16,11 @@ namespace Achievement.Models
 
         /// <summary>
         /// Nome do gênero
+        /// - Máximo de 50 caracteres, mínimo de 2 caracteres
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "O {0} do gênero é obrigatório.")]
         [Display(Name = "Nome do Gênero")]
-        [StringLength(50)]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres.")]
         public string Name { get; set; } = string.Empty;
 
         // ============================================

@@ -1,0 +1,15 @@
+@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "Conta bloqueada";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Conta bloqueada</h1>
+        <p class="auth-message">Esta conta foi temporariamente bloqueada. Tenta novamente mais tarde.</p>
+        <div class="auth-links">
+            <a asp-page="./Login">Voltar a entrar</a>
+        </div>
+    </div>
+</div>

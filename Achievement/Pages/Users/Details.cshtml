@@ -1,0 +1,125 @@
+@page "/Users/{id:int}"
+@using Achievement.Models
+@model Achievement.Pages.Users.DetailsModel
+@{
+    ViewData["Title"] = Model.ProfileUser.Name;
+    var games = Model.ProfileUser.UserGames;
+}
+
+<div class="profile">
+    <div class="profile-banner full-bleed" style="@(string.IsNullOrEmpty(Model.ProfileUser.Banner) ? "" : $"background-image:url('/{Model.ProfileUser.Banner}')")">
+        @if (Model.IsOwner)
+        {
+            <form method="post" asp-page-handler="Banner" enctype="multipart/form-data" class="profile-img-form">
+                <label class="btn btn-secondary btn-sm">
+                    Trocar banner
+                    <input type="file" name="BannerFile" accept="image/jpeg,image/png" onchange="this.form.submit()" hidden />
+                </label>
+            </form>
+        }
+    </div>
+
+    <div class="profile-head">
+        <div class="profile-avatar">
+            @if (string.IsNullOrEmpty(Model.ProfileUser.Image))
+            {
+                <span class="profile-avatar-initials">@(Model.ProfileUser.Name.Substring(0, 1).ToUpper())</span>
+            }
+            else
+            {
+                <img src="~/@Model.ProfileUser.Image" alt="Avatar de @Model.ProfileUser.Name" />
+            }
+            @if (Model.IsOwner)
+            {
+                <form method="post" asp-page-handler="Avatar" enctype="multipart/form-data" class="profile-avatar-edit">
+                    <label title="Trocar foto">
+                        <i class="bi bi-pencil"></i>
+                        <input type="file" name="AvatarFile" accept="image/jpeg,image/png" onchange="this.form.submit()" hidden />
+                    </label>
+                </form>
+            }
+        </div>
+        <div class="profile-meta">
+            <h1>@Model.ProfileUser.Name</h1>
+            <p class="text-muted">@games.Count jogo(s) na lista</p>
+        </div>
+    </div>
+
+    <div asp-validation-summary="All" class="text-danger" style="padding:0 1.5rem;"></div>
+
+    <div class="content-card" style="margin-top:1.5rem;">
+        <h2 class="game-section-title">A Lista de @Model.ProfileUser.Name</h2>
+
+        @if (!games.Any())
+        {
+            <p class="text-muted">Ainda não há jogos guardados na lista.</p>
+        }
+        else
+        {
+            foreach (var group in games.GroupBy(ug => ug.Status).OrderBy(g => g.Key))
+            {
+                <div class="game-section-title profile-group-title">
+                    <i class="bi @group.Key.IconClass() @group.Key.CssClass()"></i>
+                    @group.Key.DisplayName() <span class="text-muted">(@group.Count())</span>
+                </div>
+                <div class="profile-games">
+                    @foreach (var ug in group)
+                    {
+                        <a class="profile-game" asp-page="/Games/Details" asp-route-id="@ug.Game.Id" asp-route-slug="@ug.Game.Slug">
+                            <img src="~/@ug.Game.CoverImage" alt="@ug.Game.Name" />
+                            <span>@ug.Game.Name</span>
+                        </a>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    <div class="content-card" style="margin-top:1.5rem;">
+        <h2 class="game-section-title">Reviews de @Model.ProfileUser.Name</h2>
+
+        @if (!Model.ProfileUser.Reviews.Any())
+        {
+            <p class="text-muted">Ainda não há reviews.</p>
+        }
+        else
+        {
+            <div class="review-list">
+                @foreach (var r in Model.ProfileUser.Reviews.OrderByDescending(r => r.CreatedAt).ThenByDescending(r => r.Id))
+                {
+                    <article class="review-card">
+                        <a class="review-avatar" asp-page="/Users/Details" asp-route-id="@Model.ProfileUser.Id">
+                            @if (string.IsNullOrEmpty(Model.ProfileUser.Image))
+                            {
+                                <span>@(Model.ProfileUser.Name.Substring(0, 1).ToUpper())</span>
+                            }
+                            else
+                            {
+                                <img src="~/@Model.ProfileUser.Image" alt="@Model.ProfileUser.Name" />
+                            }
+                        </a>
+                        <div class="review-body">
+                            <div class="review-head">
+                                <a class="review-author" asp-page="/Users/Details" asp-route-id="@Model.ProfileUser.Id">@Model.ProfileUser.Name</a>
+                                <span class="review-date">@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
+                                <span class="review-rating"><i class="bi bi-star-fill"></i> @r.Rating.ToString("0.0")</span>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a class="review-delete" asp-page="/Reviews/Delete" asp-route-id="@r.Id" title="Eliminar review">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                }
+                            </div>
+                            <p class="review-text">@r.ReviewContent</p>
+
+                            <a class="review-game" asp-page="/Games/Details" asp-route-id="@r.GameFK" asp-route-slug="@r.Game?.Slug">
+                                <img src="~/@r.Game?.CoverImage" alt="@r.Game?.Name" loading="lazy" />
+                                <span>@r.Game?.Name</span>
+                            </a>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</div>

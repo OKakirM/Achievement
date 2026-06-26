@@ -17,7 +17,7 @@ namespace Achievement.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -36,27 +36,38 @@ namespace Achievement.Data.Migrations
                     b.Property<string>("CoverImage")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("Length")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("Developer")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<double?>("Length")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("Plays")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Rating")
-                        .HasColumnType("int");
+                    b.Property<double?>("Rating")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Slug")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
@@ -81,7 +92,7 @@ namespace Achievement.Data.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("Achievement.Models.Plataform", b =>
+            modelBuilder.Entity("Achievement.Models.Platform", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,7 +110,7 @@ namespace Achievement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Plataforms");
+                    b.ToTable("Platforms");
                 });
 
             modelBuilder.Entity("Achievement.Models.Review", b =>
@@ -110,24 +121,29 @@ namespace Achievement.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("GameFK")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
                     b.Property<string>("ReviewContent")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<int>("UserFK")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameFK");
-
                     b.HasIndex("UserFK");
+
+                    b.HasIndex("GameFK", "UserFK")
+                        .IsUnique();
 
                     b.ToTable("Reviews");
                 });
@@ -139,6 +155,12 @@ namespace Achievement.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Banner")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -153,13 +175,27 @@ namespace Achievement.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Achievement.Models.UserGame", b =>
+                {
+                    b.Property<int>("UserFK")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameFK")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserFK", "GameFK");
+
+                    b.HasIndex("GameFK");
+
+                    b.ToTable("UserGames");
                 });
 
             modelBuilder.Entity("GameGenre", b =>
@@ -177,34 +213,19 @@ namespace Achievement.Data.Migrations
                     b.ToTable("GameGenre");
                 });
 
-            modelBuilder.Entity("GamePlataform", b =>
+            modelBuilder.Entity("GamePlatform", b =>
                 {
                     b.Property<int>("GamesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlataformsId")
+                    b.Property<int>("PlatformsId")
                         .HasColumnType("int");
 
-                    b.HasKey("GamesId", "PlataformsId");
+                    b.HasKey("GamesId", "PlatformsId");
 
-                    b.HasIndex("PlataformsId");
+                    b.HasIndex("PlatformsId");
 
-                    b.ToTable("GamePlataform");
-                });
-
-            modelBuilder.Entity("GameUser", b =>
-                {
-                    b.Property<int>("GamesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GamesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("GameUser");
+                    b.ToTable("GamePlatform");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -428,6 +449,25 @@ namespace Achievement.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Achievement.Models.UserGame", b =>
+                {
+                    b.HasOne("Achievement.Models.Game", "Game")
+                        .WithMany("UserGames")
+                        .HasForeignKey("GameFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Achievement.Models.User", "User")
+                        .WithMany("UserGames")
+                        .HasForeignKey("UserFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("GameGenre", b =>
                 {
                     b.HasOne("Achievement.Models.Game", null)
@@ -443,7 +483,7 @@ namespace Achievement.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GamePlataform", b =>
+            modelBuilder.Entity("GamePlatform", b =>
                 {
                     b.HasOne("Achievement.Models.Game", null)
                         .WithMany()
@@ -451,24 +491,9 @@ namespace Achievement.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Achievement.Models.Plataform", null)
+                    b.HasOne("Achievement.Models.Platform", null)
                         .WithMany()
-                        .HasForeignKey("PlataformsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GameUser", b =>
-                {
-                    b.HasOne("Achievement.Models.Game", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Achievement.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("PlatformsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -527,11 +552,15 @@ namespace Achievement.Data.Migrations
             modelBuilder.Entity("Achievement.Models.Game", b =>
                 {
                     b.Navigation("Reviews");
+
+                    b.Navigation("UserGames");
                 });
 
             modelBuilder.Entity("Achievement.Models.User", b =>
                 {
                     b.Navigation("Reviews");
+
+                    b.Navigation("UserGames");
                 });
 #pragma warning restore 612, 618
         }

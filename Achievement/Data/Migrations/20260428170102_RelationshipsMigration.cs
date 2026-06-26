@@ -49,25 +49,25 @@ namespace Achievement.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GamePlataform",
+                name: "GamePlatform",
                 columns: table => new
                 {
                     GamesId = table.Column<int>(type: "int", nullable: false),
-                    PlataformsId = table.Column<int>(type: "int", nullable: false)
+                    PlatformsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GamePlataform", x => new { x.GamesId, x.PlataformsId });
+                    table.PrimaryKey("PK_GamePlatform", x => new { x.GamesId, x.PlatformsId });
                     table.ForeignKey(
-                        name: "FK_GamePlataform_Games_GamesId",
+                        name: "FK_GamePlatform_Games_GamesId",
                         column: x => x.GamesId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GamePlataform_Plataforms_PlataformsId",
-                        column: x => x.PlataformsId,
-                        principalTable: "Plataforms",
+                        name: "FK_GamePlatform_Platforms_PlatformsId",
+                        column: x => x.PlatformsId,
+                        principalTable: "Platforms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -112,9 +112,9 @@ namespace Achievement.Data.Migrations
                 column: "GenresId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GamePlataform_PlataformsId",
-                table: "GamePlataform",
-                column: "PlataformsId");
+                name: "IX_GamePlatform_PlatformsId",
+                table: "GamePlatform",
+                column: "PlatformsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameUser_UsersId",
@@ -153,7 +153,7 @@ namespace Achievement.Data.Migrations
                 name: "GameGenre");
 
             migrationBuilder.DropTable(
-                name: "GamePlataform");
+                name: "GamePlatform");
 
             migrationBuilder.DropTable(
                 name: "GameUser");

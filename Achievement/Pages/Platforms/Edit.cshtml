@@ -1,0 +1,42 @@
+﻿@page "/Platforms/Edit/{id:int}"
+@model Achievement.Pages.Platforms.EditModel
+@using Achievement.Models
+
+@{
+    ViewData["Title"] = "Editar Plataforma";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Editar Plataforma</h1>
+        <p class="auth-subtitle">Atualiza os dados da plataforma</p>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Platform.Id" />
+
+            <div class="form-group">
+                <label asp-for="Platform.Type" class="control-label"></label> <span class="req">*</span>
+                <select asp-for="Platform.Type" class="form-select" asp-items="Html.GetEnumSelectList<PlatformType>()" aria-required="true">
+                    <option value="">Selecione...</option>
+                </select>
+                <span asp-validation-for="Platform.Type" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Platform.Name" class="control-label"></label> <span class="req">*</span>
+                <input asp-for="Platform.Name" class="form-control" aria-required="true" />
+                <span asp-validation-for="Platform.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn-accent">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

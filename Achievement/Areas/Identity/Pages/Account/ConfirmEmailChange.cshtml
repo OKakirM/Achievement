@@ -1,0 +1,15 @@
+@page "/ConfirmEmailChange"
+@model ConfirmEmailChangeModel
+@{
+    ViewData["Title"] = "Confirmar alteração de email";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Confirmar alteração de email</h1>
+        <partial name="_StatusMessage" model="Model.StatusMessage" />
+        <div class="auth-links">
+            <a asp-page="./Login">Entrar</a>
+        </div>
+    </div>
+</div>

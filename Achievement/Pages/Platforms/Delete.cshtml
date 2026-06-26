@@ -1,0 +1,32 @@
+﻿@page "/Platforms/Delete/{id:int}"
+@model Achievement.Pages.Platforms.DeleteModel
+
+@{
+    ViewData["Title"] = "Eliminar Plataforma";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Eliminar Plataforma</h1>
+        <p class="auth-subtitle">Tens a certeza que queres eliminar esta plataforma?</p>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <dl>
+            <dt>@Html.DisplayNameFor(model => model.Platform.Type)</dt>
+            <dd>@Html.DisplayFor(model => model.Platform.Type)</dd>
+            <dt class="mt-2">@Html.DisplayNameFor(model => model.Platform.Name)</dt>
+            <dd>@Html.DisplayFor(model => model.Platform.Name)</dd>
+            <dt class="mt-2">Jogos vinculados</dt>
+            <dd>@Model.Platform.Games.Count</dd>
+        </dl>
+
+        <form method="post">
+            <input type="hidden" asp-for="Platform.Id" />
+            <div class="form-actions">
+                <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

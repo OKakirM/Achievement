@@ -1,0 +1,56 @@
+@page "/Platforms"
+@model Achievement.Pages.Platforms.IndexModel
+
+@{
+    ViewData["Title"] = "Plataformas";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Plataformas</h1>
+        <p class="page-subtitle">Explora os jogos por plataforma</p>
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="Create" class="btn-accent"><i class="bi bi-plus-lg"></i> Nova Plataforma</a>
+    }
+</div>
+
+<form method="get" class="games-search">
+    <input type="text" name="search" value="@Model.Search" class="games-search-input"
+           placeholder="Pesquisar plataforma..." />
+    <button type="submit" class="games-search-btn">Buscar</button>
+</form>
+
+@if (Model.Platform == null || Model.Platform.Count == 0)
+{
+    <div class="games-empty">
+        <p>Nenhuma plataforma encontrada@(string.IsNullOrWhiteSpace(Model.Search) ? "." : $" para \"{Model.Search}\".")</p>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-page="Create" class="btn-accent">Criar a primeira plataforma</a>
+        }
+    </div>
+}
+else
+{
+    <div class="genre-grid">
+        @foreach (var item in Model.Platform)
+        {
+            <div class="genre-card">
+                <a class="genre-card-link" asp-page="/Games/Index" asp-route-platform="@item.Id">
+                    <span class="genre-card-name"><i class="bi @item.Type.IconClass()"></i> @item.Name</span>
+                    <span class="genre-card-count">@Html.DisplayFor(m => item.Type) · @item.Games.Count @(item.Games.Count == 1 ? "jogo" : "jogos")</span>
+                </a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="game-card-actions">
+                        <a asp-page="./Edit" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" title="Eliminar"><i class="bi bi-trash"></i></a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

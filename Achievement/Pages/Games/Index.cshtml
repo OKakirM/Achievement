@@ -1,0 +1,103 @@
+@page "/Games"
+@model Achievement.Pages.Games.IndexModel
+
+@{
+    ViewData["Title"] = "Jogos";
+}
+
+<div class="page-header">
+    <div>
+        <h1 class="page-title">@(Model.FilterName ?? "Jogos")</h1>
+        @if (Model.FilterName != null)
+        {
+            <p class="page-subtitle">
+                @(Model.GenreName != null ? "Jogos do gênero " : "Jogos da plataforma ")@Model.FilterName
+                · <a asp-page="." asp-route-search="@Model.Search">limpar filtro</a>
+            </p>
+        }
+        else
+        {
+            <p class="page-subtitle">Explora e regista os jogos que já jogaste</p>
+        }
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="Create" class="btn-accent"><i class="bi bi-plus-lg"></i> Novo Jogo</a>
+    }
+</div>
+
+<form method="get" class="games-search">
+    <input type="text" name="search" value="@Model.Search" class="games-search-input"
+           placeholder="Pesquisar título..." />
+    @if (Model.GenreId.HasValue)
+    {
+        <input type="hidden" name="genre" value="@Model.GenreId" />
+    }
+    @if (Model.PlatformId.HasValue)
+    {
+        <input type="hidden" name="platform" value="@Model.PlatformId" />
+    }
+    <button type="submit" class="games-search-btn">Buscar</button>
+</form>
+
+@if (Model.Game == null || Model.Game.Count == 0)
+{
+    <div class="games-empty">
+        <p>Nenhum jogo encontrado@(string.IsNullOrWhiteSpace(Model.Search) ? "." : $" para \"{Model.Search}\".")</p>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-page="Create" class="btn-accent">Adicionar o primeiro jogo</a>
+        }
+    </div>
+}
+else
+{
+    <div class="games-grid">
+        @foreach (var item in Model.Game)
+        {
+            <div class="game-card">
+                <a class="game-card-link" asp-page="./Details" asp-route-id="@item.Id" asp-route-slug="@item.Slug">
+                    <div class="game-cover">
+                        <img src="~/@item.CoverImage" alt="@item.Name" loading="lazy" />
+                        @if (item.Rating.HasValue && item.Rating.Value > 0)
+                        {
+                            <span class="game-rating"><i class="bi bi-star-fill"></i> @item.Rating.Value.ToString("0.0")</span>
+                        }
+                        <div class="game-card-overlay">
+                            <span class="game-overlay-name">@item.Name</span>
+                            <span class="game-overlay-year">@item.ReleaseDate.Year</span>
+                        </div>
+                    </div>
+                </a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="game-card-actions">
+                        <a asp-page="./Edit" asp-route-id="@item.Id" asp-route-slug="@item.Slug" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" asp-route-slug="@item.Slug" title="Eliminar"><i class="bi bi-trash"></i></a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="games-pager">
+        @if (Model.PageNumber > 1)
+        {
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-search="@Model.Search" asp-route-genre="@Model.GenreId" asp-route-platform="@Model.PlatformId" class="pager-btn">‹ Anterior</a>
+        }
+        else
+        {
+            <span class="pager-btn disabled">‹ Anterior</span>
+        }
+        <span class="pager-current">Página @Model.PageNumber</span>
+        @if (Model.Game.Count == Model.PageSize)
+        {
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-search="@Model.Search" asp-route-genre="@Model.GenreId" asp-route-platform="@Model.PlatformId" class="pager-btn">Seguinte ›</a>
+        }
+        else
+        {
+            <span class="pager-btn disabled">Seguinte ›</span>
+        }
+    </div>
+}

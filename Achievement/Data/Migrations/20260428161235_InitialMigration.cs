@@ -45,7 +45,7 @@ namespace Achievement.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Plataforms",
+                name: "Platforms",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -55,7 +55,7 @@ namespace Achievement.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Plataforms", x => x.Id);
+                    table.PrimaryKey("PK_Platforms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,7 +99,7 @@ namespace Achievement.Data.Migrations
                 name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Plataforms");
+                name: "Platforms");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

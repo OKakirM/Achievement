@@ -1,0 +1,30 @@
+﻿@page "/Genres/Delete/{id:int}"
+@model Achievement.Pages.Genres.DeleteModel
+
+@{
+    ViewData["Title"] = "Eliminar Género";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Eliminar Género</h1>
+        <p class="auth-subtitle">Tens a certeza que queres eliminar este género?</p>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <dl>
+            <dt>@Html.DisplayNameFor(model => model.Genre.Name)</dt>
+            <dd>@Html.DisplayFor(model => model.Genre.Name)</dd>
+            <dt class="mt-2">Jogos vinculados</dt>
+            <dd>@Model.Genre.Games.Count</dd>
+        </dl>
+
+        <form method="post">
+            <input type="hidden" asp-for="Genre.Id" />
+            <div class="form-actions">
+                <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

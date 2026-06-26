@@ -1,0 +1,138 @@
+@page "/Users/Edit/{id:int}"
+@model Achievement.Pages.Users.EditModel
+
+@{
+    ViewData["Title"] = "Editar Utilizador";
+}
+
+<div class="form-page">
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Editar Utilizador</h1>
+        <p class="page-subtitle">@Model.User.Name</p>
+    </div>
+    <a asp-page="./Index" class="btn btn-secondary">Voltar à lista</a>
+</div>
+
+<div class="content-card">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="User.Id" />
+        <input type="hidden" asp-for="RemoveImage" id="RemoveImageInput" />
+        <input type="hidden" asp-for="RemoveBanner" id="RemoveBannerInput" />
+
+        <div class="form-layout">
+            <div class="form-main">
+                <section class="form-section">
+                    <div class="form-section-legend">Identidade</div>
+
+                    <div class="form-group">
+                        <label asp-for="User.Name" class="control-label"></label> <span class="req">*</span>
+                        <input asp-for="User.Name" class="form-control" aria-required="true" />
+                        <span asp-validation-for="User.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="User.Email" class="control-label"></label> <span class="req">*</span>
+                        <input asp-for="User.Email" class="form-control" aria-required="true" />
+                        <span asp-validation-for="User.Email" class="text-danger"></span>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <div class="form-section-legend">Segurança</div>
+
+                    <div class="form-group">
+                        <label asp-for="NewPassword" class="control-label"></label>
+                        <input asp-for="NewPassword" type="password" class="form-control" autocomplete="new-password" />
+                        <span class="form-hint">Deixa em branco para manter a palavra-passe atual.</span>
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group form-check">
+                        <input asp-for="IsAdmin" class="form-check-input" />
+                        <label asp-for="IsAdmin" class="form-check-label">Administrador</label>
+                        <span class="form-hint">Se ativo, o utilizador tem permissões de administrador. Caso contrário, é um utilizador comum.</span>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="form-media">
+                <section class="form-section">
+                    <div class="form-section-legend">Media</div>
+
+                    <div class="form-group">
+                        <label asp-for="User.Image" class="control-label"></label>
+                        <div id="imagePreviewWrapper" class="image-preview-wrap" style="@(string.IsNullOrEmpty(Model.User.Image) ? "display:none;" : "")">
+                            <img id="imagePreview" src="@Url.Content("~/" + Model.User.Image)" class="image-preview" alt="Avatar atual" />
+                            <button type="button" id="removeImageBtn" class="image-preview-x" aria-label="Remover imagem">×</button>
+                        </div>
+                        <p id="imageRemovedMsg" class="form-hint" style="display:none;">
+                            Vai ser removida ao guardar.
+                            <button type="button" id="undoRemoveImageBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
+                        </p>
+                        <input asp-for="User.Image" id="ImageInput" class="form-control" placeholder="caminho/para/avatar.png" />
+                        <span class="form-hint">Caminho relativo à pasta wwwroot.</span>
+                        <span asp-validation-for="User.Image" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="User.Banner" class="control-label"></label>
+                        <div id="bannerPreviewWrapper" class="image-preview-wrap" style="@(string.IsNullOrEmpty(Model.User.Banner) ? "display:none;" : "")">
+                            <img id="bannerPreview" src="@Url.Content("~/" + Model.User.Banner)" class="image-preview" alt="Banner atual" />
+                            <button type="button" id="removeBannerBtn" class="image-preview-x" aria-label="Remover imagem">×</button>
+                        </div>
+                        <p id="bannerRemovedMsg" class="form-hint" style="display:none;">
+                            Vai ser removido ao guardar.
+                            <button type="button" id="undoRemoveBannerBtn" class="btn btn-sm btn-link p-0">Desfazer</button>
+                        </p>
+                        <input asp-for="User.Banner" id="BannerInput" class="form-control" placeholder="caminho/para/banner.png" />
+                        <span class="form-hint">Caminho relativo à pasta wwwroot.</span>
+                        <span asp-validation-for="User.Banner" class="text-danger"></span>
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        <div class="form-actions">
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-accent">Guardar alterações</button>
+        </div>
+    </form>
+</div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function setupRemove(textInputId, wrapperId, removeBtnId, removedMsgId, undoBtnId, flagId) {
+            const textInput = document.getElementById(textInputId);
+            const wrapper = document.getElementById(wrapperId);
+            const removeBtn = document.getElementById(removeBtnId);
+            const removedMsg = document.getElementById(removedMsgId);
+            const undoBtn = document.getElementById(undoBtnId);
+            const flag = document.getElementById(flagId);
+
+            // Guarda o caminho original para o caso de "Desfazer"
+            const originalValue = textInput.value;
+
+            removeBtn.addEventListener('click', function () {
+                wrapper.style.display = 'none';
+                removedMsg.style.display = '';
+                flag.value = 'true';
+                textInput.value = '';
+            });
+
+            undoBtn.addEventListener('click', function () {
+                wrapper.style.display = '';
+                removedMsg.style.display = 'none';
+                flag.value = 'false';
+                textInput.value = originalValue;
+            });
+        }
+
+        setupRemove('ImageInput', 'imagePreviewWrapper', 'removeImageBtn', 'imageRemovedMsg', 'undoRemoveImageBtn', 'RemoveImageInput');
+        setupRemove('BannerInput', 'bannerPreviewWrapper', 'removeBannerBtn', 'bannerRemovedMsg', 'undoRemoveBannerBtn', 'RemoveBannerInput');
+    </script>
+}

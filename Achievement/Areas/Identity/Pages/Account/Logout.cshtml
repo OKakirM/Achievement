@@ -1,0 +1,26 @@
+@page "/Logout"
+@model LogoutModel
+@{
+    ViewData["Title"] = "Terminar sessão";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <h1 class="auth-title">Terminar sessão</h1>
+            <p class="auth-message">Tens a certeza de que queres sair?</p>
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                <button type="submit" class="btn-accent auth-submit">Terminar sessão</button>
+            </form>
+        }
+        else
+        {
+            <h1 class="auth-title">Sessão terminada</h1>
+            <p class="auth-message">Terminaste a sessão com sucesso.</p>
+            <div class="auth-links">
+                <a asp-page="./Login">Voltar a entrar</a>
+            </div>
+        }
+    </div>
+</div>

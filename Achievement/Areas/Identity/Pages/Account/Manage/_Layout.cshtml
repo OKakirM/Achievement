@@ -1,0 +1,22 @@
+@{
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="settings-wrap">
+    <div class="settings-header">
+        <h1>Configurações da conta</h1>
+        <p>Gere o teu perfil, segurança e dados pessoais.</p>
+    </div>
+    <div class="settings-grid">
+        <nav class="settings-nav">
+            <partial name="_ManageNav" />
+        </nav>
+        <section class="settings-panel">
+            @RenderBody()
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

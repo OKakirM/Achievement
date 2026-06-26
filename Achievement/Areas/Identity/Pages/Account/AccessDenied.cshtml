@@ -1,0 +1,15 @@
+@page "/AccessDenied"
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Acesso negado";
+}
+
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Acesso negado</h1>
+        <p class="auth-message">Não tens permissão para aceder a este recurso.</p>
+        <div class="auth-links">
+            <a asp-page="/Index" asp-area="">Voltar ao início</a>
+        </div>
+    </div>
+</div>
