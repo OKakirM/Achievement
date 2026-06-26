@@ -20,9 +20,4 @@
     <PackageReference Include="NuGet.Protocol" Version="7.3.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\users\avatars\" />
-    <Folder Include="wwwroot\images\users\banners\" />
-  </ItemGroup>
-
 </Project>

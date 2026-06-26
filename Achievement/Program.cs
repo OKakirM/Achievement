@@ -1,4 +1,5 @@
 using Achievement.Data;
+using Achievement.Data.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,13 +32,8 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Inicialização da role ADMIN
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    if (!await roleManager.RoleExistsAsync("Admin"))
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
-}
+// Inicialização da BD com dados iniciais (géneros, plataformas, jogos, roles e contas).
+await app.UseItToSeedSqlServer();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
