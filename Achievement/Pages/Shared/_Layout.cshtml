@@ -9,13 +9,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Achievement.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">Achievement</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -28,7 +29,7 @@
                             <a class="nav-link" asp-area="" asp-page="/Index">Início</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="jogosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Jogos</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="jogosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Jogos<i class="bi bi-chevron-down nav-caret"></i></a>
                             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="jogosDropdown">
                                 <li><a class="dropdown-item" asp-area="" asp-page="/Games/Index">Todos os Jogos</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-page="/Genres/Index">Géneros</a></li>
@@ -57,9 +58,29 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2026 - Achievement - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a class="footer-logo" asp-area="" asp-page="/Index">Achievement</a>
+                    <p class="footer-tagline">Regista, avalia e descobre os jogos que jogaste.</p>
+                </div>
+                <nav class="footer-col">
+                    <h3 class="footer-col-title">Explorar</h3>
+                    <a asp-area="" asp-page="/Games/Index">Jogos</a>
+                    <a asp-area="" asp-page="/Genres/Index">Géneros</a>
+                    <a asp-area="" asp-page="/Platforms/Index">Plataformas</a>
+                </nav>
+                <nav class="footer-col">
+                    <h3 class="footer-col-title">Comunidade</h3>
+                    <a asp-area="" asp-page="/Reviews/Index">Reviews</a>
+                    <a asp-area="" asp-page="/Users/Index">Utilizadores</a>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Achievement</span>
+                <a asp-area="" asp-page="/Privacy">Privacidade</a>
+            </div>
         </div>
     </footer>
 

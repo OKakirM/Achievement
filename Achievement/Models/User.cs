@@ -76,6 +76,12 @@ namespace Achievement.Models
         [Display(Name = "Banner do Perfil")]
         public string? Banner { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Data de criação da conta (UTC).
+        /// </summary>
+        [Display(Name = "Membro desde")]
+        public DateTime CreatedAt { get; set; }
+
         // ============================================
         // Chaves Estrangeiras | Relacionamentos
         // ============================================

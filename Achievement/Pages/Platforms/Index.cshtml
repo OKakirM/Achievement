@@ -12,7 +12,7 @@
     </div>
     @if (User.IsInRole("Admin"))
     {
-        <a asp-page="Create" class="btn-accent"><span>+</span> Nova Plataforma</a>
+        <a asp-page="Create" class="btn-accent"><i class="bi bi-plus-lg"></i> Nova Plataforma</a>
     }
 </div>
 
@@ -33,15 +33,15 @@ else
         {
             <div class="genre-card">
                 <a class="genre-card-link" asp-page="/Games/Index" asp-route-platform="@item.Id">
-                    <span class="genre-card-name">@item.Name</span>
+                    <span class="genre-card-name"><i class="bi @item.Type.IconClass()"></i> @item.Name</span>
                     <span class="genre-card-count">@Html.DisplayFor(m => item.Type) · @item.Games.Count @(item.Games.Count == 1 ? "jogo" : "jogos")</span>
                 </a>
 
                 @if (User.IsInRole("Admin"))
                 {
                     <div class="game-card-actions">
-                        <a asp-page="./Edit" asp-route-id="@item.Id" title="Editar">✎</a>
-                        <a asp-page="./Delete" asp-route-id="@item.Id" title="Eliminar">🗑</a>
+                        <a asp-page="./Edit" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" title="Eliminar"><i class="bi bi-trash"></i></a>
                     </div>
                 }
             </div>

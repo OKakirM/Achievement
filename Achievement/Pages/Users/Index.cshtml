@@ -1,54 +1,61 @@
-﻿@page
+@page "/Users"
 @model Achievement.Pages.Users.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Utilizadores";
 }
 
-<h1>Index</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Utilizadores</h1>
+        <p class="page-subtitle">A comunidade que regista e analisa jogos</p>
+    </div>
+</div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Image)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.User) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (Model.User == null || Model.User.Count == 0)
+{
+    <div class="games-empty">
+        <p>Ainda não há utilizadores.</p>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="user-grid">
+        @foreach (var item in Model.User)
+        {
+            <div class="user-card">
+                <a class="user-card-link" asp-page="./Details" asp-route-id="@item.Id">
+                    <div class="user-banner">
+                        @if (!string.IsNullOrWhiteSpace(item.Banner))
+                        {
+                            <img src="~/@item.Banner" alt="" loading="lazy" />
+                        }
+                    </div>
+                    <div class="user-avatar">
+                        @if (!string.IsNullOrWhiteSpace(item.Image))
+                        {
+                            <img src="~/@item.Image" alt="@item.Name" loading="lazy" />
+                        }
+                        else
+                        {
+                            <span class="user-avatar-initial">@(item.Name.Length > 0 ? item.Name[0].ToString().ToUpper() : "?")</span>
+                        }
+                    </div>
+                    <span class="user-card-name">@item.Name</span>
+                    <span class="user-card-meta">
+                        <i class="bi bi-controller"></i> @item.UserGames.Count @(item.UserGames.Count == 1 ? "jogo" : "jogos")
+                    </span>
+                    <span class="user-card-since">Membro desde @item.CreatedAt.ToString("MMM yyyy")</span>
+                </a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="game-card-actions">
+                        <a asp-page="./Edit" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" title="Eliminar"><i class="bi bi-trash"></i></a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

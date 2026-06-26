@@ -20,7 +20,7 @@ namespace Achievement.Models
         /// </summary>
         [Required(ErrorMessage = "O {0} do gênero é obrigatório.")]
         [Display(Name = "Nome do Gênero")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "O {0} do gênero deve ter entre {2} e {1} caracteres.")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "O {0} deve ter entre {2} e {1} caracteres.")]
         public string Name { get; set; } = string.Empty;
 
         // ============================================

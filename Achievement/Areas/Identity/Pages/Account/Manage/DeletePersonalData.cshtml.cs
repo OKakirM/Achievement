@@ -3,10 +3,12 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Achievement.Data;
 
@@ -17,43 +19,30 @@ public class DeletePersonalDataModel : PageModel
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly ILogger<DeletePersonalDataModel> _logger;
+    private readonly ApplicationDbContext _context;
 
     public DeletePersonalDataModel(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
-        ILogger<DeletePersonalDataModel> logger)
+        ILogger<DeletePersonalDataModel> logger,
+        ApplicationDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _logger = logger;
+        _context = context;
     }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     [BindProperty]
     public InputModel Input { get; set; } = default!;
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     public class InputModel
     {
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = default!;
     }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     public bool RequirePassword { get; set; }
 
     public async Task<IActionResult> OnGet()
@@ -81,16 +70,29 @@ public class DeletePersonalDataModel : PageModel
         {
             if (!await _userManager.CheckPasswordAsync(user, Input.Password))
             {
-                ModelState.AddModelError(string.Empty, "Incorrect password.");
+                ModelState.AddModelError(string.Empty, "Palavra-passe incorreta.");
                 return Page();
             }
         }
 
-        var result = await _userManager.DeleteAsync(user);
         var userId = await _userManager.GetUserIdAsync(user);
+
+        // Users — tabela personalizada, ligada à Identity pelo email.
+        // Remover a linha faz cascata para Reviews/UserGames; apaga também as imagens.
+        var appUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+        if (appUser != null)
+        {
+            DeletePhysicalFile(appUser.Image);
+            DeletePhysicalFile(appUser.Banner);
+            _context.Users.Remove(appUser);
+            await _context.SaveChangesAsync();
+        }
+
+        // AspNetUsers (Identity) — a conta de login.
+        var result = await _userManager.DeleteAsync(user);
         if (!result.Succeeded)
         {
-            throw new InvalidOperationException($"Unexpected error occurred deleting user.");
+            throw new InvalidOperationException("Unexpected error occurred deleting user.");
         }
 
         await _signInManager.SignOutAsync();
@@ -98,5 +100,15 @@ public class DeletePersonalDataModel : PageModel
         _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 
         return Redirect("~/");
+    }
+
+    private static void DeletePhysicalFile(string? relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath)) return;
+        var full = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+        if (System.IO.File.Exists(full))
+        {
+            System.IO.File.Delete(full);
+        }
     }
 }

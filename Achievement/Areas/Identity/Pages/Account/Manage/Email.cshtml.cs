@@ -1,16 +1,12 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 
 namespace Achievement.Areas.Identity.Pages.Account.Manage;
@@ -19,57 +15,33 @@ public class EmailModel : PageModel
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly IEmailSender _emailSender;
+    private readonly ApplicationDbContext _context;
 
     public EmailModel(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
-        IEmailSender emailSender)
+        ApplicationDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _emailSender = emailSender;
+        _context = context;
     }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     public string? Email { get; set; }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     public bool IsEmailConfirmed { get; set; }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     [TempData]
     public string? StatusMessage { get; set; }
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     [BindProperty]
     public InputModel Input { get; set; } = default!;
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
     public class InputModel
     {
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [Required]
-        [EmailAddress]
-        [Display(Name = "New email")]
+        [Required(ErrorMessage = "O email é obrigatório.")]
+        [EmailAddress(ErrorMessage = "Formato de email inválido.")]
+        [Display(Name = "Novo email")]
         public string NewEmail { get; set; } = default!;
     }
 
@@ -112,59 +84,48 @@ public class EmailModel : PageModel
             return Page();
         }
 
-        var email = await _userManager.GetEmailAsync(user);
-        if (Input.NewEmail != email)
+        var newEmail = Input.NewEmail.Trim();
+        var oldEmail = user.Email;
+        if (string.Equals(newEmail, oldEmail, System.StringComparison.OrdinalIgnoreCase))
         {
-            var userId = await _userManager.GetUserIdAsync(user);
-            var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmailChange",
-                pageHandler: null,
-                values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
-                protocol: Request.Scheme)!;
-            await _emailSender.SendEmailAsync(
-                Input.NewEmail,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-            StatusMessage = "Confirmation link to change email sent. Please check your email.";
+            StatusMessage = "O teu email não foi alterado.";
             return RedirectToPage();
         }
 
-        StatusMessage = "Your email is unchanged.";
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostSendVerificationEmailAsync()
-    {
-        var user = await _userManager.GetUserAsync(User);
-        if (user == null)
+        // Unicidade do email entre as duas tabelas.
+        var existingIdUser = await _userManager.FindByEmailAsync(newEmail);
+        var emailTakenInUsers = await _context.Users.AnyAsync(u => u.Email == newEmail && u.Email != oldEmail);
+        if ((existingIdUser != null && existingIdUser.Id != user.Id) || emailTakenInUsers)
         {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
-
-        if (!ModelState.IsValid)
-        {
+            ModelState.AddModelError("Input.NewEmail", "Este email já está em uso.");
             await LoadAsync(user);
             return Page();
         }
 
-        var userId = await _userManager.GetUserIdAsync(user);
-        var email = await _userManager.GetEmailAsync(user);
-        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        var callbackUrl = Url.Page(
-            "/Account/ConfirmEmail",
-            pageHandler: null,
-            values: new { area = "Identity", userId = userId, code = code },
-            protocol: Request.Scheme)!;
-        await _emailSender.SendEmailAsync(
-            email!,
-            "Confirm your email",
-            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+        // AspNetUsers (Identity). Sem email sender, confirma-se diretamente.
+        var setEmailResult = await _userManager.SetEmailAsync(user, newEmail);
+        if (!setEmailResult.Succeeded)
+        {
+            foreach (var error in setEmailResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            await LoadAsync(user);
+            return Page();
+        }
+        user.EmailConfirmed = true;
+        await _userManager.UpdateAsync(user);
 
-        StatusMessage = "Verification email sent. Please check your email.";
+        // Users — tabela personalizada, localizada pelo email antigo (a ligação).
+        var appUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == oldEmail);
+        if (appUser != null)
+        {
+            appUser.Email = newEmail;
+            await _context.SaveChangesAsync();
+        }
+
+        await _signInManager.RefreshSignInAsync(user);
+        StatusMessage = "O teu email foi atualizado.";
         return RedirectToPage();
     }
 }

@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Achievement.Data;
 using Achievement.Models;
@@ -93,6 +94,22 @@ public class RegisterModel : PageModel
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         if (ModelState.IsValid)
         {
+            // Nome e email têm de ser únicos (a tabela Users espelha a AspNetUsers).
+            var name = Input.UserData.Name.Trim();
+            var email = Input.UserData.Email.Trim();
+            if (await _context.Users.AnyAsync(u => u.Name == name))
+            {
+                ModelState.AddModelError("Input.UserData.Name", "Este nome já está em uso.");
+            }
+            if (await _context.Users.AnyAsync(u => u.Email == email))
+            {
+                ModelState.AddModelError("Input.UserData.Email", "Este email já está em uso.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             var user = CreateUser();
 
             await _userStore.SetUserNameAsync(user, Input.UserData.Name, CancellationToken.None);
@@ -119,9 +136,10 @@ public class RegisterModel : PageModel
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme)!;
 
-                await _emailSender.SendEmailAsync(Input.UserData.Email, "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                await _emailSender.SendEmailAsync(Input.UserData.Email, "Confirme seu e-mail!",
+                    $"Por favor, confirme seu e-mail ao <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicar aqui</a>.");
 
+                Input.UserData.CreatedAt = DateTime.UtcNow;
                 _context.Users.Add(Input.UserData);
                 await _context.SaveChangesAsync();
 

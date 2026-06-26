@@ -1,23 +1,26 @@
 @page "/RegisterConfirmation"
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register confirmation";
+    ViewData["Title"] = "Confirmação de registo";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
-
+<div class="auth-wrap">
+    <div class="auth-card">
+        <h1 class="auth-title">Confirmação de registo</h1>
+        @if (Model.DisplayConfirmAccountLink)
+        {
+            <p class="auth-message">
+                Este site não tem um serviço de email configurado.
+                Normalmente receberias um email — usa este link para confirmar a conta:
+                <a id="confirm-link" href="@Model.EmailConfirmationUrl">Confirmar a minha conta</a>
+            </p>
+        }
+        else
+        {
+            <p class="auth-message">Confirma o teu email para ativares a conta. Verifica a tua caixa de entrada.</p>
+        }
+        <div class="auth-links">
+            <a asp-page="./Login">Entrar</a>
+        </div>
+    </div>
+</div>

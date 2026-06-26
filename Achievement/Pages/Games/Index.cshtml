@@ -22,7 +22,7 @@
     </div>
     @if (User.IsInRole("Admin"))
     {
-        <a asp-page="Create" class="btn-accent"><span>+</span> Novo Jogo</a>
+        <a asp-page="Create" class="btn-accent"><i class="bi bi-plus-lg"></i> Novo Jogo</a>
     }
 </div>
 
@@ -61,7 +61,7 @@ else
                         <img src="~/@item.CoverImage" alt="@item.Name" loading="lazy" />
                         @if (item.Rating.HasValue && item.Rating.Value > 0)
                         {
-                            <span class="game-rating">★ @item.Rating.Value.ToString("0.0")</span>
+                            <span class="game-rating"><i class="bi bi-star-fill"></i> @item.Rating.Value.ToString("0.0")</span>
                         }
                         <div class="game-card-overlay">
                             <span class="game-overlay-name">@item.Name</span>
@@ -73,8 +73,8 @@ else
                 @if (User.IsInRole("Admin"))
                 {
                     <div class="game-card-actions">
-                        <a asp-page="./Edit" asp-route-id="@item.Id" asp-route-slug="@item.Slug" title="Editar">✎</a>
-                        <a asp-page="./Delete" asp-route-id="@item.Id" asp-route-slug="@item.Slug" title="Eliminar">🗑</a>
+                        <a asp-page="./Edit" asp-route-id="@item.Id" asp-route-slug="@item.Slug" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a asp-page="./Delete" asp-route-id="@item.Id" asp-route-slug="@item.Slug" title="Eliminar"><i class="bi bi-trash"></i></a>
                     </div>
                 }
             </div>

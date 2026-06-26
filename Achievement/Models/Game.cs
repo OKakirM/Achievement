@@ -43,6 +43,12 @@ namespace Achievement.Models
         public DateTime ReleaseDate { get; set; }
 
         /// <summary>
+        /// Data de criação do registo (UTC). Usada para ordenar o feed de "adicionados recentemente".
+        /// </summary>
+        [Display(Name = "Adicionado em")]
+        public DateTime CreatedAt { get; set; }
+
+        /// <summary>
         /// Avaliação do Jogo
         /// - Deve estar entre 0.0 e 10.0
         /// </summary>

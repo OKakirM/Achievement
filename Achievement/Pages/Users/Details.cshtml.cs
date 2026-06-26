@@ -47,6 +47,7 @@ namespace Achievement.Pages.Users
             if (!IsOwner) return Forbid();
             if (!ValidImage(AvatarFile, "AvatarFile")) return Page();
 
+            DeletePhysicalFile(ProfileUser.Image);
             ProfileUser.Image = await SaveImageAsync(AvatarFile!, CustomValidationFiles._UsersAvatarFolder);
             await _context.SaveChangesAsync();
             TempData["Success"] = "Foto de perfil atualizada.";
@@ -59,6 +60,7 @@ namespace Achievement.Pages.Users
             if (!IsOwner) return Forbid();
             if (!ValidImage(BannerFile, "BannerFile")) return Page();
 
+            DeletePhysicalFile(ProfileUser.Banner);
             ProfileUser.Banner = await SaveImageAsync(BannerFile!, CustomValidationFiles._UsersBannerFolder);
             await _context.SaveChangesAsync();
             TempData["Success"] = "Banner do perfil atualizado.";
@@ -106,6 +108,17 @@ namespace Achievement.Pages.Users
                 return false;
             }
             return true;
+        }
+
+        // Apaga o ficheiro anterior do disco para não deixar imagens órfãs em wwwroot.
+        private static void DeletePhysicalFile(string? relativePath)
+        {
+            if (string.IsNullOrWhiteSpace(relativePath)) return;
+            var full = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+            if (System.IO.File.Exists(full))
+            {
+                System.IO.File.Delete(full);
+            }
         }
 
         private static async Task<string> SaveImageAsync(IFormFile file, string folder)

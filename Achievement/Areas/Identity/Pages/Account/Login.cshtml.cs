@@ -66,15 +66,15 @@ public class LoginModel : PageModel
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
-        [Display(Name = "Nome do Utilizador ou E-mail")]
+        [Required(ErrorMessage = "O {0} é obrigatório.")]
+        [Display(Name = "Nome do Utilizador")]
         public string Username { get; set; } = default!;
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        [Required]
+        [Required(ErrorMessage = "O {0} é obrigatório.")]
         [Display(Name = "Palavra-Passe")]
         [DataType(DataType.Password)]
         public string Password { get; set; } = default!;
@@ -120,10 +120,6 @@ public class LoginModel : PageModel
                 _logger.LogInformation("User logged in.");
                 return LocalRedirect(returnUrl);
             }
-            if (result.RequiresTwoFactor)
-            {
-                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-            }
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User account locked out.");
@@ -131,7 +127,7 @@ public class LoginModel : PageModel
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                ModelState.AddModelError(string.Empty, "Tentativa de login falhou.");
                 return Page();
             }
         }

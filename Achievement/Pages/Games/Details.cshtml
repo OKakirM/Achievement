@@ -5,7 +5,7 @@
     ViewData["Title"] = Model.Game.Name;
 }
 
-<div class="game-detail-banner">
+<div class="game-detail-banner full-bleed">
     <img src="~/@Model.Game.BannerImage" alt="Banner de @Model.Game.Name" />
 </div>
 
@@ -66,7 +66,7 @@
                 <div class="tag-list">
                     @foreach (var p in Model.Game.Platforms)
                     {
-                        <span class="tag tag-accent">@p.Name</span>
+                        <span class="tag tag-accent"><i class="bi @p.Type.IconClass()"></i> @p.Name</span>
                     }
                 </div>
             }
@@ -139,10 +139,10 @@
                                     <a class="review-author" asp-page="/Users/Details" asp-route-id="@r.UserFK">@r.User?.Name</a>
                                     @if (Model.ReviewerStatus.TryGetValue(r.UserFK, out var st))
                                     {
-                                        <span class="tag @st.CssClass()">@st.DisplayName()</span>
+                                        <span class="tag @st.CssClass()"><i class="bi @st.IconClass()"></i> @st.DisplayName()</span>
                                     }
                                     <span class="review-date">@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
-                                    <span class="review-rating">★ @r.Rating.ToString("0.0")</span>
+                                    <span class="review-rating"><i class="bi bi-star-fill"></i> @r.Rating.ToString("0.0")</span>
                                 </div>
                                 <p class="review-text">@r.ReviewContent</p>
                             </div>

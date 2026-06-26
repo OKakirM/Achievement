@@ -2,13 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
 
 namespace Achievement.Areas.Identity.Pages.Account.Manage;
@@ -17,62 +16,29 @@ public class IndexModel : PageModel
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly ApplicationDbContext _context;
 
     public IndexModel(
         UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager)
+        SignInManager<IdentityUser> signInManager,
+        ApplicationDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _context = context;
     }
 
     /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
-    public string? Username { get; set; }
-
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
-    [TempData]
-    public string? StatusMessage { get; set; }
-
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
+    /// Nome do utilizador (espelhado em AspNetUsers.UserName e Users.Name).
     /// </summary>
     [BindProperty]
-    public InputModel Input { get; set; } = default!;
+    [Required(ErrorMessage = "O nome é obrigatório.")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "O nome deve ter entre {2} e {1} caracteres.")]
+    [Display(Name = "Nome do utilizador")]
+    public string Username { get; set; } = default!;
 
-    /// <summary>
-    ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    /// </summary>
-    public class InputModel
-    {
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [Phone]
-        [Display(Name = "Phone number")]
-        public string? PhoneNumber { get; set; }
-    }
-
-    private async Task LoadAsync(IdentityUser user)
-    {
-        var userName = await _userManager.GetUserNameAsync(user);
-        var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-        Username = userName;
-
-        Input = new InputModel
-        {
-            PhoneNumber = phoneNumber
-        };
-    }
+    [TempData]
+    public string? StatusMessage { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -82,7 +48,7 @@ public class IndexModel : PageModel
             return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
         }
 
-        await LoadAsync(user);
+        Username = await _userManager.GetUserNameAsync(user) ?? string.Empty;
         return Page();
     }
 
@@ -96,23 +62,36 @@ public class IndexModel : PageModel
 
         if (!ModelState.IsValid)
         {
-            await LoadAsync(user);
             return Page();
         }
 
-        var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-        if (Input.PhoneNumber != phoneNumber)
+        var newName = Username.Trim();
+        var currentName = await _userManager.GetUserNameAsync(user);
+        if (newName != currentName)
         {
-            var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            if (!setPhoneResult.Succeeded)
+            // AspNetUsers (Identity) — valida unicidade do nome de utilizador.
+            var setResult = await _userManager.SetUserNameAsync(user, newName);
+            if (!setResult.Succeeded)
             {
-                StatusMessage = "Unexpected error when trying to set phone number.";
-                return RedirectToPage();
+                foreach (var error in setResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return Page();
             }
+
+            // Users — tabela personalizada, ligada à Identity pelo e-mail.
+            var appUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+            if (appUser != null)
+            {
+                appUser.Name = newName;
+                await _context.SaveChangesAsync();
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
         }
 
-        await _signInManager.RefreshSignInAsync(user);
-        StatusMessage = "Your profile has been updated";
+        StatusMessage = "O teu perfil foi atualizado.";
         return RedirectToPage();
     }
 }
