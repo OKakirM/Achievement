@@ -122,6 +122,7 @@ public class RegisterModel : PageModel
                 await _emailSender.SendEmailAsync(Input.UserData.Email, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
+                Input.UserData.CreatedAt = DateTime.UtcNow;
                 _context.Users.Add(Input.UserData);
                 await _context.SaveChangesAsync();
 

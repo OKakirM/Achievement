@@ -237,6 +237,7 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .req { color: var(--danger); font-weight: 700; }
 .form-actions {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: .75rem;
     margin-top: 1.5rem;
@@ -599,6 +600,81 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .genre-card-count { color: var(--text-muted); font-size: .85rem; }
 .genre-card:hover .game-card-actions { opacity: 1; }
 
+/* ===================== Grelha de utilizadores (Index) ===================== */
+.user-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+}
+.user-card { position: relative; }
+.user-card-link {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    padding-bottom: 1rem;
+    transition: transform .15s ease, border-color .15s ease;
+}
+.user-card-link:hover { transform: translateY(-4px); border-color: var(--accent); }
+.user-banner {
+    position: relative;
+    height: 80px;
+    background: linear-gradient(135deg, var(--bg-card-hover), var(--accent));
+}
+.user-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Escurece o banner para destacar o avatar à frente */
+.user-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 15, 22, .55);
+}
+.user-avatar {
+    position: relative;
+    z-index: 1;
+    width: 72px;
+    height: 72px;
+    margin: -36px auto .6rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--bg-card);
+    background: var(--bg-card-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-avatar-initial { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; color: var(--accent-soft); }
+.user-card-name {
+    display: block;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+}
+.user-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .35em;
+    margin-top: .3rem;
+    color: var(--text-muted);
+    font-size: .85rem;
+    line-height: 1;
+}
+.user-card-meta .bi { vertical-align: 0; line-height: 1; }
+.user-card-since {
+    display: block;
+    text-align: center;
+    margin-top: .15rem;
+    color: var(--text-muted);
+    font-size: .78rem;
+}
+.user-card:hover .game-card-actions { opacity: 1; }
+
 /* ===================== Detalhe do jogo (estilo Backloggd) ===================== */
 .game-detail-banner {
     position: relative;
@@ -666,13 +742,49 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
 .status-onhold    { border-color: #e0a93b; color: #ffce6b; }
 .status-plan      { border-color: var(--border); color: var(--text-muted); }
 
+/* ===================== Perfil do utilizador (Details) ===================== */
+.profile-banner {
+    height: 220px;
+    background: linear-gradient(135deg, #3a2d5c, #1f2a44);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+.profile-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--bg-deep) 2%, rgba(19, 21, 28, .3) 60%, rgba(19, 21, 28, .15) 100%);
+    pointer-events: none;
+}
+.profile-img-form { position: absolute; bottom: 12px; right: 12px; z-index: 1; }
+.profile-img-form .btn { cursor: pointer; }
+.profile-head { display: flex; align-items: center; gap: 1rem; margin: -80px 0 0 1.5rem; position: relative; z-index: 1; }
+.profile-avatar {
+    position: relative; width: 110px; height: 110px; border-radius: 50%;
+    overflow: hidden; border: 4px solid #181818; background: #4a3a78;
+    display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+}
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-avatar-initials { font-size: 2.5rem; color: #fff; font-weight: 700; }
+.profile-avatar-edit { position: absolute; bottom: 4px; right: 4px; }
+.profile-avatar-edit label {
+    cursor: pointer; background: #000a; color: #fff; border-radius: 50%;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+}
+.profile-meta h1 { margin: 0; }
+.profile-games { display: flex; flex-wrap: wrap; gap: 1rem; margin: .5rem 0 1.5rem; }
+.profile-game { width: 120px; text-decoration: none; color: inherit; }
+.profile-game img { width: 120px; height: 160px; object-fit: cover; border-radius: 8px; }
+.profile-game span { display: block; margin-top: .35rem; font-size: .85rem; }
+
 /* Cabeçalho de grupo de estado no perfil */
 .profile-group-title { display: flex; align-items: center; gap: .55rem; }
 
 .game-section-title { font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 .6rem; }
 .game-section-title:first-child { margin-top: 0; }
 .game-description { color: var(--text); line-height: 1.7; white-space: pre-line; }
-.game-detail-actions { display: flex; gap: .75rem; margin-top: 1.75rem; flex-wrap: wrap; }
+.game-detail-actions { display: flex; align-items: center; gap: .75rem; margin-top: 1.75rem; flex-wrap: wrap; }
 
 /* Corpo do detalhe: conteúdo + barra lateral (estilo AniList/Backloggd) */
 .game-detail-body {
@@ -849,7 +961,7 @@ select[multiple] option { background: var(--bg-card); color: var(--text); paddin
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-.game-card, .genre-card, .review-card { animation: fadeUp .4s ease both; }
+.game-card, .genre-card, .review-card, .user-card { animation: fadeUp .4s ease both; }
 
 /* Cascata: só com movimento permitido (em reduced-motion não há atraso,
    senão os cartões ficariam invisíveis durante o delay). Cap aos primeiros 6. */
