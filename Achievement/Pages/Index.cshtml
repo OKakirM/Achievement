@@ -3,6 +3,19 @@
 @{
     ViewData["Title"] = "Início";
     var hero = Model.Featured.FirstOrDefault();
+    var isEmpty = hero == null
+        && Model.PopularThisWeek.Count == 0
+        && Model.RecentlyAdded.Count == 0
+        && Model.RecentReviews.Count == 0;
+}
+
+@if (isEmpty)
+{
+    <section class="home-empty">
+        <i class="bi bi-controller home-empty-icon"></i>
+        <h1 class="home-empty-title">Ainda estamos a preencher a nossa base de dados!</h1>
+        <p class="home-empty-text">Em breve vais encontrar aqui jogos, avaliações e reviews da comunidade. Volta daqui a pou</p>
+    </section>
 }
 
 @if (hero != null)
@@ -86,6 +99,20 @@
                     </div>
                 </article>
             }
+        </div>
+    </section>
+}
+
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <section class="home-cta">
+        <div class="home-cta-inner">
+            <h2 class="home-cta-title">Cria a tua biblioteca de jogos</h2>
+            <p class="home-cta-text">Regista o que jogaste, avalia, escreve reviews e acompanha o que queres jogar a seguir — tudo num só sítio.</p>
+            <div class="home-cta-actions">
+                <a class="btn-accent" asp-area="Identity" asp-page="/Account/Register">Criar conta grátis</a>
+                <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Login">Já tenho conta</a>
+            </div>
         </div>
     </section>
 }
