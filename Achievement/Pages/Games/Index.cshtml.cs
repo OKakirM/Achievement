@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Achievement.Data;
+using Achievement.Helpers;
 using Achievement.Models;
 
 namespace Achievement.Pages.Games
@@ -47,11 +48,6 @@ namespace Achievement.Pages.Games
 
             // Only active games in admin list? Admin should see all; keep all.
 
-            if (!string.IsNullOrWhiteSpace(Search))
-            {
-                query = query.Where(g => g.Name.Contains(Search));
-            }
-
             if (GenreId.HasValue)
             {
                 query = query.Where(g => g.Genres.Any(ge => ge.Id == GenreId.Value));
@@ -64,11 +60,51 @@ namespace Achievement.Pages.Games
                 PlatformName = (await _context.Platforms.FindAsync(PlatformId.Value))?.Name;
             }
 
-            Game = await query
-                .OrderByDescending(g => g.ReleaseDate)
+            if (string.IsNullOrWhiteSpace(Search))
+            {
+                // Sem pesquisa: SQL paginado por data, como antes.
+                Game = await query
+                    .OrderByDescending(g => g.ReleaseDate)
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToListAsync();
+                return;
+            }
+
+            // Com pesquisa: carrega candidatos e filtra/ordena em memória, para
+            // ignorar maiúsculas/acentos (que o SQLite não trata) e pesquisar em
+            // nome, desenvolvedora e nomes de géneros/plataformas.
+            // ponytail: O(n) scan em memória; migrar para coluna normalizada ou FTS5 se a base passar de uns milhares de jogos.
+            var term = TextSearch.Normalize(Search);
+
+            var candidates = await query
+                .Include(g => g.Genres)
+                .Include(g => g.Platforms)
+                .ToListAsync();
+
+            Game = candidates
+                .Select(g => new { Game = g, Rank = MatchRank(g, term) })
+                .Where(x => x.Rank >= 0)
+                .OrderBy(x => x.Rank)
+                .ThenByDescending(x => x.Game.ReleaseDate)
                 .Skip((PageNumber - 1) * PageSize)
                 .Take(PageSize)
-                .ToListAsync();
+                .Select(x => x.Game)
+                .ToList();
+        }
+
+        /// <summary>
+        /// Relevância da correspondência (menor = mais relevante); -1 se não corresponde.
+        /// </summary>
+        private static int MatchRank(Game g, string term)
+        {
+            var name = TextSearch.Normalize(g.Name);
+            if (name.StartsWith(term)) return 0;
+            if (name.Contains(term)) return 1;
+            if (TextSearch.Normalize(g.Developer).Contains(term)) return 2;
+            if (g.Genres.Any(ge => TextSearch.Normalize(ge.Name).Contains(term))
+                || g.Platforms.Any(p => TextSearch.Normalize(p.Name).Contains(term))) return 2;
+            return -1;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Achievement.Data;
+using Achievement.Helpers;
 using Achievement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,14 +22,26 @@ namespace Achievement.Pages.Genres
         }
 
         public IList<Genre> Genre { get; set; } = default!;
+        public string? Search { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string? search)
         {
+            Search = search;
+
             // Include Games to be able to show counts without additional queries
-            Genre = await _context.Genres
+            var genres = await _context.Genres
                 .Include(g => g.Games)
                 .OrderBy(g => g.Name)
                 .ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                // Filtra em memória por nome, ignorando maiúsculas/acentos.
+                var term = TextSearch.Normalize(search);
+                genres = genres.Where(g => TextSearch.Normalize(g.Name).Contains(term)).ToList();
+            }
+
+            Genre = genres;
         }
     }
 }

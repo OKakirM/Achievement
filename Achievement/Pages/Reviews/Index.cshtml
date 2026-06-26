@@ -12,10 +12,16 @@
     </div>
 </div>
 
+<form method="get" class="games-search">
+    <input type="text" name="q" value="@Model.Search" class="games-search-input"
+           placeholder="Pesquisar por jogo, autor ou texto..." />
+    <button type="submit" class="games-search-btn">Buscar</button>
+</form>
+
 @if (Model.Review == null || Model.Review.Count == 0)
 {
     <div class="games-empty">
-        <p>Ainda não há reviews.</p>
+        <p>Nenhuma review encontrada@(string.IsNullOrWhiteSpace(Model.Search) ? "." : $" para \"{Model.Search}\".")</p>
     </div>
 }
 else
@@ -60,7 +66,7 @@ else
     <div class="games-pager">
         @if (Model.PageNumber > 1)
         {
-            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber - 1)" class="pager-btn">‹ Anterior</a>
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-q="@Model.Search" class="pager-btn">‹ Anterior</a>
         }
         else
         {
@@ -69,7 +75,7 @@ else
         <span class="pager-current">Página @Model.PageNumber</span>
         @if (Model.PageNumber * Model.PageSize < Model.TotalCount)
         {
-            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber + 1)" class="pager-btn">Seguinte ›</a>
+            <a asp-page="." asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-q="@Model.Search" class="pager-btn">Seguinte ›</a>
         }
         else
         {

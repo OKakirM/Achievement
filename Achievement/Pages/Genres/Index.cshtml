@@ -16,10 +16,16 @@
     }
 </div>
 
+<form method="get" class="games-search">
+    <input type="text" name="search" value="@Model.Search" class="games-search-input"
+           placeholder="Pesquisar género..." />
+    <button type="submit" class="games-search-btn">Buscar</button>
+</form>
+
 @if (Model.Genre == null || Model.Genre.Count == 0)
 {
     <div class="games-empty">
-        <p>Ainda não há géneros.</p>
+        <p>Nenhum género encontrado@(string.IsNullOrWhiteSpace(Model.Search) ? "." : $" para \"{Model.Search}\".")</p>
         @if (User.IsInRole("Admin"))
         {
             <a asp-page="Create" class="btn-accent">Criar o primeiro género</a>

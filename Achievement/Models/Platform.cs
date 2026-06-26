@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 
 namespace Achievement.Models
@@ -77,5 +78,17 @@ namespace Achievement.Models
             PlatformType.VR => "bi-headset-vr",
             _ => "bi-question-circle"
         };
+
+        /// <summary>
+        /// Nome localizado do tipo (DisplayAttribute), ex.: Console → "Consola".
+        /// </summary>
+        public static string DisplayName(this PlatformType type)
+        {
+            var member = typeof(PlatformType).GetMember(type.ToString());
+            var display = member.Length > 0
+                ? member[0].GetCustomAttribute<DisplayAttribute>()?.Name
+                : null;
+            return display ?? type.ToString();
+        }
     }
 }
