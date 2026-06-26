@@ -29,7 +29,7 @@
                             <a class="nav-link" asp-area="" asp-page="/Index">Início</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="jogosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Jogos</a>
+                            <a class="nav-link dropdown-toggle" href="#" id="jogosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Jogos<i class="bi bi-chevron-down nav-caret"></i></a>
                             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="jogosDropdown">
                                 <li><a class="dropdown-item" asp-area="" asp-page="/Games/Index">Todos os Jogos</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-page="/Genres/Index">Géneros</a></li>
@@ -58,9 +58,29 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2026 - Achievement - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a class="footer-logo" asp-area="" asp-page="/Index">Achievement</a>
+                    <p class="footer-tagline">Regista, avalia e descobre os jogos que jogaste.</p>
+                </div>
+                <nav class="footer-col">
+                    <h3 class="footer-col-title">Explorar</h3>
+                    <a asp-area="" asp-page="/Games/Index">Jogos</a>
+                    <a asp-area="" asp-page="/Genres/Index">Géneros</a>
+                    <a asp-area="" asp-page="/Platforms/Index">Plataformas</a>
+                </nav>
+                <nav class="footer-col">
+                    <h3 class="footer-col-title">Comunidade</h3>
+                    <a asp-area="" asp-page="/Reviews/Index">Reviews</a>
+                    <a asp-area="" asp-page="/Users/Index">Utilizadores</a>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Achievement</span>
+                <a asp-area="" asp-page="/Privacy">Privacidade</a>
+            </div>
         </div>
     </footer>
 
