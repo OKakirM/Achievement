@@ -43,6 +43,10 @@
                             <a class="nav-link" asp-area="" asp-page="/Users/Index">Lista dos Utilizadores</a>
                         </li>
                     </ul>
+                    <span class="navbar-text me-3 d-flex align-items-center gap-1" title="Pessoas online">
+                        <i class="bi bi-circle-fill text-success online-dot mx-1" style="font-size:.6rem"></i>
+                        <span><span id="onlineNum">–</span> online</span>
+                    </span>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -90,6 +94,12 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8/dist/browser/signalr.min.js"></script>
+    <script>
+        const presence = new signalR.HubConnectionBuilder().withUrl("/hubs/presence").withAutomaticReconnect().build();
+        presence.on("online", n => document.getElementById("onlineNum").textContent = n);
+        presence.start().catch(console.error);
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

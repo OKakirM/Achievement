@@ -1,5 +1,6 @@
 using Achievement.Data;
 using Achievement.Data.Seed;
+using Achievement.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 
 builder.Services.AddSession(options =>
 {
@@ -56,6 +58,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+app.MapHub<PresenceHub>("/hubs/presence");
 
 app.UseSession();
 

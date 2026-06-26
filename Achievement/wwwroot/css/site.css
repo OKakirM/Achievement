@@ -175,3 +175,10 @@ header, .site-footer { flex-shrink: 0; }
 .home-about-grid { display: grid; grid-template-columns: auto 1fr; gap: .4rem 1.25rem; margin: 0; }
 .home-about-grid dt { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
 .home-about-grid dd { margin: 0; }
+
+/* Indicador de presença (pessoas online) */
+.online-dot {animation: online-pulse 1.6s ease-in-out infinite;}
+@keyframes online-pulse {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px #1f9d55) drop-shadow(0 0 4px #25c26a); }
+    50%      { opacity: .55; filter: drop-shadow(0 0 5px #25c26a) drop-shadow(0 0 9px #25c26a); }
+}
