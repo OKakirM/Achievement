@@ -856,3 +856,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /Achievement/wwwroot/images
 CLAUDE.md
+/AchievementAPI.Tests
