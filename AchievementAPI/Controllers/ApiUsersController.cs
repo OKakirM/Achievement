@@ -28,7 +28,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Lista todos os utilizadores.
         /// </summary>
-        [HttpGet]
+        [HttpGet("/api/users")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
@@ -40,7 +40,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Obtém um utilizador pelo Id.
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("/api/users/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserDto>> GetUser(int id)
         {
@@ -54,7 +54,7 @@ namespace AchievementAPI.Controllers
         /// Cria um utilizador, criando também a conta de login na AspNetUsers (Identity).
         /// Falha se o e-mail já estiver registado.
         /// </summary>
-        [HttpPost]
+        [HttpPost("/api/users/create")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<UserDto>> PostUser(UserCreateDto dto)
         {
@@ -90,7 +90,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Atualiza nome, e-mail e imagem de um utilizador, refletindo o nome/e-mail na AspNetUsers (Identity).
         /// </summary>
-        [HttpPut("{id}")]
+        [HttpPut("/api/users/edit/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutUser(int id, UserDto dto)
         {
@@ -129,7 +129,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Remove um utilizador, eliminando também a conta de login na AspNetUsers (Identity).
         /// </summary>
-        [HttpDelete("{id}")]
+        [HttpDelete("/api/users/delete/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {

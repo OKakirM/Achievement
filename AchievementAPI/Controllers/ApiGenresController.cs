@@ -25,7 +25,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Lista todos os gêneros.
         /// </summary>
-        [HttpGet]
+        [HttpGet("/api/genres")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<GenreDto>>> GetGenres()
         {
@@ -36,7 +36,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Obtém um gênero pelo Id.
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("/api/genres/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GenreDto>> GetGenre(int id)
         {
@@ -48,7 +48,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Cria um gênero. Falha se já existir um com o mesmo nome.
         /// </summary>
-        [HttpPost]
+        [HttpPost("/api/genres/create")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<GenreDto>> PostGenre(GenreCreateDto dto)
         {
@@ -67,7 +67,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Atualiza o nome de um gênero.
         /// </summary>
-        [HttpPut("{id}")]
+        [HttpPut("/api/genres/edit{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutGenre(int id, GenreCreateDto dto)
         {
@@ -86,7 +86,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Remove um gênero.
         /// </summary>
-        [HttpDelete("{id}")]
+        [HttpDelete("/api/genres/delete/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteGenre(int id)
         {

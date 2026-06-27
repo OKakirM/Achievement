@@ -26,7 +26,7 @@ namespace AchievementAPI.Controllers
         /// <param name="pageNumber">Número da página (começa em 1).</param>
         /// <param name="pageSize">Quantidade de itens por página.</param>
         // GET: api/ApiGames
-        [HttpGet]
+        [HttpGet("/api/games/")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
@@ -44,10 +44,8 @@ namespace AchievementAPI.Controllers
 
         /// <summary>Obtém um jogo pelo seu Id.</summary>
         /// <param name="id">Id do jogo.</param>
-        /// <response code="200">Jogo encontrado.</response>
-        /// <response code="404">Jogo inexistente.</response>
         // GET: api/ApiGames/5
-        [HttpGet("{id}")]
+        [HttpGet("/api/games/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GameDto>> GetGame(int id)
         {
@@ -65,7 +63,7 @@ namespace AchievementAPI.Controllers
         /// <summary>Cria um novo jogo.</summary>
         /// <param name="dto">Dados do jogo a criar.</param>
         // POST: api/ApiGames
-        [HttpPost]
+        [HttpPost("/api/games/create")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<GameDto>> PostGame(GameCreateDto dto)
         {
@@ -116,7 +114,7 @@ namespace AchievementAPI.Controllers
         /// <param name="id">Id do jogo.</param>
         /// <param name="dto">Campos a atualizar.</param>
         // PUT: api/ApiGames/5
-        [HttpPut("{id}")]
+        [HttpPut("/api/games/edit/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutGame(int id, GameUpdateDto dto)
         {
@@ -171,7 +169,7 @@ namespace AchievementAPI.Controllers
         /// <summary>Remove um jogo.</summary>
         /// <param name="id">Id do jogo.</param>
         // DELETE: api/ApiGames/5
-        [HttpDelete("{id}")]
+        [HttpDelete("/api/games/delete/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteGame(int id)
         {

@@ -25,7 +25,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Lista todas as plataformas.
         /// </summary>
-        [HttpGet]
+        [HttpGet("/api/platforms")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<PlatformDto>>> GetPlatforms()
         {
@@ -36,7 +36,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Obtém uma plataforma pelo Id.
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("/api/platforms/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<PlatformDto>> GetPlatform(int id)
         {
@@ -48,7 +48,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Cria uma plataforma. Falha se já existir uma com o mesmo nome e tipo.
         /// </summary>
-        [HttpPost]
+        [HttpPost("/api/platforms/create")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<PlatformDto>> PostPlatform(PlatformCreateDto dto)
         {
@@ -70,7 +70,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Atualiza o nome e o tipo de uma plataforma.
         /// </summary>
-        [HttpPut("{id}")]
+        [HttpPut("/api/platforms/edit/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutPlatform(int id, PlatformCreateDto dto)
         {
@@ -90,7 +90,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Remove uma plataforma.
         /// </summary>
-        [HttpDelete("{id}")]
+        [HttpDelete("/api/platforms/delete/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeletePlatform(int id)
         {

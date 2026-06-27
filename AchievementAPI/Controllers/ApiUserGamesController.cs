@@ -26,7 +26,7 @@ namespace AchievementAPI.Controllers
         /// Lista todas as entradas de biblioteca (jogos de utilizadores e respetivo estado).
         /// </summary>
         // GET: api/ApiUserGames
-        [HttpGet]
+        [HttpGet("/api/userlists")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<UserGameDto>>> GetUserGames()
         {
@@ -43,7 +43,7 @@ namespace AchievementAPI.Controllers
         /// Obtém a entrada de biblioteca de um utilizador para um jogo (chave composta).
         /// </summary>
         // GET: api/ApiUserGames/5/10
-        [HttpGet("{userId}/{gameId}")]
+        [HttpGet("/api/userlists/{userId}/{gameId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserGameDto>> GetUserGame(int userId, int gameId)
         {
@@ -61,7 +61,7 @@ namespace AchievementAPI.Controllers
         /// Adiciona um jogo à biblioteca de um utilizador com um estado. Falha se a entrada já existir.
         /// </summary>
         // POST: api/ApiUserGames
-        [HttpPost]
+        [HttpPost("/api/userlists/create")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<UserGameDto>> PostUserGame(UserGameDto dto)
         {
@@ -94,7 +94,7 @@ namespace AchievementAPI.Controllers
         /// Atualiza o estado de um jogo na biblioteca de um utilizador.
         /// </summary>
         // PUT: api/ApiUserGames/5/10
-        [HttpPut("{userId}/{gameId}")]
+        [HttpPut("/api/userlists/edit/{userId}/{gameId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutUserGame(int userId, int gameId, UserGameDto dto)
         {
@@ -116,7 +116,7 @@ namespace AchievementAPI.Controllers
         /// Remove um jogo da biblioteca de um utilizador.
         /// </summary>
         // DELETE: api/ApiUserGames/5/10
-        [HttpDelete("{userId}/{gameId}")]
+        [HttpDelete("/api/userlists/delete/{userId}/{gameId}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteUserGame(int userId, int gameId)
         {

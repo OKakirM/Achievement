@@ -25,7 +25,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Lista todas as reviews.
         /// </summary>
-        [HttpGet]
+        [HttpGet("/api/reviews")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviews()
         {
@@ -36,7 +36,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Obtém uma review pelo Id.
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("/api/reviews/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ReviewDto>> GetReview(int id)
         {
@@ -48,7 +48,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Cria uma review. Valida que o jogo e o utilizador existem.
         /// </summary>
-        [HttpPost]
+        [HttpPost("/api/reviews/create")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<ReviewDto>> PostReview(ReviewCreateDto dto)
         {
@@ -78,7 +78,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Atualiza o conteúdo, avaliação e referências de uma review.
         /// </summary>
-        [HttpPut("{id}")]
+        [HttpPut("/api/reviews/edit/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutReview(int id, ReviewCreateDto dto)
         {
@@ -114,7 +114,7 @@ namespace AchievementAPI.Controllers
         /// <summary>
         /// Remove uma review.
         /// </summary>
-        [HttpDelete("{id}")]
+        [HttpDelete("/api/reviews/delete/{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteReview(int id)
         {

@@ -31,7 +31,7 @@ namespace AchievementAPI.Controllers
         /// Valida o User e a palavra-passe e devolve um token JWT.
         /// </summary>
         /// <param name="dto">Credenciais de login.</param>
-        [HttpPost("login")]
+        [HttpPost("/api/bearer/login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var identityUser = await _userManager.FindByNameAsync(dto.Username);
