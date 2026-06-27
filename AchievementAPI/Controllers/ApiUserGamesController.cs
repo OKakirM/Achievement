@@ -1,11 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Achievement.Data;
 using Achievement.Models;
 using AchievementAPI.Dtos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AchievementAPI.Controllers
 {
@@ -20,8 +22,12 @@ namespace AchievementAPI.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Lista todas as entradas de biblioteca (jogos de utilizadores e respetivo estado).
+        /// </summary>
         // GET: api/ApiUserGames
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<UserGameDto>>> GetUserGames()
         {
             var entries = await _context.UserGames
@@ -33,8 +39,12 @@ namespace AchievementAPI.Controllers
             return Ok(entries.Select(MapToDto));
         }
 
+        /// <summary>
+        /// Obtém a entrada de biblioteca de um utilizador para um jogo (chave composta).
+        /// </summary>
         // GET: api/ApiUserGames/5/10
         [HttpGet("{userId}/{gameId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<UserGameDto>> GetUserGame(int userId, int gameId)
         {
             var entry = await _context.UserGames
@@ -47,8 +57,12 @@ namespace AchievementAPI.Controllers
             return Ok(MapToDto(entry));
         }
 
+        /// <summary>
+        /// Adiciona um jogo à biblioteca de um utilizador com um estado. Falha se a entrada já existir.
+        /// </summary>
         // POST: api/ApiUserGames
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<UserGameDto>> PostUserGame(UserGameDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -76,8 +90,12 @@ namespace AchievementAPI.Controllers
             return CreatedAtAction(nameof(GetUserGame), new { userId = entry.UserFK, gameId = entry.GameFK }, result);
         }
 
+        /// <summary>
+        /// Atualiza o estado de um jogo na biblioteca de um utilizador.
+        /// </summary>
         // PUT: api/ApiUserGames/5/10
         [HttpPut("{userId}/{gameId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutUserGame(int userId, int gameId, UserGameDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -94,8 +112,12 @@ namespace AchievementAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Remove um jogo da biblioteca de um utilizador.
+        /// </summary>
         // DELETE: api/ApiUserGames/5/10
         [HttpDelete("{userId}/{gameId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteUserGame(int userId, int gameId)
         {
             var entry = await _context.UserGames.FindAsync(userId, gameId);

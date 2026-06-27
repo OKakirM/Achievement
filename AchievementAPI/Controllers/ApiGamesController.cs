@@ -1,11 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Achievement.Data;
 using Achievement.Models;
 using AchievementAPI.Dtos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AchievementAPI.Controllers
 {
@@ -20,8 +22,12 @@ namespace AchievementAPI.Controllers
             _context = context;
         }
 
+        /// <summary>Lista os jogos de forma paginada.</summary>
+        /// <param name="pageNumber">Número da página (começa em 1).</param>
+        /// <param name="pageSize">Quantidade de itens por página.</param>
         // GET: api/ApiGames
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<GameDto>>> GetGames([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             var games = await _context.Games
@@ -36,8 +42,13 @@ namespace AchievementAPI.Controllers
             return Ok(result);
         }
 
+        /// <summary>Obtém um jogo pelo seu Id.</summary>
+        /// <param name="id">Id do jogo.</param>
+        /// <response code="200">Jogo encontrado.</response>
+        /// <response code="404">Jogo inexistente.</response>
         // GET: api/ApiGames/5
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GameDto>> GetGame(int id)
         {
             var game = await _context.Games
@@ -51,8 +62,11 @@ namespace AchievementAPI.Controllers
             return Ok(MapToDto(game));
         }
 
+        /// <summary>Cria um novo jogo.</summary>
+        /// <param name="dto">Dados do jogo a criar.</param>
         // POST: api/ApiGames
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<GameDto>> PostGame(GameCreateDto dto)
         {
             if (!ModelState.IsValid)
@@ -67,7 +81,8 @@ namespace AchievementAPI.Controllers
                 Length = dto.Length,
                 CoverImage = dto.CoverImage,
                 BannerImage = dto.BannerImage,
-                Plays = dto.Plays
+                Plays = dto.Plays,
+                CreatedAt = DateTime.UtcNow
             };
 
             // relacionamentos
@@ -97,8 +112,12 @@ namespace AchievementAPI.Controllers
             return CreatedAtAction(nameof(GetGame), new { id = game.Id }, resultDto);
         }
 
+        /// <summary>Atualiza parcialmente um jogo (só os campos fornecidos).</summary>
+        /// <param name="id">Id do jogo.</param>
+        /// <param name="dto">Campos a atualizar.</param>
         // PUT: api/ApiGames/5
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutGame(int id, GameUpdateDto dto)
         {
             if (!ModelState.IsValid)
@@ -149,8 +168,11 @@ namespace AchievementAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>Remove um jogo.</summary>
+        /// <param name="id">Id do jogo.</param>
         // DELETE: api/ApiGames/5
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteGame(int id)
         {
             var game = await _context.Games.FindAsync(id);
@@ -163,7 +185,7 @@ namespace AchievementAPI.Controllers
             return NoContent();
         }
 
-        // mapping helper
+        // mapeia um Game para GameDto
         private static GameDto MapToDto(Game g)
         {
             return new GameDto
@@ -172,6 +194,7 @@ namespace AchievementAPI.Controllers
                 Name = g.Name,
                 Description = g.Description,
                 ReleaseDate = g.ReleaseDate,
+                CreatedAt = g.CreatedAt,
                 Rating = g.Rating,
                 Length = g.Length,
                 CoverImage = g.CoverImage,

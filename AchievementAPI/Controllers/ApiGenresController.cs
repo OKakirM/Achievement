@@ -1,11 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Achievement.Data;
 using Achievement.Models;
 using AchievementAPI.Dtos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AchievementAPI.Controllers
 {
@@ -20,14 +22,22 @@ namespace AchievementAPI.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Lista todos os gêneros.
+        /// </summary>
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<IEnumerable<GenreDto>>> GetGenres()
         {
             var genres = await _context.Genres.ToListAsync();
             return Ok(genres.Select(g => MapToDto(g)));
         }
 
+        /// <summary>
+        /// Obtém um gênero pelo Id.
+        /// </summary>
         [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GenreDto>> GetGenre(int id)
         {
             var genre = await _context.Genres.FindAsync(id);
@@ -35,7 +45,11 @@ namespace AchievementAPI.Controllers
             return Ok(MapToDto(genre));
         }
 
+        /// <summary>
+        /// Cria um gênero. Falha se já existir um com o mesmo nome.
+        /// </summary>
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult<GenreDto>> PostGenre(GenreCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -50,7 +64,11 @@ namespace AchievementAPI.Controllers
             return CreatedAtAction(nameof(GetGenre), new { id = genre.Id }, MapToDto(genre));
         }
 
+        /// <summary>
+        /// Atualiza o nome de um gênero.
+        /// </summary>
         [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutGenre(int id, GenreCreateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -65,7 +83,11 @@ namespace AchievementAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Remove um gênero.
+        /// </summary>
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteGenre(int id)
         {
             var genre = await _context.Genres.FindAsync(id);

@@ -111,7 +111,7 @@ namespace Achievement.Models
         /// <summary>
         /// Conexão de N-N, vários jogo possui várias Plataformas
         /// </summary>
-        [Display(Name = "Platformas")]
+        [Display(Name = "Plataformas")]
         public ICollection<Platform> Platforms { get; set; } = new List<Platform>();
 
         /// <summary>
