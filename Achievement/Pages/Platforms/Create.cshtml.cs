@@ -31,7 +31,6 @@ namespace Achievement.Pages.Platforms
         [BindProperty]
         public Platform Platform { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

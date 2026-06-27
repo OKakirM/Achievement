@@ -134,7 +134,6 @@ namespace Achievement.Pages.Users
                 }
                 else if (!IsAdmin && alreadyAdmin)
                 {
-                    // ponytail: não impede a auto-despromoção do último admin; admin pode repor pela BD se enganar.
                     await _userManager.RemoveFromRoleAsync(idUser, AdminRole);
                 }
             }

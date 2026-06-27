@@ -31,7 +31,6 @@ namespace Achievement.Pages.Genres
         [BindProperty]
         public Genre Genre { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)

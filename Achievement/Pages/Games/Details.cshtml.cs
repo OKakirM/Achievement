@@ -58,12 +58,6 @@ namespace Achievement.Pages.Games
                 return NotFound();
             }
 
-            // Se o slug na URL não corresponder ao slug real do jogo, redireciona para a URL correta.
-            if (string.IsNullOrEmpty(slug) || slug != Game.Slug)
-            {
-                return RedirectToPagePermanent("./Details", new { id = Game.Id, slug = Game.Slug });
-            }
-
             // Popula os formulários com o que o utilizador já tem
             if (MyReview != null)
             {

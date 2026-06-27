@@ -5,12 +5,11 @@ namespace Achievement.Helpers
 {
     /// <summary>
     /// Normalização de texto para pesquisas tolerantes a maiúsculas/acentos.
-    /// O SQLite não ignora diacríticos no SQL, por isso a filtragem é feita em memória.
     /// </summary>
     public static class TextSearch
     {
         /// <summary>
-        /// Devolve o texto em minúsculas e sem diacríticos (ex.: "Pokémon" → "pokemon").
+        /// Devolve o texto em minúsculas e sem diacríticos.
         /// </summary>
         public static string Normalize(string? text)
         {

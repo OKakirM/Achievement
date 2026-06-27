@@ -94,6 +94,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Código adaptado de
+     https://learn.microsoft.com/en-us/aspnet/core/signalr/javascript-client?view=aspnetcore-10.0&tabs=visual-studio
+    -->
     <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8/dist/browser/signalr.min.js"></script>
     <script>
         const presence = new signalR.HubConnectionBuilder().withUrl("/hubs/presence").withAutomaticReconnect().build();

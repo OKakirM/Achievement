@@ -58,7 +58,7 @@ namespace Achievement.Pages.Games
         [BindProperty]
         public int[] SelectedPlatformIds { get; set; } = Array.Empty<int>();
 
-                /// <summary>
+        /// <summary>
         /// Armazena os IDs dos gêneros selecionados pelo usuário no formulário de criação do jogo.
         /// </summary>
         [BindProperty]
@@ -81,13 +81,6 @@ namespace Achievement.Pages.Games
             if (game == null)
             {
                 return NotFound();
-            }
-
-            // Se o slug na URL não corresponder ao slug real do jogo,
-            // redireciona para a URL correta.
-            if (string.IsNullOrEmpty(slug) || slug != game.Slug)
-            {
-                return RedirectToPagePermanent("./Edit", new { id = game.Id, slug = game.Slug });
             }
 
             Game = game;

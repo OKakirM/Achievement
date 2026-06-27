@@ -5,8 +5,7 @@ using System.Reflection;
 namespace Achievement.Models
 {
     /// <summary>
-    /// Apresentação de um <see cref="GameStatus"/>: nome legível e classe CSS de cor.
-    /// Fonte única usada pelas views (reviews, perfil, lista).
+    /// Estatos de jogo possíveis (para melhor exibição na interface do utilizador).
     /// </summary>
     public static class GameStatusExtensions
     {

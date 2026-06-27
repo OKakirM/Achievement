@@ -22,7 +22,7 @@ namespace Achievement.Pages.Games
 
         public IList<Game> Game { get; set; } = default!;
 
-        // Simplified pagination parameters
+        // Paginação: 20 jogos por página, página 1 por omissão.
         public int PageSize { get; set; } = 20;
         public int PageNumber { get; set; } = 1;
 
@@ -45,8 +45,6 @@ namespace Achievement.Pages.Games
             PlatformId = platform;
 
             var query = _context.Games.AsQueryable();
-
-            // Only active games in admin list? Admin should see all; keep all.
 
             if (GenreId.HasValue)
             {
@@ -71,10 +69,7 @@ namespace Achievement.Pages.Games
                 return;
             }
 
-            // Com pesquisa: carrega candidatos e filtra/ordena em memória, para
-            // ignorar maiúsculas/acentos (que o SQLite não trata) e pesquisar em
-            // nome, desenvolvedora e nomes de géneros/plataformas.
-            // ponytail: O(n) scan em memória; migrar para coluna normalizada ou FTS5 se a base passar de uns milhares de jogos.
+            // Com pesquisa: carrega todos os candidatos e ordena por relevância.
             var term = TextSearch.Normalize(Search);
 
             var candidates = await query

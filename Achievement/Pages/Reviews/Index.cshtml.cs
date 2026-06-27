@@ -63,9 +63,7 @@ namespace Achievement.Pages.Reviews
                 return;
             }
 
-            // Com pesquisa: filtra em memória sobre conteúdo, nome do jogo e autor,
-            // ignorando maiúsculas/acentos (que o SQLite não trata).
-            // ponytail: O(n) scan em memória; migrar para coluna normalizada ou FTS5 se as reviews passarem de uns milhares.
+            // Com pesquisa: filtra em memória por relevância, ignorando maiúsculas/acentos.
             var term = TextSearch.Normalize(q);
 
             var candidates = await query.ToListAsync();

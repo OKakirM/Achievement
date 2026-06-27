@@ -46,6 +46,10 @@ namespace Achievement.Data
         /// Configurações adicionais da base de dados
         /// </summary>
         /// <param name="builder"></param>
+
+        // =======================
+        //    Funções Auxiliares
+        // =======================
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

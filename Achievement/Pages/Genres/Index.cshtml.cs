@@ -28,7 +28,7 @@ namespace Achievement.Pages.Genres
         {
             Search = search;
 
-            // Include Games to be able to show counts without additional queries
+            // Carrega todos os géneros com os jogos associados, ordenados por nome.
             var genres = await _context.Genres
                 .Include(g => g.Games)
                 .OrderBy(g => g.Name)

@@ -12,11 +12,11 @@ namespace Achievement.ValidationFiles
         public static readonly string[] _ReleaseDateFormats = { "yyyy/MM/dd", "dd/MM/yyyy", "MM/dd/yyyy" };
 
         // yyyy/MM/dd  ou  dd/MM/yyyy  ou  MM/dd/yyyy (estes dois últimos têm a mesma forma)
-        // ponytail: só valida a "forma"; a data real é validada por TryParseReleaseDate
         public const string _ReleaseDateRegexPattern = @"^(\d{4}/\d{1,2}/\d{1,2}|\d{1,2}/\d{1,2}/\d{4})$";
 
         /// <summary>
         /// Tenta converter a data digitada num DateTime.
+        /// https://stackoverflow.com/questions/52392114/use-datetime-tryparseexact-to-format-date-string-and-ignore-time
         /// </summary>
         public static bool TryParseReleaseDate(string? input, out DateTime date) =>
             DateTime.TryParseExact((input ?? string.Empty).Trim(), _ReleaseDateFormats,

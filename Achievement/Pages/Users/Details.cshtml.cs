@@ -27,7 +27,7 @@ namespace Achievement.Pages.Users
 
         public User ProfileUser { get; set; } = default!;
 
-        // O perfil pertence ao utilizador logado? (só o dono pode trocar as imagens)
+        // Variavel que indica se o utilizador autenticado é o dono do perfil.
         public bool IsOwner { get; private set; }
 
         [BindProperty]

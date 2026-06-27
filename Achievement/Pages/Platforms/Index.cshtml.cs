@@ -27,6 +27,7 @@ namespace Achievement.Pages.Platforms
         {
             Search = search;
 
+            // Busca todos os aparelhos, incluindo seus jogos, ordenados por tipo e nome.
             var platforms = await _context.Platforms
                 .Include(p => p.Games)
                 .OrderBy(p => p.Type).ThenBy(p => p.Name)
